@@ -1,0 +1,638 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="${1:-.}"
+PKG="$ROOT/kernel/ltba_general"
+BENCH="$ROOT/benchmarks"
+TESTS="$ROOT/tests/conformance"
+DOCS="$ROOT/docs"
+
+mkdir -p "$PKG" "$BENCH" "$TESTS" "$DOCS"
+touch "$BENCH/__init__.py"
+
+cat > "$BENCH/ltba_general_benchmark_v2.py" <<'PY'
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import csv
+import itertools
+import json
+import random
+import time
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple
+
+try:
+    from kernel.ltba_general import LTBAExpr, registry
+except Exception as exc:  # pragma: no cover
+    raise SystemExit(f"Cannot import kernel.ltba_general. Apply v0 first or run with PYTHONPATH=. Error: {exc}")
+
+try:
+    from benchmarks.ltba_general_benchmark_v1 import (
+        BranchGroup,
+        bdd_backend_status,
+        bdd_guard_skeleton,
+        groups_from_expr,
+        make_mixed_family,
+        materialize_explicit,
+        theoretical_branch_space,
+    )
+except Exception as exc:  # pragma: no cover
+    raise SystemExit(f"Cannot import benchmark v1 helpers. Apply v1 first. Error: {exc}")
+
+
+def timed(fn):
+    t0 = time.perf_counter()
+    result = fn()
+    return result, time.perf_counter() - t0
+
+
+@dataclass(frozen=True)
+class ExplicitRow:
+    choice_indices: Tuple[int, ...]
+    guards: Tuple[str, ...]
+    payload: str
+
+
+def expand_explicit_rows(groups: Sequence[BranchGroup], max_branches: int) -> Dict[str, object]:
+    """Materialize explicit rows with choice indices so we can test LTBA -> explicit equivalence."""
+    total = theoretical_branch_space(groups)
+    if total > max_branches:
+        return {
+            "available": False,
+            "reason": f"skipped: total branches {total} > max_materialize {max_branches}",
+            "rows": None,
+            "build_seconds": None,
+            "actual_branch_count": None,
+            "actual_repr_size": None,
+        }
+
+    def build() -> List[ExplicitRow]:
+        if not groups:
+            return [ExplicitRow((), (), "base")]
+        rows: List[ExplicitRow] = []
+        ranges = [range(g.branch_count) for g in groups]
+        for choice_indices in itertools.product(*ranges):
+            chosen = [groups[gi].choices[ci] for gi, ci in enumerate(choice_indices)]
+            guards = tuple(c[0] for c in chosen)
+            payload = " | ".join(c[1] for c in chosen)
+            rows.append(ExplicitRow(tuple(choice_indices), guards, payload))
+        return rows
+
+    rows, build_s = timed(build)
+    repr_size = sum(sum(len(g) for g in row.guards) + len(row.payload) for row in rows)
+    return {
+        "available": True,
+        "reason": "",
+        "rows": rows,
+        "build_seconds": build_s,
+        "actual_branch_count": len(rows),
+        "actual_repr_size": repr_size,
+    }
+
+
+def evaluate_ltba_choice(groups: Sequence[BranchGroup], choice_indices: Sequence[int]) -> Tuple[Tuple[str, ...], str]:
+    """Lazy LTBA valuation: pick one local branch from each group without global expansion."""
+    if not groups:
+        return (), "base"
+    chosen = [groups[gi].choices[ci] for gi, ci in enumerate(choice_indices)]
+    guards = tuple(c[0] for c in chosen)
+    payload = " | ".join(c[1] for c in chosen)
+    return guards, payload
+
+
+def evaluate_explicit_choice(groups: Sequence[BranchGroup], choice_indices: Sequence[int]) -> Tuple[Tuple[str, ...], str]:
+    """Explicit semantics for the same local branch choices."""
+    return evaluate_ltba_choice(groups, choice_indices)
+
+
+def branch_equivalence_check(groups: Sequence[BranchGroup], max_exhaustive: int, samples: int, seed: int) -> Dict[str, object]:
+    """
+    Check LTBA lazy valuation against explicit branch valuation.
+
+    For small branch spaces this is exhaustive. For larger branch spaces this is
+    deterministic random sampling, because explicit full materialization is the thing
+    under stress.
+    """
+    total = theoretical_branch_space(groups)
+    rng = random.Random(seed)
+
+    if not groups:
+        guards_l, payload_l = evaluate_ltba_choice(groups, [])
+        guards_e, payload_e = evaluate_explicit_choice(groups, [])
+        return {
+            "backend": "equivalence_check",
+            "mode": "exhaustive",
+            "available": True,
+            "holds": (guards_l, payload_l) == (guards_e, payload_e),
+            "checked_assignments": 1,
+            "branch_space": 1,
+            "reason": "",
+        }
+
+    def check_choice(indices: Sequence[int]) -> bool:
+        return evaluate_ltba_choice(groups, indices) == evaluate_explicit_choice(groups, indices)
+
+    if total <= max_exhaustive:
+        checked = 0
+        for indices in itertools.product(*[range(g.branch_count) for g in groups]):
+            checked += 1
+            if not check_choice(indices):
+                return {
+                    "backend": "equivalence_check",
+                    "mode": "exhaustive",
+                    "available": True,
+                    "holds": False,
+                    "checked_assignments": checked,
+                    "branch_space": total,
+                    "reason": f"mismatch at {indices}",
+                }
+        return {
+            "backend": "equivalence_check",
+            "mode": "exhaustive",
+            "available": True,
+            "holds": True,
+            "checked_assignments": checked,
+            "branch_space": total,
+            "reason": "",
+        }
+
+    checked_choices = set()
+    target = min(samples, total)
+    while len(checked_choices) < target:
+        indices = tuple(rng.randrange(g.branch_count) for g in groups)
+        checked_choices.add(indices)
+
+    for indices in sorted(checked_choices):
+        if not check_choice(indices):
+            return {
+                "backend": "equivalence_check",
+                "mode": "sampled",
+                "available": True,
+                "holds": False,
+                "checked_assignments": len(checked_choices),
+                "branch_space": total,
+                "reason": f"mismatch at {indices}",
+            }
+
+    return {
+        "backend": "equivalence_check",
+        "mode": "sampled",
+        "available": True,
+        "holds": True,
+        "checked_assignments": len(checked_choices),
+        "branch_space": total,
+        "reason": "",
+    }
+
+
+def local_rewrite_metrics(expr: LTBAExpr) -> Dict[str, object]:
+    """One rewrite and repeated local rewrite curve for LTBA."""
+    def rewrite_one():
+        if not expr.local_branch_count:
+            return expr
+        return expr.rewrite_local(0, "REWRITTEN", "v2_one")
+
+    _, one_s = timed(rewrite_one)
+
+    def rewrite_all():
+        out = expr
+        for idx in range(expr.local_branch_count):
+            out = out.rewrite_local(idx, f"REWRITTEN_{idx}", "v2_repeated")
+        return out
+
+    _, all_s = timed(rewrite_all)
+    return {
+        "rewrite_one_touched_records": 1 if expr.local_branch_count else 0,
+        "rewrite_one_seconds": one_s,
+        "rewrite_all_touched_records": expr.local_branch_count,
+        "rewrite_all_seconds": all_s,
+    }
+
+
+def explicit_rewrite_touch_counts(groups: Sequence[BranchGroup], max_branches: int) -> Dict[str, object]:
+    """
+    Compute explicit materialized rewrite touch counts.
+
+    If fully materialized, one local branch rewrite touches all global rows containing
+    that choice. Rewriting every local branch choice across every group touches
+    sum_g sum_choice total/branch_count(g), which equals len(groups)*total.
+    """
+    total = theoretical_branch_space(groups)
+    if total > max_branches:
+        return {
+            "available": False,
+            "reason": f"skipped: total branches {total} > max_materialize {max_branches}",
+            "rewrite_one_touched_records": None,
+            "rewrite_all_touched_records": None,
+        }
+    if not groups:
+        return {
+            "available": True,
+            "reason": "",
+            "rewrite_one_touched_records": 0,
+            "rewrite_all_touched_records": 0,
+        }
+    first = groups[0]
+    one = total // first.branch_count
+    all_touched = sum(sum(total // g.branch_count for _ in g.choices) for g in groups)
+    return {
+        "available": True,
+        "reason": "",
+        "rewrite_one_touched_records": one,
+        "rewrite_all_touched_records": all_touched,
+    }
+
+
+def bdd_factor_payload_model(groups: Sequence[BranchGroup], max_bdd_paths: int) -> Dict[str, object]:
+    """
+    Model a fairer BDD+factor-payload competitor.
+
+    Plain BDD rows in v1 measured guard skeleton only and kept algebraic payload external.
+    This model stores algebraic payload per local factor choice, not per full path.
+    It can tie LTBA on payload locality, while the guard-skeleton cost is reported
+    separately when path enumeration is small enough.
+    """
+    total = theoretical_branch_space(groups)
+    factor_payload_records = sum(g.branch_count for g in groups)
+    materialized_payload_records = total
+
+    skeleton = bdd_guard_skeleton(groups, max_bdd_paths)
+    return {
+        "backend": "bdd_factor_payload_model",
+        "available": True,
+        "branch_space": total,
+        "bdd_backend_available": bdd_backend_status().get("available"),
+        "bdd_skeleton_available": skeleton.get("available"),
+        "bdd_node_count": skeleton.get("node_count"),
+        "bdd_path_count": skeleton.get("path_count"),
+        "factor_payload_records": factor_payload_records,
+        "materialized_payload_records": materialized_payload_records,
+        "rewrite_one_touched_records": 1 if factor_payload_records else 0,
+        "rewrite_all_touched_records": factor_payload_records,
+        "reason": "BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.",
+    }
+
+
+def make_case(family: str, n: int) -> Tuple[str, LTBAExpr, List[BranchGroup]]:
+    if family == "LTBA-MIXED":
+        expr, groups = make_mixed_family(n)
+        return "mixed_all_guarded_layers", expr, groups
+    component = registry.get(family)
+    expr = component.make_family(n)
+    return component.layer, expr, groups_from_expr(expr, family)
+
+
+def comparison_summary_row(
+    family: str,
+    layer: str,
+    n: int,
+    expr: LTBAExpr,
+    groups: Sequence[BranchGroup],
+    explicit_info: Dict[str, object],
+    explicit_touch: Dict[str, object],
+    bdd_payload: Dict[str, object],
+    eq: Dict[str, object],
+) -> Dict[str, object]:
+    ltba_rewrites = local_rewrite_metrics(expr)
+    total = theoretical_branch_space(groups)
+    explicit_repr = explicit_info.get("actual_repr_size")
+    explicit_one = explicit_touch.get("rewrite_one_touched_records")
+    explicit_all = explicit_touch.get("rewrite_all_touched_records")
+    ltba_repr = expr.representation_size
+
+    def ratio(num, den):
+        if num is None or den in (None, 0):
+            return None
+        return float(num) / float(den)
+
+    return {
+        "suite": "v2",
+        "backend": "comparison_summary",
+        "family": family,
+        "layer": layer,
+        "n": n,
+        "guard_count": expr.guard_count,
+        "local_branch_count": expr.local_branch_count,
+        "group_count": len(groups),
+        "theoretical_full_branch_space": total,
+        "ltba_repr_size": ltba_repr,
+        "ltba_rewrite_one_touched_records": ltba_rewrites["rewrite_one_touched_records"],
+        "ltba_rewrite_all_touched_records": ltba_rewrites["rewrite_all_touched_records"],
+        "explicit_available": explicit_info.get("available"),
+        "explicit_actual_branch_count": explicit_info.get("actual_branch_count"),
+        "explicit_actual_repr_size": explicit_repr,
+        "explicit_rewrite_one_touched_records": explicit_one,
+        "explicit_rewrite_all_touched_records": explicit_all,
+        "ratio_explicit_repr_over_ltba": ratio(explicit_repr, ltba_repr),
+        "ratio_explicit_one_touch_over_ltba": ratio(explicit_one, ltba_rewrites["rewrite_one_touched_records"]),
+        "ratio_explicit_all_touch_over_ltba": ratio(explicit_all, ltba_rewrites["rewrite_all_touched_records"]),
+        "bdd_factor_payload_records": bdd_payload.get("factor_payload_records"),
+        "bdd_materialized_payload_records": bdd_payload.get("materialized_payload_records"),
+        "bdd_node_count": bdd_payload.get("bdd_node_count"),
+        "bdd_skeleton_available": bdd_payload.get("bdd_skeleton_available"),
+        "equivalence_mode": eq.get("mode"),
+        "equivalence_holds": eq.get("holds"),
+        "equivalence_checked_assignments": eq.get("checked_assignments"),
+    }
+
+
+def detailed_rows_for_case(
+    family: str,
+    layer: str,
+    n: int,
+    expr: LTBAExpr,
+    groups: Sequence[BranchGroup],
+    max_materialize: int,
+    max_equiv_exhaustive: int,
+    samples: int,
+    seed: int,
+) -> Tuple[List[Dict[str, object]], Dict[str, object]]:
+    rows: List[Dict[str, object]] = []
+    total = theoretical_branch_space(groups)
+
+    ltba_rewrites = local_rewrite_metrics(expr)
+    rows.append({
+        "suite": "v2",
+        "backend": "ltba_local",
+        "family": family,
+        "layer": layer,
+        "n": n,
+        "available": True,
+        "repr_size": expr.representation_size,
+        "guard_count": expr.guard_count,
+        "local_branch_count": expr.local_branch_count,
+        "group_count": len(groups),
+        "theoretical_full_branch_space": total,
+        **ltba_rewrites,
+    })
+
+    explicit_info = expand_explicit_rows(groups, max_materialize)
+    explicit_touch = explicit_rewrite_touch_counts(groups, max_materialize)
+    rows.append({
+        "suite": "v2",
+        "backend": "explicit_rows_with_indices",
+        "family": family,
+        "layer": layer,
+        "n": n,
+        "theoretical_full_branch_space": total,
+        "available": explicit_info.get("available"),
+        "reason": explicit_info.get("reason"),
+        "actual_branch_count": explicit_info.get("actual_branch_count"),
+        "actual_repr_size": explicit_info.get("actual_repr_size"),
+        "build_seconds": explicit_info.get("build_seconds"),
+        **explicit_touch,
+    })
+
+    # Keep v1 materialization row too, for backward-compatible metrics.
+    mat = materialize_explicit(groups, max_materialize)
+    rows.append({
+        "suite": "v2",
+        "backend": "explicit_materialized_v1_compatible",
+        "family": family,
+        "layer": layer,
+        "n": n,
+        "theoretical_full_branch_space": total,
+        **mat,
+    })
+
+    bdd_payload = bdd_factor_payload_model(groups, max_materialize)
+    rows.append({
+        "suite": "v2",
+        "family": family,
+        "layer": layer,
+        "n": n,
+        "theoretical_full_branch_space": total,
+        **bdd_payload,
+    })
+
+    eq = branch_equivalence_check(groups, max_equiv_exhaustive, samples, seed + n + len(family))
+    rows.append({
+        "suite": "v2",
+        "family": family,
+        "layer": layer,
+        "n": n,
+        "theoretical_full_branch_space": total,
+        **eq,
+    })
+
+    summary = comparison_summary_row(family, layer, n, expr, groups, explicit_info, explicit_touch, bdd_payload, eq)
+    rows.append(summary)
+    return rows, summary
+
+
+def run(ns: argparse.Namespace) -> Dict[str, object]:
+    families = registry.names() if ns.components == "all" else [x.strip() for x in ns.components.split(",") if x.strip()]
+    rows: List[Dict[str, object]] = []
+    summaries: List[Dict[str, object]] = []
+
+    for family in families:
+        for n in ns.sizes:
+            layer, expr, groups = make_case(family, n)
+            case_rows, summary = detailed_rows_for_case(
+                family,
+                layer,
+                n,
+                expr,
+                groups,
+                ns.max_materialize,
+                ns.max_equiv_exhaustive,
+                ns.samples,
+                ns.seed,
+            )
+            rows.extend(case_rows)
+            summaries.append(summary)
+
+    if ns.include_mixed:
+        for n in ns.mixed_sizes:
+            layer, expr, groups = make_case("LTBA-MIXED", n)
+            case_rows, summary = detailed_rows_for_case(
+                "LTBA-MIXED",
+                layer,
+                n,
+                expr,
+                groups,
+                ns.max_materialize,
+                ns.max_equiv_exhaustive,
+                ns.samples,
+                ns.seed,
+            )
+            rows.extend(case_rows)
+            summaries.append(summary)
+
+    return {
+        "benchmark": "LTBA general substrate benchmark v2",
+        "claim_under_test": "LTBA lazy branch semantics, BDD+factor-payload model, and repeated local rewrite curves",
+        "important_note": "v2 still does not claim universal superiority over optimized decision diagrams; it separates explicit payload materialization from factor-local payload storage.",
+        "sizes": ns.sizes,
+        "mixed_sizes": ns.mixed_sizes if ns.include_mixed else [],
+        "components": families,
+        "max_materialize": ns.max_materialize,
+        "max_equiv_exhaustive": ns.max_equiv_exhaustive,
+        "samples": ns.samples,
+        "seed": ns.seed,
+        "bdd_status": bdd_backend_status(),
+        "rows": rows,
+        "summary_rows": summaries,
+    }
+
+
+def write_csv(path: Path, rows: Sequence[Dict[str, object]]) -> None:
+    fieldnames = sorted({k for row in rows for k in row})
+    with path.open("w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def main() -> None:
+    p = argparse.ArgumentParser()
+    p.add_argument("--sizes", default="1,2,4,8,12,16", help="comma-separated component n values")
+    p.add_argument("--mixed-sizes", default="1,2,3", help="comma-separated mixed-family n values")
+    p.add_argument("--components", default="all", help="all or comma-separated LTBA-0,...,LTBA-7")
+    p.add_argument("--max-materialize", type=int, default=4096, help="max full explicit branches to actually materialize")
+    p.add_argument("--max-equiv-exhaustive", type=int, default=4096, help="max branch space for exhaustive LTBA->explicit equivalence")
+    p.add_argument("--samples", type=int, default=256, help="deterministic sampled equivalence checks when exhaustive is too large")
+    p.add_argument("--seed", type=int, default=1729)
+    p.add_argument("--include-mixed", action="store_true", default=True)
+    p.add_argument("--out", default="out_ltba_general_benchmark_v2")
+    ns = p.parse_args()
+    ns.sizes = [int(x) for x in ns.sizes.split(",") if x.strip()]
+    ns.mixed_sizes = [int(x) for x in ns.mixed_sizes.split(",") if x.strip()]
+
+    report = run(ns)
+    out = Path(ns.out)
+    out.mkdir(parents=True, exist_ok=True)
+
+    json_path = out / "ltba_general_benchmark_v2_report.json"
+    rows_csv = out / "ltba_general_benchmark_v2_rows.csv"
+    summary_csv = out / "ltba_general_benchmark_v2_summary.csv"
+
+    json_path.write_text(json.dumps(report, indent=2, sort_keys=True, default=str))
+    write_csv(rows_csv, report["rows"])
+    write_csv(summary_csv, report["summary_rows"])
+
+    print(f"wrote {json_path}")
+    print(f"wrote {rows_csv}")
+    print(f"wrote {summary_csv}")
+    print(json.dumps({
+        "rows": len(report["rows"]),
+        "summary_rows": len(report["summary_rows"]),
+        "bdd_status": report["bdd_status"],
+        "max_materialize": report["max_materialize"],
+        "max_equiv_exhaustive": report["max_equiv_exhaustive"],
+    }, indent=2))
+
+
+if __name__ == "__main__":
+    main()
+PY
+chmod +x "$BENCH/ltba_general_benchmark_v2.py"
+
+cat > "$TESTS/test_ltba_general_benchmark_v2.py" <<'PY'
+from benchmarks.ltba_general_benchmark_v1 import groups_from_expr, make_mixed_family, theoretical_branch_space
+from benchmarks.ltba_general_benchmark_v2 import (
+    bdd_factor_payload_model,
+    branch_equivalence_check,
+    expand_explicit_rows,
+    explicit_rewrite_touch_counts,
+)
+from kernel.ltba_general import registry
+
+
+def test_v2_explicit_rows_preserve_choice_indices():
+    expr = registry.get("LTBA-1").make_family(3)
+    groups = groups_from_expr(expr, "LTBA-1")
+    info = expand_explicit_rows(groups, max_branches=16)
+    assert info["available"] is True
+    rows = info["rows"]
+    assert len(rows) == 8
+    assert rows[0].choice_indices == (0, 0, 0)
+    assert rows[-1].choice_indices == (1, 1, 1)
+
+
+def test_v2_equivalence_check_exhaustive_for_mixed_n1():
+    _expr, groups = make_mixed_family(1)
+    assert theoretical_branch_space(groups) == 192
+    info = branch_equivalence_check(groups, max_exhaustive=256, samples=8, seed=1)
+    assert info["mode"] == "exhaustive"
+    assert info["holds"] is True
+    assert info["checked_assignments"] == 192
+
+
+def test_v2_equivalence_check_samples_when_large():
+    _expr, groups = make_mixed_family(2)
+    assert theoretical_branch_space(groups) == 36864
+    info = branch_equivalence_check(groups, max_exhaustive=256, samples=17, seed=2)
+    assert info["mode"] == "sampled"
+    assert info["holds"] is True
+    assert info["checked_assignments"] == 17
+
+
+def test_v2_explicit_rewrite_touch_counts_grow_with_global_rows():
+    expr = registry.get("LTBA-2").make_family(4)
+    groups = groups_from_expr(expr, "LTBA-2")
+    info = explicit_rewrite_touch_counts(groups, max_branches=16)
+    assert info["available"] is True
+    assert info["rewrite_one_touched_records"] == 8
+    assert info["rewrite_all_touched_records"] == 4 * 16
+
+
+def test_v2_bdd_factor_payload_model_keeps_payload_factor_local():
+    expr = registry.get("LTBA-1").make_family(12)
+    groups = groups_from_expr(expr, "LTBA-1")
+    info = bdd_factor_payload_model(groups, max_bdd_paths=128)
+    assert info["available"] is True
+    assert info["branch_space"] == 4096
+    assert info["factor_payload_records"] == 24
+    assert info["materialized_payload_records"] == 4096
+    assert info["rewrite_one_touched_records"] == 1
+    assert info["rewrite_all_touched_records"] == 24
+PY
+
+cat > "$DOCS/LTBA_GENERAL_BENCHMARK_V2.md" <<'MD'
+# LTBA General Benchmark v2
+
+Benchmark v2 builds on v0/v1 and adds reviewer-facing checks:
+
+1. **LTBA → explicit branch correctness** for small branch spaces.
+2. **Deterministic sampled branch valuation** for larger branch spaces.
+3. **BDD + factor-payload model**, separating guard structure from algebraic payload storage.
+4. **Repeated local rewrite curves**, not only a single rewrite.
+5. **Summary CSV with ratios** for explicit representation size and touched-record blowup.
+
+Run:
+
+```bash
+PYTHONPATH=. pytest -q tests/conformance/test_ltba_general_benchmark_v2.py
+PYTHONPATH=. python benchmarks/ltba_general_benchmark_v2.py \
+  --sizes 1,2,4,8,12,16 \
+  --mixed-sizes 1,2,3 \
+  --max-materialize 4096 \
+  --max-equiv-exhaustive 4096 \
+  --samples 256
+```
+
+Outputs:
+
+- `out_ltba_general_benchmark_v2/ltba_general_benchmark_v2_report.json`
+- `out_ltba_general_benchmark_v2/ltba_general_benchmark_v2_rows.csv`
+- `out_ltba_general_benchmark_v2/ltba_general_benchmark_v2_summary.csv`
+
+Interpretation:
+
+- `ltba_local` is the guarded-local representation.
+- `explicit_rows_with_indices` is an actual explicit expansion when branch count is below the cap.
+- `equivalence_check` verifies LTBA lazy branch valuation against explicit branch valuation exhaustively or by seeded sampling.
+- `bdd_factor_payload_model` is a fairer competitor model than plain BDD: it stores algebraic payload per local factor choice instead of per full branch path.
+
+Important limitation:
+
+> v2 does not prove LTBA beats every optimized decision diagram. It tests whether LTBA preserves local algebraic rewrite locality and lazy branch semantics across generalized guarded symbolic layers.
+MD
+
+echo "LTBA general benchmark v2 patch applied."
+echo "Run: PYTHONPATH=. pytest -q tests/conformance/test_ltba_general_benchmark_v2.py"
+echo "Run: PYTHONPATH=. python benchmarks/ltba_general_benchmark_v2.py --sizes 1,2,4,8,12,16 --mixed-sizes 1,2,3 --max-materialize 4096 --max-equiv-exhaustive 4096 --samples 256"

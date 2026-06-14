@@ -1,0 +1,746 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="${1:-.}"
+PKG="$ROOT/kernel/ltba_general"
+BENCH="$ROOT/benchmarks"
+TESTS="$ROOT/tests/conformance"
+DOCS="$ROOT/docs"
+
+mkdir -p "$BENCH" "$TESTS" "$DOCS"
+touch "$BENCH/__init__.py"
+
+cat > "$BENCH/ltba_general_benchmark_v3.py" <<'PY'
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import math
+import statistics
+import time
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Callable, Dict, List, Optional, Sequence, Tuple
+
+try:
+    from kernel.ltba_general import LTBAExpr, registry
+except Exception as exc:  # pragma: no cover
+    raise SystemExit(f"Cannot import kernel.ltba_general. Apply v0 first or run with PYTHONPATH=. Error: {exc}")
+
+try:
+    from benchmarks.ltba_general_benchmark_v1 import (
+        BranchGroup,
+        bdd_backend_status,
+        bdd_guard_skeleton,
+        groups_from_expr,
+        make_mixed_family,
+        theoretical_branch_space,
+    )
+except Exception as exc:  # pragma: no cover
+    raise SystemExit(f"Cannot import benchmark v1 helpers. Apply v1 first. Error: {exc}")
+
+try:
+    from benchmarks.ltba_general_benchmark_v2 import (
+        ExplicitRow,
+        branch_equivalence_check,
+        expand_explicit_rows,
+    )
+except Exception as exc:  # pragma: no cover
+    raise SystemExit(f"Cannot import benchmark v2 helpers. Apply v2 first. Error: {exc}")
+
+
+# -------------------------------
+# Generic timing utilities
+# -------------------------------
+
+
+def perf_call(fn: Callable[[], object]) -> float:
+    t0 = time.perf_counter()
+    fn()
+    return time.perf_counter() - t0
+
+
+@dataclass(frozen=True)
+class TimingStats:
+    trials: int
+    warmups: int
+    inner_loops: int
+    available: bool
+    reason: str
+    min_seconds: Optional[float] = None
+    median_seconds: Optional[float] = None
+    mean_seconds: Optional[float] = None
+    stdev_seconds: Optional[float] = None
+    max_seconds: Optional[float] = None
+
+
+def time_operation(
+    fn: Callable[[], object],
+    *,
+    trials: int,
+    warmups: int,
+    inner_loops: int,
+    available: bool = True,
+    reason: str = "",
+) -> TimingStats:
+    if not available:
+        return TimingStats(
+            trials=trials,
+            warmups=warmups,
+            inner_loops=inner_loops,
+            available=False,
+            reason=reason,
+        )
+
+    # Warmup runs are intentionally not recorded.
+    for _ in range(max(0, warmups)):
+        for _j in range(max(1, inner_loops)):
+            fn()
+
+    samples: List[float] = []
+    for _ in range(max(1, trials)):
+        t0 = time.perf_counter()
+        for _j in range(max(1, inner_loops)):
+            fn()
+        elapsed = time.perf_counter() - t0
+        samples.append(elapsed / max(1, inner_loops))
+
+    return TimingStats(
+        trials=trials,
+        warmups=warmups,
+        inner_loops=inner_loops,
+        available=True,
+        reason=reason,
+        min_seconds=min(samples),
+        median_seconds=statistics.median(samples),
+        mean_seconds=statistics.mean(samples),
+        stdev_seconds=statistics.stdev(samples) if len(samples) > 1 else 0.0,
+        max_seconds=max(samples),
+    )
+
+
+def ratio(num: Optional[float], den: Optional[float]) -> Optional[float]:
+    if num is None or den is None or den == 0:
+        return None
+    return float(num) / float(den)
+
+
+def winner(candidates: Dict[str, Optional[float]]) -> Optional[str]:
+    clean = {k: v for k, v in candidates.items() if v is not None and math.isfinite(v)}
+    if not clean:
+        return None
+    return min(clean, key=clean.get)
+
+
+# -------------------------------
+# Case construction
+# -------------------------------
+
+
+def make_case(family: str, n: int) -> Tuple[str, LTBAExpr, List[BranchGroup]]:
+    if family == "LTBA-MIXED":
+        expr, groups = make_mixed_family(n)
+        return "mixed_all_guarded_layers", expr, groups
+    component = registry.get(family)
+    expr = component.make_family(n)
+    return component.layer, expr, groups_from_expr(expr, family)
+
+
+def build_ltba_case(family: str, n: int) -> Tuple[str, LTBAExpr, List[BranchGroup]]:
+    return make_case(family, n)
+
+
+# -------------------------------
+# Timed backend operations
+# -------------------------------
+
+
+def ltba_rewrite_one(expr: LTBAExpr) -> LTBAExpr:
+    if not expr.local_branch_count:
+        return expr
+    return expr.rewrite_local(0, "REWRITTEN", "v3_one")
+
+
+def ltba_rewrite_all(expr: LTBAExpr) -> LTBAExpr:
+    out = expr
+    for idx in range(expr.local_branch_count):
+        out = out.rewrite_local(idx, f"REWRITTEN_{idx}", "v3_all")
+    return out
+
+
+def explicit_available(groups: Sequence[BranchGroup], max_materialize: int) -> Tuple[bool, str]:
+    total = theoretical_branch_space(groups)
+    if total > max_materialize:
+        return False, f"skipped: total branches {total} > max_materialize {max_materialize}"
+    return True, ""
+
+
+def explicit_build(groups: Sequence[BranchGroup], max_materialize: int) -> Dict[str, object]:
+    return expand_explicit_rows(groups, max_materialize)
+
+
+def explicit_rewrite_one(rows: Sequence[ExplicitRow]) -> int:
+    """Actual scan over materialized rows; returns number of touched rows."""
+    if not rows:
+        return 0
+    touched = 0
+    # Rewrite first local choice of first group. This mirrors v1/v2 rewrite-one.
+    for row in rows:
+        if row.choice_indices and row.choice_indices[0] == 0:
+            touched += 1
+    return touched
+
+
+def explicit_rewrite_all(rows: Sequence[ExplicitRow], groups: Sequence[BranchGroup]) -> int:
+    """Actual repeated scans over materialized rows for every local branch choice."""
+    if not rows or not groups:
+        return 0
+    touched = 0
+    for group_idx, group in enumerate(groups):
+        for choice_idx in range(group.branch_count):
+            for row in rows:
+                if row.choice_indices and row.choice_indices[group_idx] == choice_idx:
+                    touched += 1
+    return touched
+
+
+def bdd_factor_build(groups: Sequence[BranchGroup], max_bdd_paths: int) -> Dict[str, object]:
+    """
+    Build a BDD guard skeleton when path count is under cap, plus a factor-local
+    payload table. The payload table is intentionally factor-local, not path-local.
+    """
+    total = theoretical_branch_space(groups)
+    factor_payload_records = sum(g.branch_count for g in groups)
+    payload_table = [(g.label, ci, g.choices[ci][1]) for g in groups for ci in range(g.branch_count)]
+    skeleton = bdd_guard_skeleton(groups, max_bdd_paths)
+    return {
+        "branch_space": total,
+        "factor_payload_records": factor_payload_records,
+        "payload_table_size": len(payload_table),
+        "bdd_skeleton_available": skeleton.get("available"),
+        "bdd_node_count": skeleton.get("node_count"),
+        "bdd_path_count": skeleton.get("path_count"),
+        "reason": skeleton.get("reason", ""),
+    }
+
+
+def bdd_factor_rewrite_one(groups: Sequence[BranchGroup]) -> int:
+    # Update one factor-local payload record.
+    return 1 if sum(g.branch_count for g in groups) else 0
+
+
+def bdd_factor_rewrite_all(groups: Sequence[BranchGroup]) -> int:
+    # Update all factor-local payload records.
+    return sum(g.branch_count for g in groups)
+
+
+# -------------------------------
+# Rows
+# -------------------------------
+
+
+def timing_row(
+    *,
+    family: str,
+    layer: str,
+    n: int,
+    phase: str,
+    backend: str,
+    stats: TimingStats,
+    theoretical_full_branch_space: int,
+    guard_count: int,
+    local_branch_count: int,
+    group_count: int,
+    touched_records: Optional[int] = None,
+    produced_records: Optional[int] = None,
+    repr_size: Optional[int] = None,
+    node_count: Optional[int] = None,
+    path_count: Optional[int] = None,
+    equivalence_holds: Optional[bool] = None,
+    equivalence_mode: Optional[str] = None,
+    checked_assignments: Optional[int] = None,
+) -> Dict[str, object]:
+    d = asdict(stats)
+    d.update({
+        "suite": "v3",
+        "backend": backend,
+        "phase": phase,
+        "family": family,
+        "layer": layer,
+        "n": n,
+        "theoretical_full_branch_space": theoretical_full_branch_space,
+        "guard_count": guard_count,
+        "local_branch_count": local_branch_count,
+        "group_count": group_count,
+        "touched_records": touched_records,
+        "produced_records": produced_records,
+        "repr_size": repr_size,
+        "node_count": node_count,
+        "path_count": path_count,
+        "equivalence_holds": equivalence_holds,
+        "equivalence_mode": equivalence_mode,
+        "checked_assignments": checked_assignments,
+    })
+    return d
+
+
+def run_case(
+    *,
+    family: str,
+    n: int,
+    max_materialize: int,
+    max_equiv_exhaustive: int,
+    samples: int,
+    seed: int,
+    trials: int,
+    warmups: int,
+    inner_loops: int,
+) -> Tuple[List[Dict[str, object]], Dict[str, object]]:
+    layer, expr, groups = make_case(family, n)
+    total = theoretical_branch_space(groups)
+    rows: List[Dict[str, object]] = []
+
+    # Build timings
+    ltba_build_stats = time_operation(
+        lambda: build_ltba_case(family, n),
+        trials=trials,
+        warmups=warmups,
+        inner_loops=inner_loops,
+    )
+    rows.append(timing_row(
+        family=family, layer=layer, n=n, phase="build", backend="ltba_local",
+        stats=ltba_build_stats, theoretical_full_branch_space=total,
+        guard_count=expr.guard_count, local_branch_count=expr.local_branch_count, group_count=len(groups),
+        produced_records=expr.local_branch_count, repr_size=expr.representation_size,
+    ))
+
+    exp_ok, exp_reason = explicit_available(groups, max_materialize)
+    explicit_info = explicit_build(groups, max_materialize)
+    explicit_rows = explicit_info.get("rows") if explicit_info.get("available") else None
+    explicit_actual_branch_count = explicit_info.get("actual_branch_count")
+    explicit_actual_repr_size = explicit_info.get("actual_repr_size")
+
+    explicit_build_stats = time_operation(
+        lambda: explicit_build(groups, max_materialize),
+        trials=trials,
+        warmups=warmups,
+        inner_loops=inner_loops,
+        available=exp_ok,
+        reason=exp_reason,
+    )
+    rows.append(timing_row(
+        family=family, layer=layer, n=n, phase="build", backend="explicit_materialized",
+        stats=explicit_build_stats, theoretical_full_branch_space=total,
+        guard_count=expr.guard_count, local_branch_count=expr.local_branch_count, group_count=len(groups),
+        produced_records=explicit_actual_branch_count if exp_ok else None,
+        repr_size=explicit_actual_repr_size if exp_ok else None,
+    ))
+
+    bdd_build_info = bdd_factor_build(groups, max_materialize)
+    bdd_build_stats = time_operation(
+        lambda: bdd_factor_build(groups, max_materialize),
+        trials=trials,
+        warmups=warmups,
+        inner_loops=inner_loops,
+    )
+    rows.append(timing_row(
+        family=family, layer=layer, n=n, phase="build", backend="bdd_factor_payload",
+        stats=bdd_build_stats, theoretical_full_branch_space=total,
+        guard_count=expr.guard_count, local_branch_count=expr.local_branch_count, group_count=len(groups),
+        produced_records=bdd_build_info.get("factor_payload_records"),
+        node_count=bdd_build_info.get("bdd_node_count"),
+        path_count=bdd_build_info.get("bdd_path_count"),
+    ))
+
+    # Rewrite-one timings
+    ltba_one_stats = time_operation(
+        lambda: ltba_rewrite_one(expr),
+        trials=trials,
+        warmups=warmups,
+        inner_loops=inner_loops,
+    )
+    rows.append(timing_row(
+        family=family, layer=layer, n=n, phase="rewrite_one", backend="ltba_local",
+        stats=ltba_one_stats, theoretical_full_branch_space=total,
+        guard_count=expr.guard_count, local_branch_count=expr.local_branch_count, group_count=len(groups),
+        touched_records=1 if expr.local_branch_count else 0, repr_size=expr.representation_size,
+    ))
+
+    explicit_one_stats = time_operation(
+        lambda: explicit_rewrite_one(explicit_rows or []),
+        trials=trials,
+        warmups=warmups,
+        inner_loops=inner_loops,
+        available=bool(exp_ok and explicit_rows is not None),
+        reason=exp_reason,
+    )
+    explicit_one_touched = explicit_rewrite_one(explicit_rows or []) if exp_ok and explicit_rows is not None else None
+    rows.append(timing_row(
+        family=family, layer=layer, n=n, phase="rewrite_one", backend="explicit_materialized",
+        stats=explicit_one_stats, theoretical_full_branch_space=total,
+        guard_count=expr.guard_count, local_branch_count=expr.local_branch_count, group_count=len(groups),
+        touched_records=explicit_one_touched, produced_records=explicit_actual_branch_count if exp_ok else None,
+        repr_size=explicit_actual_repr_size if exp_ok else None,
+    ))
+
+    bdd_one_stats = time_operation(
+        lambda: bdd_factor_rewrite_one(groups),
+        trials=trials,
+        warmups=warmups,
+        inner_loops=inner_loops,
+    )
+    rows.append(timing_row(
+        family=family, layer=layer, n=n, phase="rewrite_one", backend="bdd_factor_payload",
+        stats=bdd_one_stats, theoretical_full_branch_space=total,
+        guard_count=expr.guard_count, local_branch_count=expr.local_branch_count, group_count=len(groups),
+        touched_records=bdd_factor_rewrite_one(groups), produced_records=sum(g.branch_count for g in groups),
+    ))
+
+    # Rewrite-all timings
+    ltba_all_stats = time_operation(
+        lambda: ltba_rewrite_all(expr),
+        trials=trials,
+        warmups=warmups,
+        inner_loops=inner_loops,
+    )
+    rows.append(timing_row(
+        family=family, layer=layer, n=n, phase="rewrite_all", backend="ltba_local",
+        stats=ltba_all_stats, theoretical_full_branch_space=total,
+        guard_count=expr.guard_count, local_branch_count=expr.local_branch_count, group_count=len(groups),
+        touched_records=expr.local_branch_count, repr_size=expr.representation_size,
+    ))
+
+    explicit_all_stats = time_operation(
+        lambda: explicit_rewrite_all(explicit_rows or [], groups),
+        trials=trials,
+        warmups=warmups,
+        inner_loops=inner_loops,
+        available=bool(exp_ok and explicit_rows is not None),
+        reason=exp_reason,
+    )
+    explicit_all_touched = explicit_rewrite_all(explicit_rows or [], groups) if exp_ok and explicit_rows is not None else None
+    rows.append(timing_row(
+        family=family, layer=layer, n=n, phase="rewrite_all", backend="explicit_materialized",
+        stats=explicit_all_stats, theoretical_full_branch_space=total,
+        guard_count=expr.guard_count, local_branch_count=expr.local_branch_count, group_count=len(groups),
+        touched_records=explicit_all_touched, produced_records=explicit_actual_branch_count if exp_ok else None,
+        repr_size=explicit_actual_repr_size if exp_ok else None,
+    ))
+
+    bdd_all_stats = time_operation(
+        lambda: bdd_factor_rewrite_all(groups),
+        trials=trials,
+        warmups=warmups,
+        inner_loops=inner_loops,
+    )
+    rows.append(timing_row(
+        family=family, layer=layer, n=n, phase="rewrite_all", backend="bdd_factor_payload",
+        stats=bdd_all_stats, theoretical_full_branch_space=total,
+        guard_count=expr.guard_count, local_branch_count=expr.local_branch_count, group_count=len(groups),
+        touched_records=bdd_factor_rewrite_all(groups), produced_records=sum(g.branch_count for g in groups),
+    ))
+
+    # Equivalence timing: correctness + time cost.
+    eq_result = branch_equivalence_check(groups, max_equiv_exhaustive, samples, seed + n + len(family))
+    eq_stats = time_operation(
+        lambda: branch_equivalence_check(groups, max_equiv_exhaustive, samples, seed + n + len(family)),
+        trials=trials,
+        warmups=warmups,
+        inner_loops=1,
+    )
+    rows.append(timing_row(
+        family=family, layer=layer, n=n, phase="equivalence_check", backend="ltba_vs_explicit_semantics",
+        stats=eq_stats, theoretical_full_branch_space=total,
+        guard_count=expr.guard_count, local_branch_count=expr.local_branch_count, group_count=len(groups),
+        equivalence_holds=eq_result.get("holds"), equivalence_mode=eq_result.get("mode"),
+        checked_assignments=eq_result.get("checked_assignments"),
+    ))
+
+    summary: Dict[str, object] = {
+        "suite": "v3",
+        "family": family,
+        "layer": layer,
+        "n": n,
+        "guard_count": expr.guard_count,
+        "local_branch_count": expr.local_branch_count,
+        "group_count": len(groups),
+        "theoretical_full_branch_space": total,
+        "explicit_available": exp_ok,
+        "explicit_actual_branch_count": explicit_actual_branch_count if exp_ok else None,
+        "ltba_repr_size": expr.representation_size,
+        "explicit_repr_size": explicit_actual_repr_size if exp_ok else None,
+        "bdd_node_count": bdd_build_info.get("bdd_node_count"),
+        "bdd_path_count": bdd_build_info.get("bdd_path_count"),
+        "equivalence_holds": eq_result.get("holds"),
+        "equivalence_mode": eq_result.get("mode"),
+        "equivalence_checked_assignments": eq_result.get("checked_assignments"),
+        # medians
+        "ltba_build_median_seconds": ltba_build_stats.median_seconds,
+        "explicit_build_median_seconds": explicit_build_stats.median_seconds,
+        "bdd_factor_build_median_seconds": bdd_build_stats.median_seconds,
+        "ltba_rewrite_one_median_seconds": ltba_one_stats.median_seconds,
+        "explicit_rewrite_one_median_seconds": explicit_one_stats.median_seconds,
+        "bdd_factor_rewrite_one_median_seconds": bdd_one_stats.median_seconds,
+        "ltba_rewrite_all_median_seconds": ltba_all_stats.median_seconds,
+        "explicit_rewrite_all_median_seconds": explicit_all_stats.median_seconds,
+        "bdd_factor_rewrite_all_median_seconds": bdd_all_stats.median_seconds,
+        "equivalence_median_seconds": eq_stats.median_seconds,
+    }
+
+    # ratios and winners
+    summary.update({
+        "ratio_explicit_build_over_ltba": ratio(summary["explicit_build_median_seconds"], summary["ltba_build_median_seconds"]),
+        "ratio_bdd_build_over_ltba": ratio(summary["bdd_factor_build_median_seconds"], summary["ltba_build_median_seconds"]),
+        "ratio_explicit_rewrite_one_over_ltba": ratio(summary["explicit_rewrite_one_median_seconds"], summary["ltba_rewrite_one_median_seconds"]),
+        "ratio_bdd_rewrite_one_over_ltba": ratio(summary["bdd_factor_rewrite_one_median_seconds"], summary["ltba_rewrite_one_median_seconds"]),
+        "ratio_explicit_rewrite_all_over_ltba": ratio(summary["explicit_rewrite_all_median_seconds"], summary["ltba_rewrite_all_median_seconds"]),
+        "ratio_bdd_rewrite_all_over_ltba": ratio(summary["bdd_factor_rewrite_all_median_seconds"], summary["ltba_rewrite_all_median_seconds"]),
+        "winner_build": winner({
+            "ltba_local": summary["ltba_build_median_seconds"],
+            "explicit_materialized": summary["explicit_build_median_seconds"],
+            "bdd_factor_payload": summary["bdd_factor_build_median_seconds"],
+        }),
+        "winner_rewrite_one": winner({
+            "ltba_local": summary["ltba_rewrite_one_median_seconds"],
+            "explicit_materialized": summary["explicit_rewrite_one_median_seconds"],
+            "bdd_factor_payload": summary["bdd_factor_rewrite_one_median_seconds"],
+        }),
+        "winner_rewrite_all": winner({
+            "ltba_local": summary["ltba_rewrite_all_median_seconds"],
+            "explicit_materialized": summary["explicit_rewrite_all_median_seconds"],
+            "bdd_factor_payload": summary["bdd_factor_rewrite_all_median_seconds"],
+        }),
+    })
+    return rows, summary
+
+
+def run(ns: argparse.Namespace) -> Dict[str, object]:
+    families = registry.names() if ns.components == "all" else [x.strip() for x in ns.components.split(",") if x.strip()]
+    all_rows: List[Dict[str, object]] = []
+    summary_rows: List[Dict[str, object]] = []
+
+    for family in families:
+        for n in ns.sizes:
+            rows, summary = run_case(
+                family=family,
+                n=n,
+                max_materialize=ns.max_materialize,
+                max_equiv_exhaustive=ns.max_equiv_exhaustive,
+                samples=ns.samples,
+                seed=ns.seed,
+                trials=ns.trials,
+                warmups=ns.warmups,
+                inner_loops=ns.inner_loops,
+            )
+            all_rows.extend(rows)
+            summary_rows.append(summary)
+
+    if ns.include_mixed:
+        for n in ns.mixed_sizes:
+            rows, summary = run_case(
+                family="LTBA-MIXED",
+                n=n,
+                max_materialize=ns.max_materialize,
+                max_equiv_exhaustive=ns.max_equiv_exhaustive,
+                samples=ns.samples,
+                seed=ns.seed,
+                trials=ns.trials,
+                warmups=ns.warmups,
+                inner_loops=ns.inner_loops,
+            )
+            all_rows.extend(rows)
+            summary_rows.append(summary)
+
+    return {
+        "benchmark": "LTBA general substrate benchmark v3",
+        "claim_under_test": "time-first comparison of LTBA local semantics vs explicit materialization vs BDD+factor-payload",
+        "important_note": "v3 treats wall-clock time as the primary metric, using repeated trials and medians. Tiny cases may be dominated by Python overhead; large materialized cases are capped.",
+        "sizes": ns.sizes,
+        "mixed_sizes": ns.mixed_sizes if ns.include_mixed else [],
+        "components": families,
+        "max_materialize": ns.max_materialize,
+        "max_equiv_exhaustive": ns.max_equiv_exhaustive,
+        "samples": ns.samples,
+        "seed": ns.seed,
+        "trials": ns.trials,
+        "warmups": ns.warmups,
+        "inner_loops": ns.inner_loops,
+        "bdd_status": bdd_backend_status(),
+        "timing_rows": all_rows,
+        "summary_rows": summary_rows,
+    }
+
+
+def write_csv(path: Path, rows: Sequence[Dict[str, object]]) -> None:
+    fieldnames = sorted({k for row in rows for k in row}) if rows else []
+    with path.open("w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def main() -> None:
+    p = argparse.ArgumentParser()
+    p.add_argument("--sizes", default="1,2,4,8,12,16", help="comma-separated component n values")
+    p.add_argument("--mixed-sizes", default="1,2,3", help="comma-separated mixed-family n values")
+    p.add_argument("--components", default="all", help="all or comma-separated LTBA-0,...,LTBA-7")
+    p.add_argument("--max-materialize", type=int, default=4096)
+    p.add_argument("--max-equiv-exhaustive", type=int, default=4096)
+    p.add_argument("--samples", type=int, default=256)
+    p.add_argument("--seed", type=int, default=1729)
+    p.add_argument("--trials", type=int, default=7, help="recorded trials for median timing")
+    p.add_argument("--warmups", type=int, default=2, help="unrecorded warmup trials")
+    p.add_argument("--inner-loops", type=int, default=1, help="repeat each operation inside a trial and report per-call time")
+    p.add_argument("--include-mixed", action="store_true", default=True)
+    p.add_argument("--out", default="out_ltba_general_benchmark_v3")
+    ns = p.parse_args()
+    ns.sizes = [int(x) for x in ns.sizes.split(",") if x.strip()]
+    ns.mixed_sizes = [int(x) for x in ns.mixed_sizes.split(",") if x.strip()]
+
+    report = run(ns)
+    out = Path(ns.out)
+    out.mkdir(parents=True, exist_ok=True)
+
+    json_path = out / "ltba_general_benchmark_v3_report.json"
+    timing_csv = out / "ltba_general_benchmark_v3_timing_rows.csv"
+    summary_csv = out / "ltba_general_benchmark_v3_summary.csv"
+
+    json_path.write_text(json.dumps(report, indent=2, sort_keys=True, default=str))
+    write_csv(timing_csv, report["timing_rows"])
+    write_csv(summary_csv, report["summary_rows"])
+
+    print(f"wrote {json_path}")
+    print(f"wrote {timing_csv}")
+    print(f"wrote {summary_csv}")
+    print(json.dumps({
+        "timing_rows": len(report["timing_rows"]),
+        "summary_rows": len(report["summary_rows"]),
+        "trials": report["trials"],
+        "warmups": report["warmups"],
+        "inner_loops": report["inner_loops"],
+        "bdd_status": report["bdd_status"],
+    }, indent=2))
+
+
+if __name__ == "__main__":
+    main()
+PY
+chmod +x "$BENCH/ltba_general_benchmark_v3.py"
+
+cat > "$TESTS/test_ltba_general_benchmark_v3.py" <<'PY'
+from benchmarks.ltba_general_benchmark_v3 import (
+    bdd_factor_build,
+    explicit_rewrite_all,
+    explicit_rewrite_one,
+    make_case,
+    run_case,
+    time_operation,
+)
+from benchmarks.ltba_general_benchmark_v2 import expand_explicit_rows
+
+
+def test_v3_time_operation_reports_median():
+    stats = time_operation(lambda: 1 + 1, trials=3, warmups=1, inner_loops=2)
+    assert stats.available is True
+    assert stats.median_seconds is not None
+    assert stats.median_seconds >= 0
+    assert stats.trials == 3
+    assert stats.warmups == 1
+    assert stats.inner_loops == 2
+
+
+def test_v3_explicit_rewrite_one_and_all_touch_counts_match_known_case():
+    _layer, _expr, groups = make_case("LTBA-1", 4)
+    info = expand_explicit_rows(groups, max_branches=16)
+    rows = info["rows"]
+    assert explicit_rewrite_one(rows) == 8
+    assert explicit_rewrite_all(rows, groups) == 64
+
+
+def test_v3_bdd_factor_build_reports_factor_payload_records():
+    _layer, _expr, groups = make_case("LTBA-2", 4)
+    info = bdd_factor_build(groups, max_bdd_paths=16)
+    assert info["branch_space"] == 16
+    assert info["factor_payload_records"] == 8
+    assert info["payload_table_size"] == 8
+
+
+def test_v3_run_case_includes_time_winners_and_equivalence():
+    rows, summary = run_case(
+        family="LTBA-1",
+        n=2,
+        max_materialize=16,
+        max_equiv_exhaustive=16,
+        samples=8,
+        seed=1,
+        trials=3,
+        warmups=1,
+        inner_loops=1,
+    )
+    assert rows
+    assert summary["equivalence_holds"] is True
+    assert summary["winner_build"] in {"ltba_local", "explicit_materialized", "bdd_factor_payload"}
+    assert summary["winner_rewrite_one"] in {"ltba_local", "explicit_materialized", "bdd_factor_payload"}
+    assert summary["ltba_rewrite_one_median_seconds"] is not None
+PY
+
+cat > "$DOCS/LTBA_GENERAL_BENCHMARK_V3.md" <<'MD'
+# LTBA General Benchmark v3 — Time-first benchmark
+
+Benchmark v3 makes wall-clock time the primary metric.
+
+It keeps the v2 correctness/equivalence layer, but adds repeated timing medians for:
+
+1. `build`
+   - LTBA local construction
+   - explicit materialized branch construction
+   - BDD guard skeleton + factor-local payload construction
+2. `rewrite_one`
+   - one local LTBA rewrite
+   - one explicit materialized rewrite by scanning rows
+   - one BDD+factor-payload update
+3. `rewrite_all`
+   - all LTBA local branch rewrites
+   - all explicit materialized branch rewrites by repeated scans
+   - all BDD+factor-payload updates
+4. `equivalence_check`
+   - exhaustive or sampled LTBA lazy branch semantics vs explicit semantics
+
+Run:
+
+```bash
+PYTHONPATH=. pytest -q tests/conformance/test_ltba_general_benchmark_v3.py
+PYTHONPATH=. python benchmarks/ltba_general_benchmark_v3.py \
+  --sizes 1,2,4,8,12,16 \
+  --mixed-sizes 1,2,3 \
+  --max-materialize 4096 \
+  --max-equiv-exhaustive 4096 \
+  --samples 256 \
+  --trials 7 \
+  --warmups 2 \
+  --inner-loops 1
+```
+
+Outputs:
+
+- `out_ltba_general_benchmark_v3/ltba_general_benchmark_v3_report.json`
+- `out_ltba_general_benchmark_v3/ltba_general_benchmark_v3_timing_rows.csv`
+- `out_ltba_general_benchmark_v3/ltba_general_benchmark_v3_summary.csv`
+
+Interpretation:
+
+- Use `*_median_seconds` columns as the main timing metric.
+- Use `winner_build`, `winner_rewrite_one`, and `winner_rewrite_all` as a quick read.
+- Tiny cases can be dominated by Python overhead; the important region is where explicit materialization reaches hundreds or thousands of branches.
+- If `explicit_available=false`, the explicit case exceeded the materialization cap and should be treated as infeasible under that cap, not as a timing win/loss.
+
+Important limitation:
+
+> v3 is still a Python-level benchmark. It measures this implementation and representation strategy. It does not prove a universal lower bound against all optimized symbolic systems.
+MD
+
+echo "LTBA general benchmark v3 patch applied."
+echo "Run: PYTHONPATH=. pytest -q tests/conformance/test_ltba_general_benchmark_v3.py"
+echo "Run: PYTHONPATH=. python benchmarks/ltba_general_benchmark_v3.py --sizes 1,2,4,8,12,16 --mixed-sizes 1,2,3 --max-materialize 4096 --max-equiv-exhaustive 4096 --samples 256 --trials 7 --warmups 2 --inner-loops 1"

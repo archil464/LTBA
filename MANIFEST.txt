@@ -1,0 +1,893 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="${1:-.}"
+BENCH="$ROOT/benchmarks"
+TESTS="$ROOT/tests/conformance"
+DOCS="$ROOT/docs"
+
+mkdir -p "$BENCH" "$TESTS" "$DOCS"
+touch "$BENCH/__init__.py"
+
+cat > "$BENCH/ltba_general_benchmark_v4.py" <<'PY'
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import math
+import statistics
+import time
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Callable, Dict, List, Optional, Sequence, Tuple
+
+try:
+    from kernel.ltba_general import LTBAExpr, registry
+except Exception as exc:  # pragma: no cover
+    raise SystemExit(f"Cannot import kernel.ltba_general. Apply v0 first or run with PYTHONPATH=. Error: {exc}")
+
+try:
+    from benchmarks.ltba_general_benchmark_v1 import (
+        BranchGroup,
+        bdd_backend_status,
+        bdd_guard_skeleton,
+        groups_from_expr,
+        make_mixed_family,
+        theoretical_branch_space,
+    )
+except Exception as exc:  # pragma: no cover
+    raise SystemExit(f"Cannot import benchmark v1 helpers. Apply v1 first. Error: {exc}")
+
+try:
+    from benchmarks.ltba_general_benchmark_v2 import (
+        ExplicitRow,
+        branch_equivalence_check,
+        expand_explicit_rows,
+    )
+except Exception as exc:  # pragma: no cover
+    raise SystemExit(f"Cannot import benchmark v2 helpers. Apply v2 first. Error: {exc}")
+
+
+# -------------------------------
+# Timing utilities
+# -------------------------------
+
+
+@dataclass(frozen=True)
+class TimingStats:
+    trials: int
+    warmups: int
+    inner_loops: int
+    available: bool
+    reason: str
+    min_seconds: Optional[float] = None
+    median_seconds: Optional[float] = None
+    mean_seconds: Optional[float] = None
+    stdev_seconds: Optional[float] = None
+    max_seconds: Optional[float] = None
+
+
+def time_operation(
+    fn: Callable[[], object],
+    *,
+    trials: int,
+    warmups: int,
+    inner_loops: int,
+    available: bool = True,
+    reason: str = "",
+) -> TimingStats:
+    if not available:
+        return TimingStats(
+            trials=trials,
+            warmups=warmups,
+            inner_loops=inner_loops,
+            available=False,
+            reason=reason,
+        )
+
+    for _ in range(max(0, warmups)):
+        for _j in range(max(1, inner_loops)):
+            fn()
+
+    samples: List[float] = []
+    for _ in range(max(1, trials)):
+        t0 = time.perf_counter()
+        for _j in range(max(1, inner_loops)):
+            fn()
+        elapsed = time.perf_counter() - t0
+        samples.append(elapsed / max(1, inner_loops))
+
+    return TimingStats(
+        trials=trials,
+        warmups=warmups,
+        inner_loops=inner_loops,
+        available=True,
+        reason=reason,
+        min_seconds=min(samples),
+        median_seconds=statistics.median(samples),
+        mean_seconds=statistics.mean(samples),
+        stdev_seconds=statistics.stdev(samples) if len(samples) > 1 else 0.0,
+        max_seconds=max(samples),
+    )
+
+
+def ratio(num: Optional[float], den: Optional[float]) -> Optional[float]:
+    if num is None or den is None or den == 0:
+        return None
+    return float(num) / float(den)
+
+
+def winner(candidates: Dict[str, Optional[float]]) -> Optional[str]:
+    clean = {k: v for k, v in candidates.items() if v is not None and math.isfinite(v)}
+    if not clean:
+        return None
+    return min(clean, key=clean.get)
+
+
+# -------------------------------
+# Case construction
+# -------------------------------
+
+
+def make_case(family: str, n: int) -> Tuple[str, LTBAExpr, List[BranchGroup]]:
+    if family == "LTBA-MIXED":
+        expr, groups = make_mixed_family(n)
+        return "mixed_all_guarded_layers", expr, groups
+    component = registry.get(family)
+    expr = component.make_family(n)
+    return component.layer, expr, groups_from_expr(expr, family)
+
+
+def explicit_available(groups: Sequence[BranchGroup], max_materialize: int) -> Tuple[bool, str]:
+    total = theoretical_branch_space(groups)
+    if total > max_materialize:
+        return False, f"skipped: total branches {total} > max_materialize {max_materialize}"
+    return True, ""
+
+
+def bdd_full_available(groups: Sequence[BranchGroup], max_bdd_paths: int) -> Tuple[bool, str, Dict[str, object]]:
+    skeleton = bdd_guard_skeleton(groups, max_bdd_paths)
+    if not skeleton.get("available"):
+        return False, skeleton.get("reason", "bdd skeleton unavailable"), skeleton
+    return True, "", skeleton
+
+
+# -------------------------------
+# Equal-work mutation primitives
+# -------------------------------
+
+
+def mutate_value(value: str, step: int) -> str:
+    """
+    Small deterministic symbolic payload mutation used across LTBA, explicit rows,
+    and BDD+payload. This prevents BDD+payload from measuring only counter updates.
+    """
+    checksum = (len(value) * 1315423911 + step * 2654435761) & 0xFFFFFFFF
+    return f"{value}|rw{step}:{checksum:x}"
+
+
+def bdd_payload_table(groups: Sequence[BranchGroup]) -> List[Tuple[str, int, str]]:
+    return [(g.label, choice_idx, choice[1]) for g in groups for choice_idx, choice in enumerate(g.choices)]
+
+
+@dataclass(frozen=True)
+class WorkResult:
+    touched_records: int
+    produced_records: int
+    checksum: int
+    node_count: Optional[int] = None
+    path_count: Optional[int] = None
+    repr_size: Optional[int] = None
+    actual_branch_count: Optional[int] = None
+
+
+def ltba_build_plus_k_rewrites(family: str, n: int, k: int) -> WorkResult:
+    _layer, expr, _groups = make_case(family, n)
+    touched = 0
+    checksum = expr.representation_size
+    if expr.local_branch_count == 0:
+        return WorkResult(touched, expr.local_branch_count, checksum, repr_size=expr.representation_size)
+    for step in range(k):
+        idx = step % expr.local_branch_count
+        old_value = expr.branches[idx].value
+        expr = expr.rewrite_local(idx, mutate_value(old_value, step), "v4_amortized")
+        touched += 1
+        checksum ^= expr.representation_size + idx + step
+    return WorkResult(touched, expr.local_branch_count, checksum, repr_size=expr.representation_size)
+
+
+def explicit_build_plus_k_rewrites(groups: Sequence[BranchGroup], max_materialize: int, k: int) -> WorkResult:
+    info = expand_explicit_rows(groups, max_materialize)
+    if not info.get("available"):
+        raise RuntimeError(info.get("reason", "explicit unavailable"))
+    rows: List[ExplicitRow] = list(info["rows"] or [])
+    payloads = [row.payload for row in rows]
+    choices = [row.choice_indices for row in rows]
+    touched = 0
+    checksum = int(info.get("actual_repr_size") or 0)
+
+    if not groups or not rows:
+        return WorkResult(touched, len(rows), checksum, repr_size=info.get("actual_repr_size"), actual_branch_count=len(rows))
+
+    for step in range(k):
+        group_idx = step % len(groups)
+        branch_idx = (step // max(1, len(groups))) % groups[group_idx].branch_count
+        for row_idx, choice_indices in enumerate(choices):
+            if choice_indices[group_idx] == branch_idx:
+                payloads[row_idx] = mutate_value(payloads[row_idx], step)
+                touched += 1
+                checksum ^= len(payloads[row_idx]) + row_idx + step
+
+    return WorkResult(
+        touched,
+        len(rows),
+        checksum,
+        repr_size=info.get("actual_repr_size"),
+        actual_branch_count=len(rows),
+    )
+
+
+def bdd_full_cow_build_plus_k_rewrites(groups: Sequence[BranchGroup], max_bdd_paths: int, k: int) -> WorkResult:
+    ok, reason, skeleton = bdd_full_available(groups, max_bdd_paths)
+    if not ok:
+        raise RuntimeError(reason)
+    payloads = bdd_payload_table(groups)
+    touched = 0
+    checksum = int(skeleton.get("node_count") or 0) + len(payloads)
+    if not payloads:
+        return WorkResult(touched, 0, checksum, node_count=skeleton.get("node_count"), path_count=skeleton.get("path_count"))
+
+    # Persistent/copy-on-write payload table, closer to LTBA's persistent rewrite_local.
+    for step in range(k):
+        idx = step % len(payloads)
+        label, choice_idx, value = payloads[idx]
+        payloads = list(payloads)
+        payloads[idx] = (label, choice_idx, mutate_value(value, step))
+        touched += 1
+        checksum ^= len(payloads[idx][2]) + idx + step
+
+    return WorkResult(touched, len(payloads), checksum, node_count=skeleton.get("node_count"), path_count=skeleton.get("path_count"))
+
+
+def bdd_payload_only_cow_build_plus_k_rewrites(groups: Sequence[BranchGroup], k: int) -> WorkResult:
+    payloads = bdd_payload_table(groups)
+    touched = 0
+    checksum = len(payloads)
+    if not payloads:
+        return WorkResult(touched, 0, checksum)
+    for step in range(k):
+        idx = step % len(payloads)
+        label, choice_idx, value = payloads[idx]
+        payloads = list(payloads)
+        payloads[idx] = (label, choice_idx, mutate_value(value, step))
+        touched += 1
+        checksum ^= len(payloads[idx][2]) + idx + step
+    return WorkResult(touched, len(payloads), checksum)
+
+
+def bdd_payload_only_mutable_build_plus_k_rewrites(groups: Sequence[BranchGroup], k: int) -> WorkResult:
+    payloads = bdd_payload_table(groups)
+    touched = 0
+    checksum = len(payloads)
+    if not payloads:
+        return WorkResult(touched, 0, checksum)
+    for step in range(k):
+        idx = step % len(payloads)
+        label, choice_idx, value = payloads[idx]
+        payloads[idx] = (label, choice_idx, mutate_value(value, step))
+        touched += 1
+        checksum ^= len(payloads[idx][2]) + idx + step
+    return WorkResult(touched, len(payloads), checksum)
+
+
+# -------------------------------
+# Benchmark rows
+# -------------------------------
+
+
+def timing_row(
+    *,
+    family: str,
+    layer: str,
+    n: int,
+    k_rewrites: int,
+    backend: str,
+    stats: TimingStats,
+    theoretical_full_branch_space: int,
+    guard_count: int,
+    local_branch_count: int,
+    group_count: int,
+    work: Optional[WorkResult] = None,
+    backend_note: str = "",
+) -> Dict[str, object]:
+    d = asdict(stats)
+    d.update({
+        "suite": "v4",
+        "phase": "build_plus_k_rewrites",
+        "backend": backend,
+        "backend_note": backend_note,
+        "family": family,
+        "layer": layer,
+        "n": n,
+        "k_rewrites": k_rewrites,
+        "theoretical_full_branch_space": theoretical_full_branch_space,
+        "guard_count": guard_count,
+        "local_branch_count": local_branch_count,
+        "group_count": group_count,
+        "touched_records": work.touched_records if work else None,
+        "produced_records": work.produced_records if work else None,
+        "checksum": work.checksum if work else None,
+        "node_count": work.node_count if work else None,
+        "path_count": work.path_count if work else None,
+        "repr_size": work.repr_size if work else None,
+        "actual_branch_count": work.actual_branch_count if work else None,
+    })
+    return d
+
+
+def median_of(rows_by_backend: Dict[str, TimingStats], backend: str) -> Optional[float]:
+    stats = rows_by_backend.get(backend)
+    if not stats or not stats.available:
+        return None
+    return stats.median_seconds
+
+
+def run_case_for_k(
+    *,
+    family: str,
+    n: int,
+    k: int,
+    max_materialize: int,
+    max_bdd_paths: int,
+    trials: int,
+    warmups: int,
+    inner_loops: int,
+) -> Tuple[List[Dict[str, object]], Dict[str, object]]:
+    layer, expr, groups = make_case(family, n)
+    total = theoretical_branch_space(groups)
+    rows: List[Dict[str, object]] = []
+
+    # Precompute representative work metadata once, outside timing.
+    ltba_work = ltba_build_plus_k_rewrites(family, n, k)
+
+    exp_ok, exp_reason = explicit_available(groups, max_materialize)
+    explicit_work: Optional[WorkResult] = None
+    if exp_ok:
+        explicit_work = explicit_build_plus_k_rewrites(groups, max_materialize, k)
+
+    bdd_ok, bdd_reason, bdd_skeleton = bdd_full_available(groups, max_bdd_paths)
+    bdd_full_work: Optional[WorkResult] = None
+    if bdd_ok:
+        bdd_full_work = bdd_full_cow_build_plus_k_rewrites(groups, max_bdd_paths, k)
+
+    bdd_cow_work = bdd_payload_only_cow_build_plus_k_rewrites(groups, k)
+    bdd_mutable_work = bdd_payload_only_mutable_build_plus_k_rewrites(groups, k)
+
+    # Timed total build + k rewrites.
+    ltba_stats = time_operation(
+        lambda: ltba_build_plus_k_rewrites(family, n, k),
+        trials=trials,
+        warmups=warmups,
+        inner_loops=inner_loops,
+    )
+    rows.append(timing_row(
+        family=family, layer=layer, n=n, k_rewrites=k, backend="ltba_local_persistent",
+        stats=ltba_stats, theoretical_full_branch_space=total,
+        guard_count=expr.guard_count, local_branch_count=expr.local_branch_count, group_count=len(groups),
+        work=ltba_work,
+        backend_note="Full LTBA construction plus k persistent local rewrites.",
+    ))
+
+    explicit_stats = time_operation(
+        lambda: explicit_build_plus_k_rewrites(groups, max_materialize, k),
+        trials=trials,
+        warmups=warmups,
+        inner_loops=inner_loops,
+        available=exp_ok,
+        reason=exp_reason,
+    )
+    rows.append(timing_row(
+        family=family, layer=layer, n=n, k_rewrites=k, backend="explicit_materialized",
+        stats=explicit_stats, theoretical_full_branch_space=total,
+        guard_count=expr.guard_count, local_branch_count=expr.local_branch_count, group_count=len(groups),
+        work=explicit_work,
+        backend_note="Full explicit branch materialization plus k row-scanning payload rewrites.",
+    ))
+
+    bdd_full_stats = time_operation(
+        lambda: bdd_full_cow_build_plus_k_rewrites(groups, max_bdd_paths, k),
+        trials=trials,
+        warmups=warmups,
+        inner_loops=inner_loops,
+        available=bdd_ok,
+        reason=bdd_reason,
+    )
+    rows.append(timing_row(
+        family=family, layer=layer, n=n, k_rewrites=k, backend="bdd_full_cow_payload",
+        stats=bdd_full_stats, theoretical_full_branch_space=total,
+        guard_count=expr.guard_count, local_branch_count=expr.local_branch_count, group_count=len(groups),
+        work=bdd_full_work,
+        backend_note="BDD guard skeleton construction plus persistent/copy-on-write factor payload rewrites. Fair BDD comparison when available.",
+    ))
+
+    bdd_cow_stats = time_operation(
+        lambda: bdd_payload_only_cow_build_plus_k_rewrites(groups, k),
+        trials=trials,
+        warmups=warmups,
+        inner_loops=inner_loops,
+    )
+    rows.append(timing_row(
+        family=family, layer=layer, n=n, k_rewrites=k, backend="bdd_payload_only_cow_lower_bound",
+        stats=bdd_cow_stats, theoretical_full_branch_space=total,
+        guard_count=expr.guard_count, local_branch_count=expr.local_branch_count, group_count=len(groups),
+        work=bdd_cow_work,
+        backend_note="Lower bound: factor payload table only, no BDD skeleton construction.",
+    ))
+
+    bdd_mut_stats = time_operation(
+        lambda: bdd_payload_only_mutable_build_plus_k_rewrites(groups, k),
+        trials=trials,
+        warmups=warmups,
+        inner_loops=inner_loops,
+    )
+    rows.append(timing_row(
+        family=family, layer=layer, n=n, k_rewrites=k, backend="bdd_payload_only_mutable_lower_bound",
+        stats=bdd_mut_stats, theoretical_full_branch_space=total,
+        guard_count=expr.guard_count, local_branch_count=expr.local_branch_count, group_count=len(groups),
+        work=bdd_mutable_work,
+        backend_note="Strong lower bound: factor payload table only, mutable in-place payload rewrites, no BDD skeleton construction.",
+    ))
+
+    stats_by_backend = {
+        "ltba_local_persistent": ltba_stats,
+        "explicit_materialized": explicit_stats,
+        "bdd_full_cow_payload": bdd_full_stats,
+        "bdd_payload_only_cow_lower_bound": bdd_cow_stats,
+        "bdd_payload_only_mutable_lower_bound": bdd_mut_stats,
+    }
+
+    ltba_t = median_of(stats_by_backend, "ltba_local_persistent")
+    explicit_t = median_of(stats_by_backend, "explicit_materialized")
+    bdd_full_t = median_of(stats_by_backend, "bdd_full_cow_payload")
+    bdd_cow_t = median_of(stats_by_backend, "bdd_payload_only_cow_lower_bound")
+    bdd_mut_t = median_of(stats_by_backend, "bdd_payload_only_mutable_lower_bound")
+
+    summary = {
+        "suite": "v4",
+        "family": family,
+        "layer": layer,
+        "n": n,
+        "k_rewrites": k,
+        "guard_count": expr.guard_count,
+        "local_branch_count": expr.local_branch_count,
+        "group_count": len(groups),
+        "theoretical_full_branch_space": total,
+        "explicit_available": exp_ok,
+        "explicit_reason": exp_reason,
+        "bdd_full_available": bdd_ok,
+        "bdd_full_reason": bdd_reason,
+        "bdd_node_count": bdd_skeleton.get("node_count"),
+        "bdd_path_count": bdd_skeleton.get("path_count"),
+        "ltba_total_median_seconds": ltba_t,
+        "explicit_total_median_seconds": explicit_t,
+        "bdd_full_cow_total_median_seconds": bdd_full_t,
+        "bdd_payload_only_cow_total_median_seconds": bdd_cow_t,
+        "bdd_payload_only_mutable_total_median_seconds": bdd_mut_t,
+        "ratio_explicit_total_over_ltba": ratio(explicit_t, ltba_t),
+        "ratio_bdd_full_cow_total_over_ltba": ratio(bdd_full_t, ltba_t),
+        "ratio_bdd_payload_only_cow_total_over_ltba": ratio(bdd_cow_t, ltba_t),
+        "ratio_bdd_payload_only_mutable_total_over_ltba": ratio(bdd_mut_t, ltba_t),
+        "winner_fair_total": winner({
+            "ltba_local_persistent": ltba_t,
+            "explicit_materialized": explicit_t,
+            "bdd_full_cow_payload": bdd_full_t,
+        }),
+        "winner_with_lower_bounds": winner({
+            "ltba_local_persistent": ltba_t,
+            "explicit_materialized": explicit_t,
+            "bdd_full_cow_payload": bdd_full_t,
+            "bdd_payload_only_cow_lower_bound": bdd_cow_t,
+            "bdd_payload_only_mutable_lower_bound": bdd_mut_t,
+        }),
+        "ltba_touched_records": ltba_work.touched_records,
+        "explicit_touched_records": explicit_work.touched_records if explicit_work else None,
+        "bdd_full_touched_records": bdd_full_work.touched_records if bdd_full_work else None,
+        "bdd_payload_records": bdd_cow_work.produced_records,
+        "explicit_actual_branch_count": explicit_work.actual_branch_count if explicit_work else None,
+        "ltba_repr_size": ltba_work.repr_size,
+        "explicit_repr_size": explicit_work.repr_size if explicit_work else None,
+    }
+    return rows, summary
+
+
+def estimate_break_even(rows: Sequence[Dict[str, object]], backend: str) -> Optional[int]:
+    """Smallest k where backend beats LTBA in fair total time for this case."""
+    candidates = sorted(rows, key=lambda r: int(r["k_rewrites"]))
+    for row in candidates:
+        other = row.get(f"{backend}_total_median_seconds")
+        ltba = row.get("ltba_total_median_seconds")
+        if other is not None and ltba is not None and other <= ltba:
+            return int(row["k_rewrites"])
+    return None
+
+
+def run_case(
+    *,
+    family: str,
+    n: int,
+    rewrite_counts: Sequence[int],
+    max_materialize: int,
+    max_bdd_paths: int,
+    trials: int,
+    warmups: int,
+    inner_loops: int,
+) -> Tuple[List[Dict[str, object]], List[Dict[str, object]], Dict[str, object]]:
+    all_rows: List[Dict[str, object]] = []
+    summaries: List[Dict[str, object]] = []
+    for k in rewrite_counts:
+        rows, summary = run_case_for_k(
+            family=family,
+            n=n,
+            k=k,
+            max_materialize=max_materialize,
+            max_bdd_paths=max_bdd_paths,
+            trials=trials,
+            warmups=warmups,
+            inner_loops=inner_loops,
+        )
+        all_rows.extend(rows)
+        summaries.append(summary)
+
+    by_k = sorted(summaries, key=lambda r: int(r["k_rewrites"]))
+    break_even = {
+        "suite": "v4",
+        "family": family,
+        "layer": by_k[0]["layer"] if by_k else "",
+        "n": n,
+        "theoretical_full_branch_space": by_k[0]["theoretical_full_branch_space"] if by_k else None,
+        "explicit_break_even_k_vs_ltba": estimate_break_even(by_k, "explicit"),
+        "bdd_full_cow_break_even_k_vs_ltba": estimate_break_even(by_k, "bdd_full_cow"),
+        "bdd_payload_only_cow_break_even_k_vs_ltba": estimate_break_even(by_k, "bdd_payload_only_cow"),
+        "bdd_payload_only_mutable_break_even_k_vs_ltba": estimate_break_even(by_k, "bdd_payload_only_mutable"),
+        "first_fair_winner_at_max_k": by_k[-1]["winner_fair_total"] if by_k else None,
+        "max_k_tested": by_k[-1]["k_rewrites"] if by_k else None,
+    }
+    return all_rows, summaries, break_even
+
+
+def run(ns: argparse.Namespace) -> Dict[str, object]:
+    families = registry.names() if ns.components == "all" else [x.strip() for x in ns.components.split(",") if x.strip()]
+    timing_rows: List[Dict[str, object]] = []
+    summary_rows: List[Dict[str, object]] = []
+    break_even_rows: List[Dict[str, object]] = []
+
+    for family in families:
+        for n in ns.sizes:
+            rows, summaries, be = run_case(
+                family=family,
+                n=n,
+                rewrite_counts=ns.rewrite_counts,
+                max_materialize=ns.max_materialize,
+                max_bdd_paths=ns.max_bdd_paths,
+                trials=ns.trials,
+                warmups=ns.warmups,
+                inner_loops=ns.inner_loops,
+            )
+            timing_rows.extend(rows)
+            summary_rows.extend(summaries)
+            break_even_rows.append(be)
+
+    if ns.include_mixed:
+        for n in ns.mixed_sizes:
+            rows, summaries, be = run_case(
+                family="LTBA-MIXED",
+                n=n,
+                rewrite_counts=ns.rewrite_counts,
+                max_materialize=ns.max_materialize,
+                max_bdd_paths=ns.max_bdd_paths,
+                trials=ns.trials,
+                warmups=ns.warmups,
+                inner_loops=ns.inner_loops,
+            )
+            timing_rows.extend(rows)
+            summary_rows.extend(summaries)
+            break_even_rows.append(be)
+
+    # One correctness row per case, not per k. v4 keeps accuracy visible but not primary.
+    equivalence_rows: List[Dict[str, object]] = []
+    for family in families:
+        for n in ns.sizes:
+            layer, expr, groups = make_case(family, n)
+            eq = branch_equivalence_check(groups, ns.max_equiv_exhaustive, ns.samples, ns.seed + n + len(family))
+            equivalence_rows.append({
+                "suite": "v4",
+                "family": family,
+                "layer": layer,
+                "n": n,
+                "theoretical_full_branch_space": theoretical_branch_space(groups),
+                "guard_count": expr.guard_count,
+                "local_branch_count": expr.local_branch_count,
+                "equivalence_holds": eq.get("holds"),
+                "equivalence_mode": eq.get("mode"),
+                "checked_assignments": eq.get("checked_assignments"),
+            })
+    if ns.include_mixed:
+        for n in ns.mixed_sizes:
+            layer, expr, groups = make_case("LTBA-MIXED", n)
+            eq = branch_equivalence_check(groups, ns.max_equiv_exhaustive, ns.samples, ns.seed + n + 999)
+            equivalence_rows.append({
+                "suite": "v4",
+                "family": "LTBA-MIXED",
+                "layer": layer,
+                "n": n,
+                "theoretical_full_branch_space": theoretical_branch_space(groups),
+                "guard_count": expr.guard_count,
+                "local_branch_count": expr.local_branch_count,
+                "equivalence_holds": eq.get("holds"),
+                "equivalence_mode": eq.get("mode"),
+                "checked_assignments": eq.get("checked_assignments"),
+            })
+
+    return {
+        "benchmark": "LTBA general substrate benchmark v4",
+        "claim_under_test": "amortized runtime: cold build plus k equal-work payload rewrites",
+        "important_note": "v4 treats time as primary and compares total runtime build+k rewrites. BDD full includes guard-skeleton construction when available; payload-only BDD rows are lower bounds, not fair full-system comparisons.",
+        "sizes": ns.sizes,
+        "mixed_sizes": ns.mixed_sizes if ns.include_mixed else [],
+        "components": families,
+        "rewrite_counts": ns.rewrite_counts,
+        "max_materialize": ns.max_materialize,
+        "max_bdd_paths": ns.max_bdd_paths,
+        "max_equiv_exhaustive": ns.max_equiv_exhaustive,
+        "samples": ns.samples,
+        "seed": ns.seed,
+        "trials": ns.trials,
+        "warmups": ns.warmups,
+        "inner_loops": ns.inner_loops,
+        "bdd_status": bdd_backend_status(),
+        "timing_rows": timing_rows,
+        "summary_rows": summary_rows,
+        "break_even_rows": break_even_rows,
+        "equivalence_rows": equivalence_rows,
+    }
+
+
+def write_csv(path: Path, rows: Sequence[Dict[str, object]]) -> None:
+    fieldnames = sorted({k for row in rows for k in row}) if rows else []
+    with path.open("w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def main() -> None:
+    p = argparse.ArgumentParser()
+    p.add_argument("--sizes", default="1,2,4,8,12,16", help="comma-separated component n values")
+    p.add_argument("--mixed-sizes", default="1,2,3", help="comma-separated mixed-family n values")
+    p.add_argument("--components", default="all", help="all or comma-separated LTBA-0,...,LTBA-7")
+    p.add_argument("--rewrite-counts", default="0,1,2,4,8,16,32,64,128", help="comma-separated k values for build+k-rewrites")
+    p.add_argument("--max-materialize", type=int, default=4096)
+    p.add_argument("--max-bdd-paths", type=int, default=4096)
+    p.add_argument("--max-equiv-exhaustive", type=int, default=4096)
+    p.add_argument("--samples", type=int, default=256)
+    p.add_argument("--seed", type=int, default=1729)
+    p.add_argument("--trials", type=int, default=5, help="recorded trials for median timing")
+    p.add_argument("--warmups", type=int, default=1, help="unrecorded warmup trials")
+    p.add_argument("--inner-loops", type=int, default=1, help="repeat each operation inside a trial and report per-call time")
+    p.add_argument("--include-mixed", action="store_true", default=True)
+    p.add_argument("--out", default="out_ltba_general_benchmark_v4")
+    ns = p.parse_args()
+    ns.sizes = [int(x) for x in ns.sizes.split(",") if x.strip()]
+    ns.mixed_sizes = [int(x) for x in ns.mixed_sizes.split(",") if x.strip()]
+    ns.rewrite_counts = [int(x) for x in ns.rewrite_counts.split(",") if x.strip()]
+
+    report = run(ns)
+    out = Path(ns.out)
+    out.mkdir(parents=True, exist_ok=True)
+
+    json_path = out / "ltba_general_benchmark_v4_report.json"
+    timing_csv = out / "ltba_general_benchmark_v4_timing_rows.csv"
+    summary_csv = out / "ltba_general_benchmark_v4_summary.csv"
+    break_even_csv = out / "ltba_general_benchmark_v4_break_even.csv"
+    equiv_csv = out / "ltba_general_benchmark_v4_equivalence.csv"
+
+    json_path.write_text(json.dumps(report, indent=2, sort_keys=True, default=str))
+    write_csv(timing_csv, report["timing_rows"])
+    write_csv(summary_csv, report["summary_rows"])
+    write_csv(break_even_csv, report["break_even_rows"])
+    write_csv(equiv_csv, report["equivalence_rows"])
+
+    print(f"wrote {json_path}")
+    print(f"wrote {timing_csv}")
+    print(f"wrote {summary_csv}")
+    print(f"wrote {break_even_csv}")
+    print(f"wrote {equiv_csv}")
+    print(json.dumps({
+        "timing_rows": len(report["timing_rows"]),
+        "summary_rows": len(report["summary_rows"]),
+        "break_even_rows": len(report["break_even_rows"]),
+        "equivalence_rows": len(report["equivalence_rows"]),
+        "trials": report["trials"],
+        "warmups": report["warmups"],
+        "inner_loops": report["inner_loops"],
+        "bdd_status": report["bdd_status"],
+    }, indent=2))
+
+
+if __name__ == "__main__":
+    main()
+PY
+chmod +x "$BENCH/ltba_general_benchmark_v4.py"
+
+cat > "$TESTS/test_ltba_general_benchmark_v4.py" <<'PY'
+from benchmarks.ltba_general_benchmark_v4 import (
+    bdd_full_available,
+    bdd_payload_only_cow_build_plus_k_rewrites,
+    explicit_build_plus_k_rewrites,
+    ltba_build_plus_k_rewrites,
+    make_case,
+    mutate_value,
+    run_case,
+    run_case_for_k,
+)
+
+
+def test_v4_mutate_value_changes_payload_deterministically():
+    a = mutate_value("x", 1)
+    b = mutate_value("x", 1)
+    c = mutate_value("x", 2)
+    assert a == b
+    assert a != c
+    assert "rw1" in a
+
+
+def test_v4_equal_work_touch_counts_for_known_case():
+    _layer, _expr, groups = make_case("LTBA-1", 4)
+    ltba = ltba_build_plus_k_rewrites("LTBA-1", 4, 3)
+    explicit = explicit_build_plus_k_rewrites(groups, max_materialize=16, k=1)
+    bdd = bdd_payload_only_cow_build_plus_k_rewrites(groups, k=3)
+    assert ltba.touched_records == 3
+    assert explicit.touched_records == 8
+    assert bdd.touched_records == 3
+
+
+def test_v4_bdd_full_availability_respects_path_cap():
+    _layer, _expr, groups = make_case("LTBA-1", 4)
+    ok_low, reason_low, _skel_low = bdd_full_available(groups, max_bdd_paths=4)
+    ok_high, _reason_high, skel_high = bdd_full_available(groups, max_bdd_paths=16)
+    assert ok_low is False
+    assert reason_low
+    # If the optional dd backend is installed, the larger cap should allow the skeleton.
+    # If dd is not installed, both can be unavailable; the benchmark must report that cleanly.
+    if ok_high:
+        assert skel_high["path_count"] == 16
+
+
+def test_v4_run_case_for_k_reports_fair_and_lower_bound_winners():
+    rows, summary = run_case_for_k(
+        family="LTBA-1",
+        n=2,
+        k=4,
+        max_materialize=16,
+        max_bdd_paths=16,
+        trials=3,
+        warmups=1,
+        inner_loops=1,
+    )
+    assert rows
+    assert summary["ltba_total_median_seconds"] is not None
+    assert summary["winner_fair_total"] in {"ltba_local_persistent", "explicit_materialized", "bdd_full_cow_payload"}
+    assert summary["winner_with_lower_bounds"] in {
+        "ltba_local_persistent",
+        "explicit_materialized",
+        "bdd_full_cow_payload",
+        "bdd_payload_only_cow_lower_bound",
+        "bdd_payload_only_mutable_lower_bound",
+    }
+
+
+def test_v4_run_case_break_even_shape():
+    rows, summaries, be = run_case(
+        family="LTBA-1",
+        n=2,
+        rewrite_counts=[0, 1, 2],
+        max_materialize=16,
+        max_bdd_paths=16,
+        trials=2,
+        warmups=0,
+        inner_loops=1,
+    )
+    assert rows
+    assert len(summaries) == 3
+    assert be["family"] == "LTBA-1"
+    assert be["max_k_tested"] == 2
+PY
+
+cat > "$DOCS/LTBA_GENERAL_BENCHMARK_V4.md" <<'MD'
+# LTBA General Benchmark v4 — Amortized runtime benchmark
+
+Benchmark v4 answers the timing question directly:
+
+> For total runtime `build + k rewrites`, which backend is faster?
+
+Backends:
+
+1. `ltba_local_persistent`
+   - full LTBA construction
+   - `k` persistent local rewrites using `LTBAExpr.rewrite_local`
+2. `explicit_materialized`
+   - full explicit branch materialization
+   - `k` row-scanning payload rewrites over materialized branch rows
+3. `bdd_full_cow_payload`
+   - BDD guard-skeleton construction when path count is under `--max-bdd-paths`
+   - persistent/copy-on-write factor-payload rewrites
+   - this is the fair BDD comparison when available
+4. `bdd_payload_only_cow_lower_bound`
+   - factor-payload table only, no BDD skeleton construction
+   - persistent/copy-on-write rewrites
+   - lower bound, not a full-system comparison
+5. `bdd_payload_only_mutable_lower_bound`
+   - factor-payload table only, no BDD skeleton construction
+   - mutable in-place rewrites
+   - strongest lower bound, not a full-system comparison
+
+Run:
+
+```bash
+PYTHONPATH=. pytest -q tests/conformance/test_ltba_general_benchmark_v4.py
+PYTHONPATH=. python benchmarks/ltba_general_benchmark_v4.py \
+  --sizes 1,2,4,8,12,16 \
+  --mixed-sizes 1,2,3 \
+  --rewrite-counts 0,1,2,4,8,16,32,64,128 \
+  --max-materialize 4096 \
+  --max-bdd-paths 4096 \
+  --max-equiv-exhaustive 4096 \
+  --samples 256 \
+  --trials 5 \
+  --warmups 1 \
+  --inner-loops 1
+```
+
+Outputs:
+
+- `out_ltba_general_benchmark_v4/ltba_general_benchmark_v4_report.json`
+- `out_ltba_general_benchmark_v4/ltba_general_benchmark_v4_timing_rows.csv`
+- `out_ltba_general_benchmark_v4/ltba_general_benchmark_v4_summary.csv`
+- `out_ltba_general_benchmark_v4/ltba_general_benchmark_v4_break_even.csv`
+- `out_ltba_general_benchmark_v4/ltba_general_benchmark_v4_equivalence.csv`
+
+Read first:
+
+- `ltba_general_benchmark_v4_summary.csv`
+- `ltba_general_benchmark_v4_break_even.csv`
+
+Main columns:
+
+- `k_rewrites`
+- `ltba_total_median_seconds`
+- `explicit_total_median_seconds`
+- `bdd_full_cow_total_median_seconds`
+- `winner_fair_total`
+- `winner_with_lower_bounds`
+- `ratio_explicit_total_over_ltba`
+- `ratio_bdd_full_cow_total_over_ltba`
+
+Interpretation:
+
+- Use `winner_fair_total` for the serious comparison.
+- Use payload-only BDD rows only as lower bounds.
+- If `bdd_full_available=false`, the fair BDD skeleton exceeded `--max-bdd-paths` and is not comparable for that row.
+- If `explicit_available=false`, explicit branch materialization exceeded `--max-materialize` and is not comparable for that row.
+
+The decisive question is no longer just “which rewrite is faster?” but:
+
+> Does BDD+payload recover its expensive skeleton-build cost after enough rewrites?
+
+That is what `ltba_general_benchmark_v4_break_even.csv` is for.
+MD
+
+echo "LTBA general benchmark v4 patch applied."
+echo "Run: PYTHONPATH=. pytest -q tests/conformance/test_ltba_general_benchmark_v4.py"
+echo "Run: PYTHONPATH=. python benchmarks/ltba_general_benchmark_v4.py --sizes 1,2,4,8,12,16 --mixed-sizes 1,2,3 --rewrite-counts 0,1,2,4,8,16,32,64,128 --max-materialize 4096 --max-bdd-paths 4096 --max-equiv-exhaustive 4096 --samples 256 --trials 5 --warmups 1 --inner-loops 1"

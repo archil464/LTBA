@@ -1,0 +1,307 @@
+actual_branch_count,actual_repr_size,available,backend,bdd_backend_available,bdd_factor_payload_records,bdd_materialized_payload_records,bdd_node_count,bdd_path_count,bdd_skeleton_available,branch_space,build_seconds,checked_assignments,equivalence_checked_assignments,equivalence_holds,equivalence_mode,explicit_actual_branch_count,explicit_actual_repr_size,explicit_available,explicit_rewrite_all_touched_records,explicit_rewrite_one_touched_records,factor_payload_records,family,group_count,guard_count,holds,layer,local_branch_count,ltba_repr_size,ltba_rewrite_all_touched_records,ltba_rewrite_one_touched_records,materialized_payload_records,mode,n,ratio_explicit_all_touch_over_ltba,ratio_explicit_one_touch_over_ltba,ratio_explicit_repr_over_ltba,reason,repr_size,rewrite_all_seconds,rewrite_all_touched_records,rewrite_one_seconds,rewrite_one_touched_records,suite,theoretical_full_branch_space
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-0,0,0,,ordinary_algebra,0,,,,,,1,,,,,13,8.170000000973232e-07,0,9.930000715030474e-07,0,v2,1
+1,4,True,explicit_rows_with_indices,,,,,,,,1.9740000425372273e-06,,,,,,,,,,,LTBA-0,,,,ordinary_algebra,,,,,,,1,,,,,,,0,,0,v2,1
+1,4,True,explicit_materialized,,,,,,,,2.3400002646667417e-07,,,,,,,,,,,LTBA-0,,,,ordinary_algebra,,,,,,,1,,,,,,,,3.220000053261174e-07,0,v2,1
+,,True,bdd_factor_payload_model,True,,,1,1,True,1,,,,,,,,,,,0,LTBA-0,,,,ordinary_algebra,,,,,1,,1,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,0,,0,v2,1
+,,True,equivalence_check,,,,,,,1,,1,,,,,,,,,,LTBA-0,,,True,ordinary_algebra,,,,,,exhaustive,1,,,,,,,,,,v2,1
+,,,comparison_summary,,0,1,1,,True,,,,1,True,exhaustive,1,4,True,0,0,,LTBA-0,0,0,,ordinary_algebra,0,13,0,0,,,1,,,0.3076923076923077,,,,,,,v2,1
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-0,0,0,,ordinary_algebra,0,,,,,,2,,,,,29,3.5400000797380926e-07,0,2.3100005819287617e-07,0,v2,1
+1,4,True,explicit_rows_with_indices,,,,,,,,2.171000005546375e-06,,,,,,,,,,,LTBA-0,,,,ordinary_algebra,,,,,,,2,,,,,,,0,,0,v2,1
+1,4,True,explicit_materialized,,,,,,,,2.0300001324358163e-07,,,,,,,,,,,LTBA-0,,,,ordinary_algebra,,,,,,,2,,,,,,,,2.1699997887481004e-07,0,v2,1
+,,True,bdd_factor_payload_model,True,,,1,1,True,1,,,,,,,,,,,0,LTBA-0,,,,ordinary_algebra,,,,,1,,2,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,0,,0,v2,1
+,,True,equivalence_check,,,,,,,1,,1,,,,,,,,,,LTBA-0,,,True,ordinary_algebra,,,,,,exhaustive,2,,,,,,,,,,v2,1
+,,,comparison_summary,,0,1,1,,True,,,,1,True,exhaustive,1,4,True,0,0,,LTBA-0,0,0,,ordinary_algebra,0,29,0,0,,,2,,,0.13793103448275862,,,,,,,v2,1
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-0,0,0,,ordinary_algebra,0,,,,,,4,,,,,61,2.8299996301939245e-07,0,1.6299998151225736e-07,0,v2,1
+1,4,True,explicit_rows_with_indices,,,,,,,,9.350000027552596e-07,,,,,,,,,,,LTBA-0,,,,ordinary_algebra,,,,,,,4,,,,,,,0,,0,v2,1
+1,4,True,explicit_materialized,,,,,,,,1.6599994978605537e-07,,,,,,,,,,,LTBA-0,,,,ordinary_algebra,,,,,,,4,,,,,,,,2.049999920927803e-07,0,v2,1
+,,True,bdd_factor_payload_model,True,,,1,1,True,1,,,,,,,,,,,0,LTBA-0,,,,ordinary_algebra,,,,,1,,4,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,0,,0,v2,1
+,,True,equivalence_check,,,,,,,1,,1,,,,,,,,,,LTBA-0,,,True,ordinary_algebra,,,,,,exhaustive,4,,,,,,,,,,v2,1
+,,,comparison_summary,,0,1,1,,True,,,,1,True,exhaustive,1,4,True,0,0,,LTBA-0,0,0,,ordinary_algebra,0,61,0,0,,,4,,,0.06557377049180328,,,,,,,v2,1
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-0,0,0,,ordinary_algebra,0,,,,,,8,,,,,125,2.1199991806497565e-07,0,9.500001851847628e-08,0,v2,1
+1,4,True,explicit_rows_with_indices,,,,,,,,7.749999895168003e-07,,,,,,,,,,,LTBA-0,,,,ordinary_algebra,,,,,,,8,,,,,,,0,,0,v2,1
+1,4,True,explicit_materialized,,,,,,,,1.7500008198112482e-07,,,,,,,,,,,LTBA-0,,,,ordinary_algebra,,,,,,,8,,,,,,,,1.4699992334499257e-07,0,v2,1
+,,True,bdd_factor_payload_model,True,,,1,1,True,1,,,,,,,,,,,0,LTBA-0,,,,ordinary_algebra,,,,,1,,8,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,0,,0,v2,1
+,,True,equivalence_check,,,,,,,1,,1,,,,,,,,,,LTBA-0,,,True,ordinary_algebra,,,,,,exhaustive,8,,,,,,,,,,v2,1
+,,,comparison_summary,,0,1,1,,True,,,,1,True,exhaustive,1,4,True,0,0,,LTBA-0,0,0,,ordinary_algebra,0,125,0,0,,,8,,,0.032,,,,,,,v2,1
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-0,0,0,,ordinary_algebra,0,,,,,,12,,,,,195,2.3800009785190923e-07,0,1.7699994714348577e-07,0,v2,1
+1,4,True,explicit_rows_with_indices,,,,,,,,1.0510000265639974e-06,,,,,,,,,,,LTBA-0,,,,ordinary_algebra,,,,,,,12,,,,,,,0,,0,v2,1
+1,4,True,explicit_materialized,,,,,,,,1.910000264615519e-07,,,,,,,,,,,LTBA-0,,,,ordinary_algebra,,,,,,,12,,,,,,,,1.6000001323845936e-07,0,v2,1
+,,True,bdd_factor_payload_model,True,,,1,1,True,1,,,,,,,,,,,0,LTBA-0,,,,ordinary_algebra,,,,,1,,12,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,0,,0,v2,1
+,,True,equivalence_check,,,,,,,1,,1,,,,,,,,,,LTBA-0,,,True,ordinary_algebra,,,,,,exhaustive,12,,,,,,,,,,v2,1
+,,,comparison_summary,,0,1,1,,True,,,,1,True,exhaustive,1,4,True,0,0,,LTBA-0,0,0,,ordinary_algebra,0,195,0,0,,,12,,,0.020512820512820513,,,,,,,v2,1
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-0,0,0,,ordinary_algebra,0,,,,,,16,,,,,267,2.3100005819287617e-07,0,1.559999418532243e-07,0,v2,1
+1,4,True,explicit_rows_with_indices,,,,,,,,7.240000741148833e-07,,,,,,,,,,,LTBA-0,,,,ordinary_algebra,,,,,,,16,,,,,,,0,,0,v2,1
+1,4,True,explicit_materialized,,,,,,,,1.4500005818263162e-07,,,,,,,,,,,LTBA-0,,,,ordinary_algebra,,,,,,,16,,,,,,,,1.639999709368567e-07,0,v2,1
+,,True,bdd_factor_payload_model,True,,,1,1,True,1,,,,,,,,,,,0,LTBA-0,,,,ordinary_algebra,,,,,1,,16,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,0,,0,v2,1
+,,True,equivalence_check,,,,,,,1,,1,,,,,,,,,,LTBA-0,,,True,ordinary_algebra,,,,,,exhaustive,16,,,,,,,,,,v2,1
+,,,comparison_summary,,0,1,1,,True,,,,1,True,exhaustive,1,4,True,0,0,,LTBA-0,0,0,,ordinary_algebra,0,267,0,0,,,16,,,0.0149812734082397,,,,,,,v2,1
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-1,1,2,,guarded_division,2,,,,,,1,,,,,49,3.927000079784193e-06,2,3.117000005659065e-06,1,v2,2
+2,16,True,explicit_rows_with_indices,,,,,,,,6.933000008757517e-06,,,,,,,,,,,LTBA-1,,,,guarded_division,,,,,,,1,,,,,,,2,,1,v2,2
+2,16,True,explicit_materialized,,,,,,,,2.847000018846302e-06,,,,,,,,,,,LTBA-1,,,,guarded_division,,,,,,,1,,,,,,,,1.324999971075158e-06,1,v2,2
+,,True,bdd_factor_payload_model,True,,,2,2,True,2,,,,,,,,,,,2,LTBA-1,,,,guarded_division,,,,,2,,1,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,2,,1,v2,2
+,,True,equivalence_check,,,,,,,2,,2,,,,,,,,,,LTBA-1,,,True,guarded_division,,,,,,exhaustive,1,,,,,,,,,,v2,2
+,,,comparison_summary,,2,2,2,,True,,,,2,True,exhaustive,2,16,True,2,1,,LTBA-1,1,2,,guarded_division,2,49,2,1,,,1,1.0,1.0,0.32653061224489793,,,,,,,v2,2
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-1,2,4,,guarded_division,4,,,,,,2,,,,,101,4.386000000522472e-06,4,1.8609999870022875e-06,1,v2,4
+4,76,True,explicit_rows_with_indices,,,,,,,,7.589000006191782e-06,,,,,,,,,,,LTBA-1,,,,guarded_division,,,,,,,2,,,,,,,8,,2,v2,4
+4,76,True,explicit_materialized,,,,,,,,3.2399999554399983e-06,,,,,,,,,,,LTBA-1,,,,guarded_division,,,,,,,2,,,,,,,,1.4729999975315877e-06,2,v2,4
+,,True,bdd_factor_payload_model,True,,,7,4,True,4,,,,,,,,,,,4,LTBA-1,,,,guarded_division,,,,,4,,2,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,4,,1,v2,4
+,,True,equivalence_check,,,,,,,4,,4,,,,,,,,,,LTBA-1,,,True,guarded_division,,,,,,exhaustive,2,,,,,,,,,,v2,4
+,,,comparison_summary,,4,4,7,,True,,,,4,True,exhaustive,4,76,True,8,2,,LTBA-1,2,4,,guarded_division,4,101,4,1,,,2,2.0,2.0,0.7524752475247525,,,,,,,v2,4
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-1,4,8,,guarded_division,8,,,,,,4,,,,,205,0.00041189900002791546,8,1.1710000080711325e-06,1,v2,16
+16,656,True,explicit_rows_with_indices,,,,,,,,2.1912000079282734e-05,,,,,,,,,,,LTBA-1,,,,guarded_division,,,,,,,4,,,,,,,64,,8,v2,16
+16,656,True,explicit_materialized,,,,,,,,1.2278999975023908e-05,,,,,,,,,,,LTBA-1,,,,guarded_division,,,,,,,4,,,,,,,,2.0100000028833165e-06,8,v2,16
+,,True,bdd_factor_payload_model,True,,,49,16,True,16,,,,,,,,,,,8,LTBA-1,,,,guarded_division,,,,,16,,4,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,8,,1,v2,16
+,,True,equivalence_check,,,,,,,16,,16,,,,,,,,,,LTBA-1,,,True,guarded_division,,,,,,exhaustive,4,,,,,,,,,,v2,16
+,,,comparison_summary,,8,16,49,,True,,,,16,True,exhaustive,16,656,True,64,8,,LTBA-1,4,8,,guarded_division,8,205,8,1,,,4,8.0,8.0,3.2,,,,,,,v2,16
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-1,8,16,,guarded_division,16,,,,,,8,,,,,413,3.8781000057497295e-05,16,1.4070000133870053e-06,1,v2,256
+256,21760,True,explicit_rows_with_indices,,,,,,,,0.00034895799990408705,,,,,,,,,,,LTBA-1,,,,guarded_division,,,,,,,8,,,,,,,2048,,128,v2,256
+256,21760,True,explicit_materialized,,,,,,,,0.00021178600002258463,,,,,,,,,,,LTBA-1,,,,guarded_division,,,,,,,8,,,,,,,,2.3555999973723374e-05,128,v2,256
+,,True,bdd_factor_payload_model,True,,,997,256,True,256,,,,,,,,,,,16,LTBA-1,,,,guarded_division,,,,,256,,8,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,16,,1,v2,256
+,,True,equivalence_check,,,,,,,256,,256,,,,,,,,,,LTBA-1,,,True,guarded_division,,,,,,exhaustive,8,,,,,,,,,,v2,256
+,,,comparison_summary,,16,256,997,,True,,,,256,True,exhaustive,256,21760,True,2048,128,,LTBA-1,8,16,,guarded_division,16,413,16,1,,,8,128.0,128.0,52.68765133171913,,,,,,,v2,256
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-1,12,24,,guarded_division,24,,,,,,12,,,,,645,1.8607000015435915e-05,24,1.3530000160244526e-06,1,v2,4096
+4096,540672,True,explicit_rows_with_indices,,,,,,,,0.007050839000044107,,,,,,,,,,,LTBA-1,,,,guarded_division,,,,,,,12,,,,,,,49152,,2048,v2,4096
+4096,540672,True,explicit_materialized,,,,,,,,0.003805597999985366,,,,,,,,,,,LTBA-1,,,,guarded_division,,,,,,,12,,,,,,,,0.0006112410000014279,2048,v2,4096
+,,True,bdd_factor_payload_model,True,,,16345,4096,True,4096,,,,,,,,,,,24,LTBA-1,,,,guarded_division,,,,,4096,,12,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,24,,1,v2,4096
+,,True,equivalence_check,,,,,,,4096,,4096,,,,,,,,,,LTBA-1,,,True,guarded_division,,,,,,exhaustive,12,,,,,,,,,,v2,4096
+,,,comparison_summary,,24,4096,16345,,True,,,,4096,True,exhaustive,4096,540672,True,49152,2048,,LTBA-1,12,24,,guarded_division,24,645,24,1,,,12,2048.0,2048.0,838.2511627906977,,,,,,,v2,4096
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-1,16,32,,guarded_division,32,,,,,,16,,,,,885,2.9087999905641482e-05,32,2.08599999496073e-06,1,v2,65536
+,,False,explicit_rows_with_indices,,,,,,,,,,,,,,,,,,,LTBA-1,,,,guarded_division,,,,,,,16,,,,skipped: total branches 65536 > max_materialize 4096,,,,,,v2,65536
+,,False,explicit_materialized,,,,,,,,,,,,,,,,,,,LTBA-1,,,,guarded_division,,,,,,,16,,,,skipped: total branches 65536 > max_materialize 4096,,,,,,v2,65536
+,,True,bdd_factor_payload_model,True,,,,,False,65536,,,,,,,,,,,32,LTBA-1,,,,guarded_division,,,,,65536,,16,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,32,,1,v2,65536
+,,True,equivalence_check,,,,,,,65536,,256,,,,,,,,,,LTBA-1,,,True,guarded_division,,,,,,sampled,16,,,,,,,,,,v2,65536
+,,,comparison_summary,,32,65536,,,False,,,,256,True,sampled,,,False,,,,LTBA-1,16,32,,guarded_division,32,885,32,1,,,16,,,,,,,,,,v2,65536
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-2,1,2,,radicals_abs,2,,,,,,1,,,,,64,2.1050000214017928e-06,2,1.3639998996950453e-06,1,v2,2
+2,18,True,explicit_rows_with_indices,,,,,,,,5.103999910716084e-06,,,,,,,,,,,LTBA-2,,,,radicals_abs,,,,,,,1,,,,,,,2,,1,v2,2
+2,18,True,explicit_materialized,,,,,,,,2.2129999024400604e-06,,,,,,,,,,,LTBA-2,,,,radicals_abs,,,,,,,1,,,,,,,,1.1250000397922122e-06,1,v2,2
+,,True,bdd_factor_payload_model,True,,,2,2,True,2,,,,,,,,,,,2,LTBA-2,,,,radicals_abs,,,,,2,,1,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,2,,1,v2,2
+,,True,equivalence_check,,,,,,,2,,2,,,,,,,,,,LTBA-2,,,True,radicals_abs,,,,,,exhaustive,1,,,,,,,,,,v2,2
+,,,comparison_summary,,2,2,2,,True,,,,2,True,exhaustive,2,18,True,2,1,,LTBA-2,1,2,,radicals_abs,2,64,2,1,,,1,1.0,1.0,0.28125,,,,,,,v2,2
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-2,2,4,,radicals_abs,4,,,,,,2,,,,,131,3.1509999871559558e-06,4,1.0609999208099907e-06,1,v2,4
+4,84,True,explicit_rows_with_indices,,,,,,,,5.605999945146323e-06,,,,,,,,,,,LTBA-2,,,,radicals_abs,,,,,,,2,,,,,,,8,,2,v2,4
+4,84,True,explicit_materialized,,,,,,,,2.8110000585002126e-06,,,,,,,,,,,LTBA-2,,,,radicals_abs,,,,,,,2,,,,,,,,1.0570000767984311e-06,2,v2,4
+,,True,bdd_factor_payload_model,True,,,7,4,True,4,,,,,,,,,,,4,LTBA-2,,,,radicals_abs,,,,,4,,2,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,4,,1,v2,4
+,,True,equivalence_check,,,,,,,4,,4,,,,,,,,,,LTBA-2,,,True,radicals_abs,,,,,,exhaustive,2,,,,,,,,,,v2,4
+,,,comparison_summary,,4,4,7,,True,,,,4,True,exhaustive,4,84,True,8,2,,LTBA-2,2,4,,radicals_abs,4,131,4,1,,,2,2.0,2.0,0.6412213740458015,,,,,,,v2,4
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-2,4,8,,radicals_abs,8,,,,,,4,,,,,265,6.14499992934725e-06,8,1.085000008060888e-06,1,v2,16
+16,720,True,explicit_rows_with_indices,,,,,,,,1.798599998892314e-05,,,,,,,,,,,LTBA-2,,,,radicals_abs,,,,,,,4,,,,,,,64,,8,v2,16
+16,720,True,explicit_materialized,,,,,,,,9.116999990510521e-06,,,,,,,,,,,LTBA-2,,,,radicals_abs,,,,,,,4,,,,,,,,1.7549999711263808e-06,8,v2,16
+,,True,bdd_factor_payload_model,True,,,49,16,True,16,,,,,,,,,,,8,LTBA-2,,,,radicals_abs,,,,,16,,4,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,8,,1,v2,16
+,,True,equivalence_check,,,,,,,16,,16,,,,,,,,,,LTBA-2,,,True,radicals_abs,,,,,,exhaustive,4,,,,,,,,,,v2,16
+,,,comparison_summary,,8,16,49,,True,,,,16,True,exhaustive,16,720,True,64,8,,LTBA-2,4,8,,radicals_abs,8,265,8,1,,,4,8.0,8.0,2.7169811320754715,,,,,,,v2,16
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-2,8,16,,radicals_abs,16,,,,,,8,,,,,533,1.1625999945863441e-05,16,1.0379999366705306e-06,1,v2,256
+256,23808,True,explicit_rows_with_indices,,,,,,,,0.00031353400004263676,,,,,,,,,,,LTBA-2,,,,radicals_abs,,,,,,,8,,,,,,,2048,,128,v2,256
+256,23808,True,explicit_materialized,,,,,,,,0.00016868799991698324,,,,,,,,,,,LTBA-2,,,,radicals_abs,,,,,,,8,,,,,,,,1.6582999933234532e-05,128,v2,256
+,,True,bdd_factor_payload_model,True,,,997,256,True,256,,,,,,,,,,,16,LTBA-2,,,,radicals_abs,,,,,256,,8,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,16,,1,v2,256
+,,True,equivalence_check,,,,,,,256,,256,,,,,,,,,,LTBA-2,,,True,radicals_abs,,,,,,exhaustive,8,,,,,,,,,,v2,256
+,,,comparison_summary,,16,256,997,,True,,,,256,True,exhaustive,256,23808,True,2048,128,,LTBA-2,8,16,,radicals_abs,16,533,16,1,,,8,128.0,128.0,44.667917448405255,,,,,,,v2,256
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-2,12,24,,radicals_abs,24,,,,,,12,,,,,822,1.870500000222819e-05,24,1.583999960530491e-06,1,v2,4096
+4096,602112,True,explicit_rows_with_indices,,,,,,,,0.006861376999950153,,,,,,,,,,,LTBA-2,,,,radicals_abs,,,,,,,12,,,,,,,49152,,2048,v2,4096
+4096,602112,True,explicit_materialized,,,,,,,,0.0033175689999325186,,,,,,,,,,,LTBA-2,,,,radicals_abs,,,,,,,12,,,,,,,,0.0004178880000154095,2048,v2,4096
+,,True,bdd_factor_payload_model,True,,,16345,4096,True,4096,,,,,,,,,,,24,LTBA-2,,,,radicals_abs,,,,,4096,,12,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,24,,1,v2,4096
+,,True,equivalence_check,,,,,,,4096,,4096,,,,,,,,,,LTBA-2,,,True,radicals_abs,,,,,,exhaustive,12,,,,,,,,,,v2,4096
+,,,comparison_summary,,24,4096,16345,,True,,,,4096,True,exhaustive,4096,602112,True,49152,2048,,LTBA-2,12,24,,radicals_abs,24,822,24,1,,,12,2048.0,2048.0,732.4963503649635,,,,,,,v2,4096
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-2,16,32,,radicals_abs,32,,,,,,16,,,,,1118,2.639800004544668e-05,32,1.717000031931093e-06,1,v2,65536
+,,False,explicit_rows_with_indices,,,,,,,,,,,,,,,,,,,LTBA-2,,,,radicals_abs,,,,,,,16,,,,skipped: total branches 65536 > max_materialize 4096,,,,,,v2,65536
+,,False,explicit_materialized,,,,,,,,,,,,,,,,,,,LTBA-2,,,,radicals_abs,,,,,,,16,,,,skipped: total branches 65536 > max_materialize 4096,,,,,,v2,65536
+,,True,bdd_factor_payload_model,True,,,,,False,65536,,,,,,,,,,,32,LTBA-2,,,,radicals_abs,,,,,65536,,16,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,32,,1,v2,65536
+,,True,equivalence_check,,,,,,,65536,,256,,,,,,,,,,LTBA-2,,,True,radicals_abs,,,,,,sampled,16,,,,,,,,,,v2,65536
+,,,comparison_summary,,32,65536,,,False,,,,256,True,sampled,,,False,,,,LTBA-2,16,32,,radicals_abs,32,1118,32,1,,,16,,,,,,,,,,v2,65536
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-3,1,3,,inequalities_ordering,3,,,,,,1,,,,,84,2.793000021483749e-06,3,1.244000031874748e-06,1,v2,3
+3,34,True,explicit_rows_with_indices,,,,,,,,7.2899999850051245e-06,,,,,,,,,,,LTBA-3,,,,inequalities_ordering,,,,,,,1,,,,,,,3,,1,v2,3
+3,34,True,explicit_materialized,,,,,,,,2.6300000399714918e-06,,,,,,,,,,,LTBA-3,,,,inequalities_ordering,,,,,,,1,,,,,,,,1.2680000054388074e-06,1,v2,3
+,,True,bdd_factor_payload_model,True,,,6,3,True,3,,,,,,,,,,,3,LTBA-3,,,,inequalities_ordering,,,,,3,,1,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,3,,1,v2,3
+,,True,equivalence_check,,,,,,,3,,3,,,,,,,,,,LTBA-3,,,True,inequalities_ordering,,,,,,exhaustive,1,,,,,,,,,,v2,3
+,,,comparison_summary,,3,3,6,,True,,,,3,True,exhaustive,3,34,True,3,1,,LTBA-3,1,3,,inequalities_ordering,3,84,3,1,,,1,1.0,1.0,0.40476190476190477,,,,,,,v2,3
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-3,2,6,,inequalities_ordering,6,,,,,,2,,,,,171,4.804000013791665e-06,6,1.1409999842726393e-06,1,v2,9
+9,231,True,explicit_rows_with_indices,,,,,,,,1.013100006730383e-05,,,,,,,,,,,LTBA-3,,,,inequalities_ordering,,,,,,,2,,,,,,,18,,3,v2,9
+9,231,True,explicit_materialized,,,,,,,,5.073000011179829e-06,,,,,,,,,,,LTBA-3,,,,inequalities_ordering,,,,,,,2,,,,,,,,1.3750000107393134e-06,3,v2,9
+,,True,bdd_factor_payload_model,True,,,36,9,True,9,,,,,,,,,,,6,LTBA-3,,,,inequalities_ordering,,,,,9,,2,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,6,,1,v2,9
+,,True,equivalence_check,,,,,,,9,,9,,,,,,,,,,LTBA-3,,,True,inequalities_ordering,,,,,,exhaustive,2,,,,,,,,,,v2,9
+,,,comparison_summary,,6,9,36,,True,,,,9,True,exhaustive,9,231,True,18,3,,LTBA-3,2,6,,inequalities_ordering,6,171,6,1,,,2,3.0,3.0,1.3508771929824561,,,,,,,v2,9
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-3,4,12,,inequalities_ordering,12,,,,,,4,,,,,345,9.280999961447378e-06,12,1.238000095327152e-06,1,v2,81
+81,4401,True,explicit_rows_with_indices,,,,,,,,7.888899995123211e-05,,,,,,,,,,,LTBA-3,,,,inequalities_ordering,,,,,,,4,,,,,,,324,,27,v2,81
+81,4401,True,explicit_materialized,,,,,,,,3.7596999959532695e-05,,,,,,,,,,,LTBA-3,,,,inequalities_ordering,,,,,,,4,,,,,,,,5.815000008624338e-06,27,v2,81
+,,True,bdd_factor_payload_model,True,,,471,81,True,81,,,,,,,,,,,12,LTBA-3,,,,inequalities_ordering,,,,,81,,4,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,12,,1,v2,81
+,,True,equivalence_check,,,,,,,81,,81,,,,,,,,,,LTBA-3,,,True,inequalities_ordering,,,,,,exhaustive,4,,,,,,,,,,v2,81
+,,,comparison_summary,,12,81,471,,True,,,,81,True,exhaustive,81,4401,True,324,27,,LTBA-3,4,12,,inequalities_ordering,12,345,12,1,,,4,27.0,27.0,12.756521739130434,,,,,,,v2,81
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-3,8,24,,inequalities_ordering,24,,,,,,8,,,,,693,1.833900000747235e-05,24,1.2700000979748438e-06,1,v2,6561
+,,False,explicit_rows_with_indices,,,,,,,,,,,,,,,,,,,LTBA-3,,,,inequalities_ordering,,,,,,,8,,,,skipped: total branches 6561 > max_materialize 4096,,,,,,v2,6561
+,,False,explicit_materialized,,,,,,,,,,,,,,,,,,,LTBA-3,,,,inequalities_ordering,,,,,,,8,,,,skipped: total branches 6561 > max_materialize 4096,,,,,,v2,6561
+,,True,bdd_factor_payload_model,True,,,,,False,6561,,,,,,,,,,,24,LTBA-3,,,,inequalities_ordering,,,,,6561,,8,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,24,,1,v2,6561
+,,True,equivalence_check,,,,,,,6561,,256,,,,,,,,,,LTBA-3,,,True,inequalities_ordering,,,,,,sampled,8,,,,,,,,,,v2,6561
+,,,comparison_summary,,24,6561,,,False,,,,256,True,sampled,,,False,,,,LTBA-3,8,24,,inequalities_ordering,24,693,24,1,,,8,,,,,,,,,,v2,6561
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-3,12,36,,inequalities_ordering,36,,,,,,12,,,,,1065,2.6710000042839965e-05,36,1.1729999869203311e-06,1,v2,531441
+,,False,explicit_rows_with_indices,,,,,,,,,,,,,,,,,,,LTBA-3,,,,inequalities_ordering,,,,,,,12,,,,skipped: total branches 531441 > max_materialize 4096,,,,,,v2,531441
+,,False,explicit_materialized,,,,,,,,,,,,,,,,,,,LTBA-3,,,,inequalities_ordering,,,,,,,12,,,,skipped: total branches 531441 > max_materialize 4096,,,,,,v2,531441
+,,True,bdd_factor_payload_model,True,,,,,False,531441,,,,,,,,,,,36,LTBA-3,,,,inequalities_ordering,,,,,531441,,12,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,36,,1,v2,531441
+,,True,equivalence_check,,,,,,,531441,,256,,,,,,,,,,LTBA-3,,,True,inequalities_ordering,,,,,,sampled,12,,,,,,,,,,v2,531441
+,,,comparison_summary,,36,531441,,,False,,,,256,True,sampled,,,False,,,,LTBA-3,12,36,,inequalities_ordering,36,1065,36,1,,,12,,,,,,,,,,v2,531441
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-3,16,48,,inequalities_ordering,48,,,,,,16,,,,,1445,4.243699993367045e-05,48,1.1249999261053745e-06,1,v2,43046721
+,,False,explicit_rows_with_indices,,,,,,,,,,,,,,,,,,,LTBA-3,,,,inequalities_ordering,,,,,,,16,,,,skipped: total branches 43046721 > max_materialize 4096,,,,,,v2,43046721
+,,False,explicit_materialized,,,,,,,,,,,,,,,,,,,LTBA-3,,,,inequalities_ordering,,,,,,,16,,,,skipped: total branches 43046721 > max_materialize 4096,,,,,,v2,43046721
+,,True,bdd_factor_payload_model,True,,,,,False,43046721,,,,,,,,,,,48,LTBA-3,,,,inequalities_ordering,,,,,43046721,,16,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,48,,1,v2,43046721
+,,True,equivalence_check,,,,,,,43046721,,256,,,,,,,,,,LTBA-3,,,True,inequalities_ordering,,,,,,sampled,16,,,,,,,,,,v2,43046721
+,,,comparison_summary,,48,43046721,,,False,,,,256,True,sampled,,,False,,,,LTBA-3,16,48,,inequalities_ordering,48,1445,48,1,,,16,,,,,,,,,,v2,43046721
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-4,1,2,,transcendental_domains,2,,,,,,1,,,,,125,1.863000079538324e-06,2,1.2389999710649136e-06,1,v2,2
+2,74,True,explicit_rows_with_indices,,,,,,,,4.330000024310721e-06,,,,,,,,,,,LTBA-4,,,,transcendental_domains,,,,,,,1,,,,,,,2,,1,v2,2
+2,74,True,explicit_materialized,,,,,,,,2.140999981747882e-06,,,,,,,,,,,LTBA-4,,,,transcendental_domains,,,,,,,1,,,,,,,,8.86999941940303e-07,1,v2,2
+,,True,bdd_factor_payload_model,True,,,2,2,True,2,,,,,,,,,,,2,LTBA-4,,,,transcendental_domains,,,,,2,,1,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,2,,1,v2,2
+,,True,equivalence_check,,,,,,,2,,2,,,,,,,,,,LTBA-4,,,True,transcendental_domains,,,,,,exhaustive,1,,,,,,,,,,v2,2
+,,,comparison_summary,,2,2,2,,True,,,,2,True,exhaustive,2,74,True,2,1,,LTBA-4,1,2,,transcendental_domains,2,125,2,1,,,1,1.0,1.0,0.592,,,,,,,v2,2
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-4,2,4,,transcendental_domains,4,,,,,,2,,,,,253,3.3569999686733354e-06,4,1.0600000450722291e-06,1,v2,4
+4,308,True,explicit_rows_with_indices,,,,,,,,5.649999934576044e-06,,,,,,,,,,,LTBA-4,,,,transcendental_domains,,,,,,,2,,,,,,,8,,2,v2,4
+4,308,True,explicit_materialized,,,,,,,,2.8609999844775302e-06,,,,,,,,,,,LTBA-4,,,,transcendental_domains,,,,,,,2,,,,,,,,1.0070000371342758e-06,2,v2,4
+,,True,bdd_factor_payload_model,True,,,7,4,True,4,,,,,,,,,,,4,LTBA-4,,,,transcendental_domains,,,,,4,,2,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,4,,1,v2,4
+,,True,equivalence_check,,,,,,,4,,4,,,,,,,,,,LTBA-4,,,True,transcendental_domains,,,,,,exhaustive,2,,,,,,,,,,v2,4
+,,,comparison_summary,,4,4,7,,True,,,,4,True,exhaustive,4,308,True,8,2,,LTBA-4,2,4,,transcendental_domains,4,253,4,1,,,2,2.0,2.0,1.2173913043478262,,,,,,,v2,4
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-4,4,8,,transcendental_domains,8,,,,,,4,,,,,509,5.965000013929966e-06,8,9.509999472356867e-07,1,v2,16
+16,2512,True,explicit_rows_with_indices,,,,,,,,1.7436999996789382e-05,,,,,,,,,,,LTBA-4,,,,transcendental_domains,,,,,,,4,,,,,,,64,,8,v2,16
+16,2512,True,explicit_materialized,,,,,,,,8.6860000010347e-06,,,,,,,,,,,LTBA-4,,,,transcendental_domains,,,,,,,4,,,,,,,,1.8159998944611289e-06,8,v2,16
+,,True,bdd_factor_payload_model,True,,,49,16,True,16,,,,,,,,,,,8,LTBA-4,,,,transcendental_domains,,,,,16,,4,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,8,,1,v2,16
+,,True,equivalence_check,,,,,,,16,,16,,,,,,,,,,LTBA-4,,,True,transcendental_domains,,,,,,exhaustive,4,,,,,,,,,,v2,16
+,,,comparison_summary,,8,16,49,,True,,,,16,True,exhaustive,16,2512,True,64,8,,LTBA-4,4,8,,transcendental_domains,8,509,8,1,,,4,8.0,8.0,4.9351669941060905,,,,,,,v2,16
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-4,8,16,,transcendental_domains,16,,,,,,8,,,,,1021,1.2200000014672696e-05,16,1.102000055652752e-06,1,v2,256
+256,81152,True,explicit_rows_with_indices,,,,,,,,0.00032049499998265674,,,,,,,,,,,LTBA-4,,,,transcendental_domains,,,,,,,8,,,,,,,2048,,128,v2,256
+256,81152,True,explicit_materialized,,,,,,,,0.00017293600001266896,,,,,,,,,,,LTBA-4,,,,transcendental_domains,,,,,,,8,,,,,,,,1.8781999983730202e-05,128,v2,256
+,,True,bdd_factor_payload_model,True,,,997,256,True,256,,,,,,,,,,,16,LTBA-4,,,,transcendental_domains,,,,,256,,8,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,16,,1,v2,256
+,,True,equivalence_check,,,,,,,256,,256,,,,,,,,,,LTBA-4,,,True,transcendental_domains,,,,,,exhaustive,8,,,,,,,,,,v2,256
+,,,comparison_summary,,16,256,997,,True,,,,256,True,exhaustive,256,81152,True,2048,128,,LTBA-4,8,16,,transcendental_domains,16,1021,16,1,,,8,128.0,128.0,79.48285994123408,,,,,,,v2,256
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-4,12,24,,transcendental_domains,24,,,,,,12,,,,,1569,1.8320999970455887e-05,24,1.4299999975264654e-06,1,v2,4096
+4096,2002944,True,explicit_rows_with_indices,,,,,,,,0.010494784000002255,,,,,,,,,,,LTBA-4,,,,transcendental_domains,,,,,,,12,,,,,,,49152,,2048,v2,4096
+4096,2002944,True,explicit_materialized,,,,,,,,0.0034250850000034916,,,,,,,,,,,LTBA-4,,,,transcendental_domains,,,,,,,12,,,,,,,,0.0003466139999090956,2048,v2,4096
+,,True,bdd_factor_payload_model,True,,,16345,4096,True,4096,,,,,,,,,,,24,LTBA-4,,,,transcendental_domains,,,,,4096,,12,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,24,,1,v2,4096
+,,True,equivalence_check,,,,,,,4096,,4096,,,,,,,,,,LTBA-4,,,True,transcendental_domains,,,,,,exhaustive,12,,,,,,,,,,v2,4096
+,,,comparison_summary,,24,4096,16345,,True,,,,4096,True,exhaustive,4096,2002944,True,49152,2048,,LTBA-4,12,24,,transcendental_domains,24,1569,24,1,,,12,2048.0,2048.0,1276.5736137667304,,,,,,,v2,4096
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-4,16,32,,transcendental_domains,32,,,,,,16,,,,,2129,2.532700000301702e-05,32,1.8160000081479666e-06,1,v2,65536
+,,False,explicit_rows_with_indices,,,,,,,,,,,,,,,,,,,LTBA-4,,,,transcendental_domains,,,,,,,16,,,,skipped: total branches 65536 > max_materialize 4096,,,,,,v2,65536
+,,False,explicit_materialized,,,,,,,,,,,,,,,,,,,LTBA-4,,,,transcendental_domains,,,,,,,16,,,,skipped: total branches 65536 > max_materialize 4096,,,,,,v2,65536
+,,True,bdd_factor_payload_model,True,,,,,False,65536,,,,,,,,,,,32,LTBA-4,,,,transcendental_domains,,,,,65536,,16,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,32,,1,v2,65536
+,,True,equivalence_check,,,,,,,65536,,256,,,,,,,,,,LTBA-4,,,True,transcendental_domains,,,,,,sampled,16,,,,,,,,,,v2,65536
+,,,comparison_summary,,32,65536,,,False,,,,256,True,sampled,,,False,,,,LTBA-4,16,32,,transcendental_domains,32,2129,32,1,,,16,,,,,,,,,,v2,65536
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-5,1,2,,matrix_inverse,2,,,,,,1,,,,,91,2.1210000795690576e-06,2,1.2030000107188243e-06,1,v2,2
+2,52,True,explicit_rows_with_indices,,,,,,,,5.295999926602235e-06,,,,,,,,,,,LTBA-5,,,,matrix_inverse,,,,,,,1,,,,,,,2,,1,v2,2
+2,52,True,explicit_materialized,,,,,,,,2.277000021422282e-06,,,,,,,,,,,LTBA-5,,,,matrix_inverse,,,,,,,1,,,,,,,,1.1839999842777615e-06,1,v2,2
+,,True,bdd_factor_payload_model,True,,,2,2,True,2,,,,,,,,,,,2,LTBA-5,,,,matrix_inverse,,,,,2,,1,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,2,,1,v2,2
+,,True,equivalence_check,,,,,,,2,,2,,,,,,,,,,LTBA-5,,,True,matrix_inverse,,,,,,exhaustive,1,,,,,,,,,,v2,2
+,,,comparison_summary,,2,2,2,,True,,,,2,True,exhaustive,2,52,True,2,1,,LTBA-5,1,2,,matrix_inverse,2,91,2,1,,,1,1.0,1.0,0.5714285714285714,,,,,,,v2,2
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-5,2,4,,matrix_inverse,4,,,,,,2,,,,,185,3.149000008306757e-06,4,9.999999974752427e-07,1,v2,4
+4,220,True,explicit_rows_with_indices,,,,,,,,6.02900001922535e-06,,,,,,,,,,,LTBA-5,,,,matrix_inverse,,,,,,,2,,,,,,,8,,2,v2,4
+4,220,True,explicit_materialized,,,,,,,,3.0820000347375753e-06,,,,,,,,,,,LTBA-5,,,,matrix_inverse,,,,,,,2,,,,,,,,1.0320000001229346e-06,2,v2,4
+,,True,bdd_factor_payload_model,True,,,7,4,True,4,,,,,,,,,,,4,LTBA-5,,,,matrix_inverse,,,,,4,,2,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,4,,1,v2,4
+,,True,equivalence_check,,,,,,,4,,4,,,,,,,,,,LTBA-5,,,True,matrix_inverse,,,,,,exhaustive,2,,,,,,,,,,v2,4
+,,,comparison_summary,,4,4,7,,True,,,,4,True,exhaustive,4,220,True,8,2,,LTBA-5,2,4,,matrix_inverse,4,185,4,1,,,2,2.0,2.0,1.1891891891891893,,,,,,,v2,4
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-5,4,8,,matrix_inverse,8,,,,,,4,,,,,373,6.3179999187923386e-06,8,1.1549999499038677e-06,1,v2,16
+16,1808,True,explicit_rows_with_indices,,,,,,,,1.8797000052472868e-05,,,,,,,,,,,LTBA-5,,,,matrix_inverse,,,,,,,4,,,,,,,64,,8,v2,16
+16,1808,True,explicit_materialized,,,,,,,,9.541000054014148e-06,,,,,,,,,,,LTBA-5,,,,matrix_inverse,,,,,,,4,,,,,,,,2.0279999262129422e-06,8,v2,16
+,,True,bdd_factor_payload_model,True,,,49,16,True,16,,,,,,,,,,,8,LTBA-5,,,,matrix_inverse,,,,,16,,4,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,8,,1,v2,16
+,,True,equivalence_check,,,,,,,16,,16,,,,,,,,,,LTBA-5,,,True,matrix_inverse,,,,,,exhaustive,4,,,,,,,,,,v2,16
+,,,comparison_summary,,8,16,49,,True,,,,16,True,exhaustive,16,1808,True,64,8,,LTBA-5,4,8,,matrix_inverse,8,373,8,1,,,4,8.0,8.0,4.847184986595174,,,,,,,v2,16
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-5,8,16,,matrix_inverse,16,,,,,,8,,,,,749,1.1668999945868563e-05,16,1.1969999604843906e-06,1,v2,256
+256,58624,True,explicit_rows_with_indices,,,,,,,,0.00032742400003371586,,,,,,,,,,,LTBA-5,,,,matrix_inverse,,,,,,,8,,,,,,,2048,,128,v2,256
+256,58624,True,explicit_materialized,,,,,,,,0.00015929199992115173,,,,,,,,,,,LTBA-5,,,,matrix_inverse,,,,,,,8,,,,,,,,1.735800003643817e-05,128,v2,256
+,,True,bdd_factor_payload_model,True,,,997,256,True,256,,,,,,,,,,,16,LTBA-5,,,,matrix_inverse,,,,,256,,8,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,16,,1,v2,256
+,,True,equivalence_check,,,,,,,256,,256,,,,,,,,,,LTBA-5,,,True,matrix_inverse,,,,,,exhaustive,8,,,,,,,,,,v2,256
+,,,comparison_summary,,16,256,997,,True,,,,256,True,exhaustive,256,58624,True,2048,128,,LTBA-5,8,16,,matrix_inverse,16,749,16,1,,,8,128.0,128.0,78.26969292389853,,,,,,,v2,256
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-5,12,24,,matrix_inverse,24,,,,,,12,,,,,1143,1.8925000063063635e-05,24,1.4949999922464485e-06,1,v2,4096
+4096,1431552,True,explicit_rows_with_indices,,,,,,,,0.006308912999998029,,,,,,,,,,,LTBA-5,,,,matrix_inverse,,,,,,,12,,,,,,,49152,,2048,v2,4096
+4096,1431552,True,explicit_materialized,,,,,,,,0.003546487999983583,,,,,,,,,,,LTBA-5,,,,matrix_inverse,,,,,,,12,,,,,,,,0.00032992599994940974,2048,v2,4096
+,,True,bdd_factor_payload_model,True,,,16345,4096,True,4096,,,,,,,,,,,24,LTBA-5,,,,matrix_inverse,,,,,4096,,12,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,24,,1,v2,4096
+,,True,equivalence_check,,,,,,,4096,,4096,,,,,,,,,,LTBA-5,,,True,matrix_inverse,,,,,,exhaustive,12,,,,,,,,,,v2,4096
+,,,comparison_summary,,24,4096,16345,,True,,,,4096,True,exhaustive,4096,1431552,True,49152,2048,,LTBA-5,12,24,,matrix_inverse,24,1143,24,1,,,12,2048.0,2048.0,1252.4514435695537,,,,,,,v2,4096
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-5,16,32,,matrix_inverse,32,,,,,,16,,,,,1543,2.4683999981789384e-05,32,2.30299997383554e-06,1,v2,65536
+,,False,explicit_rows_with_indices,,,,,,,,,,,,,,,,,,,LTBA-5,,,,matrix_inverse,,,,,,,16,,,,skipped: total branches 65536 > max_materialize 4096,,,,,,v2,65536
+,,False,explicit_materialized,,,,,,,,,,,,,,,,,,,LTBA-5,,,,matrix_inverse,,,,,,,16,,,,skipped: total branches 65536 > max_materialize 4096,,,,,,v2,65536
+,,True,bdd_factor_payload_model,True,,,,,False,65536,,,,,,,,,,,32,LTBA-5,,,,matrix_inverse,,,,,65536,,16,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,32,,1,v2,65536
+,,True,equivalence_check,,,,,,,65536,,256,,,,,,,,,,LTBA-5,,,True,matrix_inverse,,,,,,sampled,16,,,,,,,,,,v2,65536
+,,,comparison_summary,,32,65536,,,False,,,,256,True,sampled,,,False,,,,LTBA-5,16,32,,matrix_inverse,32,1543,32,1,,,16,,,,,,,,,,v2,65536
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-6,1,2,,limits_removable,2,,,,,,1,,,,,84,2.3350999981630594e-05,2,2.203000008194067e-06,1,v2,2
+2,40,True,explicit_rows_with_indices,,,,,,,,8.01299995600857e-06,,,,,,,,,,,LTBA-6,,,,limits_removable,,,,,,,1,,,,,,,2,,1,v2,2
+2,40,True,explicit_materialized,,,,,,,,3.813000034824654e-06,,,,,,,,,,,LTBA-6,,,,limits_removable,,,,,,,1,,,,,,,,1.3589999525720486e-06,1,v2,2
+,,True,bdd_factor_payload_model,True,,,2,2,True,2,,,,,,,,,,,2,LTBA-6,,,,limits_removable,,,,,2,,1,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,2,,1,v2,2
+,,True,equivalence_check,,,,,,,2,,2,,,,,,,,,,LTBA-6,,,True,limits_removable,,,,,,exhaustive,1,,,,,,,,,,v2,2
+,,,comparison_summary,,2,2,2,,True,,,,2,True,exhaustive,2,40,True,2,1,,LTBA-6,1,2,,limits_removable,2,84,2,1,,,1,1.0,1.0,0.47619047619047616,,,,,,,v2,2
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-6,2,4,,limits_removable,4,,,,,,2,,,,,171,4.392999926494667e-06,4,1.8550000504546915e-06,1,v2,4
+4,172,True,explicit_rows_with_indices,,,,,,,,8.613000090917922e-06,,,,,,,,,,,LTBA-6,,,,limits_removable,,,,,,,2,,,,,,,8,,2,v2,4
+4,172,True,explicit_materialized,,,,,,,,3.3355000027768256e-05,,,,,,,,,,,LTBA-6,,,,limits_removable,,,,,,,2,,,,,,,,1.3670000953425188e-06,2,v2,4
+,,True,bdd_factor_payload_model,True,,,7,4,True,4,,,,,,,,,,,4,LTBA-6,,,,limits_removable,,,,,4,,2,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,4,,1,v2,4
+,,True,equivalence_check,,,,,,,4,,4,,,,,,,,,,LTBA-6,,,True,limits_removable,,,,,,exhaustive,2,,,,,,,,,,v2,4
+,,,comparison_summary,,4,4,7,,True,,,,4,True,exhaustive,4,172,True,8,2,,LTBA-6,2,4,,limits_removable,4,171,4,1,,,2,2.0,2.0,1.0058479532163742,,,,,,,v2,4
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-6,4,8,,limits_removable,8,,,,,,4,,,,,345,1.821300008941762e-05,8,1.2189999551992514e-06,1,v2,16
+16,1424,True,explicit_rows_with_indices,,,,,,,,4.0946000012809236e-05,,,,,,,,,,,LTBA-6,,,,limits_removable,,,,,,,4,,,,,,,64,,8,v2,16
+16,1424,True,explicit_materialized,,,,,,,,2.5591000053282187e-05,,,,,,,,,,,LTBA-6,,,,limits_removable,,,,,,,4,,,,,,,,2.9889999950682977e-06,8,v2,16
+,,True,bdd_factor_payload_model,True,,,49,16,True,16,,,,,,,,,,,8,LTBA-6,,,,limits_removable,,,,,16,,4,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,8,,1,v2,16
+,,True,equivalence_check,,,,,,,16,,16,,,,,,,,,,LTBA-6,,,True,limits_removable,,,,,,exhaustive,4,,,,,,,,,,v2,16
+,,,comparison_summary,,8,16,49,,True,,,,16,True,exhaustive,16,1424,True,64,8,,LTBA-6,4,8,,limits_removable,8,345,8,1,,,4,8.0,8.0,4.127536231884058,,,,,,,v2,16
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-6,8,16,,limits_removable,16,,,,,,8,,,,,693,3.191399991919752e-05,16,1.4729999975315877e-06,1,v2,256
+256,46336,True,explicit_rows_with_indices,,,,,,,,0.0004680480000160969,,,,,,,,,,,LTBA-6,,,,limits_removable,,,,,,,8,,,,,,,2048,,128,v2,256
+256,46336,True,explicit_materialized,,,,,,,,0.0001964780000207611,,,,,,,,,,,LTBA-6,,,,limits_removable,,,,,,,8,,,,,,,,1.941200002875121e-05,128,v2,256
+,,True,bdd_factor_payload_model,True,,,997,256,True,256,,,,,,,,,,,16,LTBA-6,,,,limits_removable,,,,,256,,8,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,16,,1,v2,256
+,,True,equivalence_check,,,,,,,256,,256,,,,,,,,,,LTBA-6,,,True,limits_removable,,,,,,exhaustive,8,,,,,,,,,,v2,256
+,,,comparison_summary,,16,256,997,,True,,,,256,True,exhaustive,256,46336,True,2048,128,,LTBA-6,8,16,,limits_removable,16,693,16,1,,,8,128.0,128.0,66.86291486291486,,,,,,,v2,256
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-6,12,24,,limits_removable,24,,,,,,12,,,,,1065,1.7990999936046137e-05,24,1.3579999631474493e-06,1,v2,4096
+4096,1142784,True,explicit_rows_with_indices,,,,,,,,0.006545097999946847,,,,,,,,,,,LTBA-6,,,,limits_removable,,,,,,,12,,,,,,,49152,,2048,v2,4096
+4096,1142784,True,explicit_materialized,,,,,,,,0.0034869930000240856,,,,,,,,,,,LTBA-6,,,,limits_removable,,,,,,,12,,,,,,,,0.00034944399999403686,2048,v2,4096
+,,True,bdd_factor_payload_model,True,,,16345,4096,True,4096,,,,,,,,,,,24,LTBA-6,,,,limits_removable,,,,,4096,,12,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,24,,1,v2,4096
+,,True,equivalence_check,,,,,,,4096,,4096,,,,,,,,,,LTBA-6,,,True,limits_removable,,,,,,exhaustive,12,,,,,,,,,,v2,4096
+,,,comparison_summary,,24,4096,16345,,True,,,,4096,True,exhaustive,4096,1142784,True,49152,2048,,LTBA-6,12,24,,limits_removable,24,1065,24,1,,,12,2048.0,2048.0,1073.0366197183098,,,,,,,v2,4096
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-6,16,32,,limits_removable,32,,,,,,16,,,,,1445,2.3579000071549672e-05,32,1.8440000530972611e-06,1,v2,65536
+,,False,explicit_rows_with_indices,,,,,,,,,,,,,,,,,,,LTBA-6,,,,limits_removable,,,,,,,16,,,,skipped: total branches 65536 > max_materialize 4096,,,,,,v2,65536
+,,False,explicit_materialized,,,,,,,,,,,,,,,,,,,LTBA-6,,,,limits_removable,,,,,,,16,,,,skipped: total branches 65536 > max_materialize 4096,,,,,,v2,65536
+,,True,bdd_factor_payload_model,True,,,,,False,65536,,,,,,,,,,,32,LTBA-6,,,,limits_removable,,,,,65536,,16,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,32,,1,v2,65536
+,,True,equivalence_check,,,,,,,65536,,256,,,,,,,,,,LTBA-6,,,True,limits_removable,,,,,,sampled,16,,,,,,,,,,v2,65536
+,,,comparison_summary,,32,65536,,,False,,,,256,True,sampled,,,False,,,,LTBA-6,16,32,,limits_removable,32,1445,32,1,,,16,,,,,,,,,,v2,65536
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-7,1,2,,solver_provenance,2,,,,,,1,,,,,112,2.3009999949863413e-06,2,1.4519999922413263e-06,1,v2,2
+2,59,True,explicit_rows_with_indices,,,,,,,,5.396000005930546e-06,,,,,,,,,,,LTBA-7,,,,solver_provenance,,,,,,,1,,,,,,,2,,1,v2,2
+2,59,True,explicit_materialized,,,,,,,,2.1760000663562096e-06,,,,,,,,,,,LTBA-7,,,,solver_provenance,,,,,,,1,,,,,,,,1.2299999525566818e-06,1,v2,2
+,,True,bdd_factor_payload_model,True,,,2,2,True,2,,,,,,,,,,,2,LTBA-7,,,,solver_provenance,,,,,2,,1,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,2,,1,v2,2
+,,True,equivalence_check,,,,,,,2,,2,,,,,,,,,,LTBA-7,,,True,solver_provenance,,,,,,exhaustive,1,,,,,,,,,,v2,2
+,,,comparison_summary,,2,2,2,,True,,,,2,True,exhaustive,2,59,True,2,1,,LTBA-7,1,2,,solver_provenance,2,112,2,1,,,1,1.0,1.0,0.5267857142857143,,,,,,,v2,2
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-7,2,4,,solver_provenance,4,,,,,,2,,,,,227,3.791000040109793e-06,4,1.1339999446136062e-06,1,v2,4
+4,248,True,explicit_rows_with_indices,,,,,,,,5.951000048298738e-06,,,,,,,,,,,LTBA-7,,,,solver_provenance,,,,,,,2,,,,,,,8,,2,v2,4
+4,248,True,explicit_materialized,,,,,,,,2.960999950119003e-06,,,,,,,,,,,LTBA-7,,,,solver_provenance,,,,,,,2,,,,,,,,1.1549999499038677e-06,2,v2,4
+,,True,bdd_factor_payload_model,True,,,7,4,True,4,,,,,,,,,,,4,LTBA-7,,,,solver_provenance,,,,,4,,2,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,4,,1,v2,4
+,,True,equivalence_check,,,,,,,4,,4,,,,,,,,,,LTBA-7,,,True,solver_provenance,,,,,,exhaustive,2,,,,,,,,,,v2,4
+,,,comparison_summary,,4,4,7,,True,,,,4,True,exhaustive,4,248,True,8,2,,LTBA-7,2,4,,solver_provenance,4,227,4,1,,,2,2.0,2.0,1.092511013215859,,,,,,,v2,4
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-7,4,8,,solver_provenance,8,,,,,,4,,,,,457,6.970999947952805e-06,8,1.0239999710393022e-06,1,v2,16
+16,2032,True,explicit_rows_with_indices,,,,,,,,1.78749999122374e-05,,,,,,,,,,,LTBA-7,,,,solver_provenance,,,,,,,4,,,,,,,64,,8,v2,16
+16,2032,True,explicit_materialized,,,,,,,,9.019000003718247e-06,,,,,,,,,,,LTBA-7,,,,solver_provenance,,,,,,,4,,,,,,,,2.0690000610557036e-06,8,v2,16
+,,True,bdd_factor_payload_model,True,,,49,16,True,16,,,,,,,,,,,8,LTBA-7,,,,solver_provenance,,,,,16,,4,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,8,,1,v2,16
+,,True,equivalence_check,,,,,,,16,,16,,,,,,,,,,LTBA-7,,,True,solver_provenance,,,,,,exhaustive,4,,,,,,,,,,v2,16
+,,,comparison_summary,,8,16,49,,True,,,,16,True,exhaustive,16,2032,True,64,8,,LTBA-7,4,8,,solver_provenance,8,457,8,1,,,4,8.0,8.0,4.446389496717725,,,,,,,v2,16
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-7,8,16,,solver_provenance,16,,,,,,8,,,,,917,1.6393999999309017e-05,16,1.2399999604895129e-06,1,v2,256
+256,65792,True,explicit_rows_with_indices,,,,,,,,0.0003022659999487587,,,,,,,,,,,LTBA-7,,,,solver_provenance,,,,,,,8,,,,,,,2048,,128,v2,256
+256,65792,True,explicit_materialized,,,,,,,,0.00017440300007365295,,,,,,,,,,,LTBA-7,,,,solver_provenance,,,,,,,8,,,,,,,,1.6458999994029e-05,128,v2,256
+,,True,bdd_factor_payload_model,True,,,997,256,True,256,,,,,,,,,,,16,LTBA-7,,,,solver_provenance,,,,,256,,8,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,16,,1,v2,256
+,,True,equivalence_check,,,,,,,256,,256,,,,,,,,,,LTBA-7,,,True,solver_provenance,,,,,,exhaustive,8,,,,,,,,,,v2,256
+,,,comparison_summary,,16,256,997,,True,,,,256,True,exhaustive,256,65792,True,2048,128,,LTBA-7,8,16,,solver_provenance,16,917,16,1,,,8,128.0,128.0,71.74700109051254,,,,,,,v2,256
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-7,12,24,,solver_provenance,24,,,,,,12,,,,,1392,1.8893999936153705e-05,24,1.4290000081018661e-06,1,v2,4096
+4096,1609728,True,explicit_rows_with_indices,,,,,,,,0.011204250999981014,,,,,,,,,,,LTBA-7,,,,solver_provenance,,,,,,,12,,,,,,,49152,,2048,v2,4096
+4096,1609728,True,explicit_materialized,,,,,,,,0.0033073129999365847,,,,,,,,,,,LTBA-7,,,,solver_provenance,,,,,,,12,,,,,,,,0.000361020000013923,2048,v2,4096
+,,True,bdd_factor_payload_model,True,,,16345,4096,True,4096,,,,,,,,,,,24,LTBA-7,,,,solver_provenance,,,,,4096,,12,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,24,,1,v2,4096
+,,True,equivalence_check,,,,,,,4096,,4096,,,,,,,,,,LTBA-7,,,True,solver_provenance,,,,,,exhaustive,12,,,,,,,,,,v2,4096
+,,,comparison_summary,,24,4096,16345,,True,,,,4096,True,exhaustive,4096,1609728,True,49152,2048,,LTBA-7,12,24,,solver_provenance,24,1392,24,1,,,12,2048.0,2048.0,1156.4137931034484,,,,,,,v2,4096
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-7,16,32,,solver_provenance,32,,,,,,16,,,,,1872,2.4978999931590806e-05,32,1.8520000821808935e-06,1,v2,65536
+,,False,explicit_rows_with_indices,,,,,,,,,,,,,,,,,,,LTBA-7,,,,solver_provenance,,,,,,,16,,,,skipped: total branches 65536 > max_materialize 4096,,,,,,v2,65536
+,,False,explicit_materialized,,,,,,,,,,,,,,,,,,,LTBA-7,,,,solver_provenance,,,,,,,16,,,,skipped: total branches 65536 > max_materialize 4096,,,,,,v2,65536
+,,True,bdd_factor_payload_model,True,,,,,False,65536,,,,,,,,,,,32,LTBA-7,,,,solver_provenance,,,,,65536,,16,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,32,,1,v2,65536
+,,True,equivalence_check,,,,,,,65536,,256,,,,,,,,,,LTBA-7,,,True,solver_provenance,,,,,,sampled,16,,,,,,,,,,v2,65536
+,,,comparison_summary,,32,65536,,,False,,,,256,True,sampled,,,False,,,,LTBA-7,16,32,,solver_provenance,32,1872,32,1,,,16,,,,,,,,,,v2,65536
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-MIXED,7,13,,mixed_all_guarded_layers,15,,,,,,1,,,,,795,1.2212000001454726e-05,15,1.5210000583465444e-06,1,v2,192
+192,30496,True,explicit_rows_with_indices,,,,,,,,0.0002311120000513256,,,,,,,,,,,LTBA-MIXED,,,,mixed_all_guarded_layers,,,,,,,1,,,,,,,1344,,96,v2,192
+192,30496,True,explicit_materialized,,,,,,,,0.00013277400000788475,,,,,,,,,,,LTBA-MIXED,,,,mixed_all_guarded_layers,,,,,,,1,,,,,,,,1.5609999991283985e-05,96,v2,192
+,,True,bdd_factor_payload_model,True,,,780,192,True,192,,,,,,,,,,,15,LTBA-MIXED,,,,mixed_all_guarded_layers,,,,,192,,1,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,15,,1,v2,192
+,,True,equivalence_check,,,,,,,192,,192,,,,,,,,,,LTBA-MIXED,,,True,mixed_all_guarded_layers,,,,,,exhaustive,1,,,,,,,,,,v2,192
+,,,comparison_summary,,15,192,780,,True,,,,192,True,exhaustive,192,30496,True,1344,96,,LTBA-MIXED,7,13,,mixed_all_guarded_layers,15,795,15,1,,,1,89.6,96.0,38.359748427672955,,,,,,,v2,192
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-MIXED,14,26,,mixed_all_guarded_layers,30,,,,,,2,,,,,1530,2.4758999984442198e-05,30,1.8079999790643342e-06,1,v2,36864
+,,False,explicit_rows_with_indices,,,,,,,,,,,,,,,,,,,LTBA-MIXED,,,,mixed_all_guarded_layers,,,,,,,2,,,,skipped: total branches 36864 > max_materialize 4096,,,,,,v2,36864
+,,False,explicit_materialized,,,,,,,,,,,,,,,,,,,LTBA-MIXED,,,,mixed_all_guarded_layers,,,,,,,2,,,,skipped: total branches 36864 > max_materialize 4096,,,,,,v2,36864
+,,True,bdd_factor_payload_model,True,,,,,False,36864,,,,,,,,,,,30,LTBA-MIXED,,,,mixed_all_guarded_layers,,,,,36864,,2,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,30,,1,v2,36864
+,,True,equivalence_check,,,,,,,36864,,256,,,,,,,,,,LTBA-MIXED,,,True,mixed_all_guarded_layers,,,,,,sampled,2,,,,,,,,,,v2,36864
+,,,comparison_summary,,30,36864,,,False,,,,256,True,sampled,,,False,,,,LTBA-MIXED,14,26,,mixed_all_guarded_layers,30,1530,30,1,,,2,,,,,,,,,,v2,36864
+,,True,ltba_local,,,,,,,,,,,,,,,,,,,LTBA-MIXED,21,39,,mixed_all_guarded_layers,45,,,,,,3,,,,,2265,3.765199994631985e-05,45,2.038000047832611e-06,1,v2,7077888
+,,False,explicit_rows_with_indices,,,,,,,,,,,,,,,,,,,LTBA-MIXED,,,,mixed_all_guarded_layers,,,,,,,3,,,,skipped: total branches 7077888 > max_materialize 4096,,,,,,v2,7077888
+,,False,explicit_materialized,,,,,,,,,,,,,,,,,,,LTBA-MIXED,,,,mixed_all_guarded_layers,,,,,,,3,,,,skipped: total branches 7077888 > max_materialize 4096,,,,,,v2,7077888
+,,True,bdd_factor_payload_model,True,,,,,False,7077888,,,,,,,,,,,45,LTBA-MIXED,,,,mixed_all_guarded_layers,,,,,7077888,,3,,,,BDD guard skeleton plus external factor-local algebraic payload model; large skeletons may be skipped by path cap.,,,45,,1,v2,7077888
+,,True,equivalence_check,,,,,,,7077888,,256,,,,,,,,,,LTBA-MIXED,,,True,mixed_all_guarded_layers,,,,,,sampled,3,,,,,,,,,,v2,7077888
+,,,comparison_summary,,45,7077888,,,False,,,,256,True,sampled,,,False,,,,LTBA-MIXED,21,39,,mixed_all_guarded_layers,45,2265,45,1,,,3,,,,,,,,,,v2,7077888
