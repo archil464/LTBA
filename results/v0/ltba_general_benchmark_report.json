@@ -1,0 +1,18 @@
+# Benchmark Results
+
+This directory contains the LTBA general benchmark outputs from v0 through v4.
+
+The most important result set is `v4/`, especially:
+
+- `ltba_general_benchmark_v4_report.json`
+- `ltba_general_benchmark_v4_summary.csv`
+- `ltba_general_benchmark_v4_break_even.csv`
+- `ltba_general_benchmark_v4_equivalence.csv`
+
+Interpretation rule:
+
+- Use `winner_fair_total` for fair total runtime comparisons.
+- Treat `bdd_payload_only_*_lower_bound` rows as lower bounds only, not full-system BDD wins.
+- The fair BDD comparison is `bdd_full_cow_payload`.
+
+v4 measures cold construction plus `k` repeated equal-work rewrites.
