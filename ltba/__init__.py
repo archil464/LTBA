@@ -2,12 +2,13 @@
 
 Public API: Guard, LocalBranch, LTBAExpr, LTBAComponent, registry
 """
-from .core import Guard, LocalBranch, LTBAExpr, LTBAComponent, ComponentRegistry, registry  # re-export
+from .core import Guard, LocalBranch, LocalBranchGroup, LTBAExpr, LTBAComponent, ComponentRegistry, registry  # re-export
 from .components import install_default_components
 
 __all__ = [
     "Guard",
     "LocalBranch",
+    "LocalBranchGroup",
     "LTBAExpr",
     "LTBAComponent",
     "ComponentRegistry",

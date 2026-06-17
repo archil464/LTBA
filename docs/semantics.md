@@ -5,15 +5,33 @@ repository. It is written for reviewers evaluating design choices and
 reproducibility.
 
 What an LTBA expression denotes
-- An `LTBAExpr` denotes a base algebraic payload together with a collection
-  of local branch records. Each local branch record pairs an atomic guard with
-  an algebraic payload value and an optional tag.
+- An `LTBAExpr` denotes a base algebraic payload plus zero or more local
+  branch groups. Each `LocalBranchGroup` represents alternatives generated
+  by a single algebraic operation or transformation.
+
+- A `LocalBranchGroup` contains a `group_id` and a tuple of `LocalBranch`
+  alternatives. Branches in the same group are alternatives; different
+  groups are independent unless guard analysis proves otherwise.
 
 Local branch groups and interpretation
-- Local branches are stored near the algebraic factor that introduced them.
-- Independent local branch groups may be combined by Cartesian product to
-  produce a global explicit representation (Piecewise-like). The prototype
-  does not automatically perform this expansion.
+- Local branch groups are stored near the algebraic factor that introduced
+  them. Materializing an LTBA expression means forming the Cartesian product
+  across independent groups to produce explicit global cases.
+
+Example: two groups with two alternatives each
+
+```
+LTBAExpr(
+  base="f(x)",
+  branch_groups=(
+    LocalBranchGroup("g1", (LocalBranch(Guard("a"), "A"), LocalBranch(Guard("not a"), "B"))),
+    LocalBranchGroup("g2", (LocalBranch(Guard("b"), "C"), LocalBranch(Guard("not b"), "D"))),
+  )
+)
+```
+
+Materializing the above example yields four global cases with combined guards
+and combined payloads: (a and b -> A|C), (a and not b -> A|D), (not a and b -> B|C), (not a and not b -> B|D).
 
 Guard provenance
 - Guards are opaque provenance labels in this prototype. They are not
@@ -27,7 +45,9 @@ Differences from Piecewise and BDD+payload
   external payload tables and materialization.
 
 Assumptions and limitations
-- The prototype treats guards as strings only and does not solve division-by-zero
-  or other guard satisfiability problems.
-- Materialization may grow exponentially; conversion helpers should only be
-  used for small examples and tests.
+- Guards are opaque provenance labels in this prototype; we do not attempt
+  logical simplification, satisfiability checking, or division-by-zero
+  resolution.
+- Materialization can grow exponentially in the number of independent groups
+  and arities; use the provided conversion helpers only for small examples
+  and tests.

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 set -euo pipefail
 
 echo "Rebuild script deprecated: source is now tracked under ltba/"
@@ -220,3 +220,4 @@ MD
 echo "LTBA general benchmark patch applied."
 echo "Run: PYTHONPATH=. pytest -q tests/conformance/test_ltba_general_components.py"
 echo "Run: PYTHONPATH=. python benchmarks/ltba_general_benchmark.py --sizes 1,2,4,8,12,16"
+

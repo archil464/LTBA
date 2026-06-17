@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 set -euo pipefail
 
 PY=${PYTHON:-python}
@@ -13,3 +13,4 @@ echo "[LTBA] Running benchmark smoke"
 $PY -m benchmarks.benchmark_v4 --smoke
 
 echo "[LTBA] Done"
+
