@@ -1,0 +1,12 @@
+[tool.poetry]
+name = "ltba"
+version = "0.1.0"
+description = "Locality-Preserving Tagged Branch Algebra prototype"
+authors = ["LTBA authors <noreply@example.com>"]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest]
+addopts = "-q"
