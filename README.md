@@ -31,7 +31,13 @@ Installation
 Clone the repository and (optionally) create a virtual environment. Then:
 
 ```bash
-python -m pip install -r requirements.txt  # optional extras for full benchmarks
+python -m pip install -e .
+
+# Optional developer/test tools
+python -m pip install -e .[dev]
+
+# Optional benchmark extras (BDD baseline)
+python -m pip install -e .[benchmark]
 ```
 
 Quickstart
