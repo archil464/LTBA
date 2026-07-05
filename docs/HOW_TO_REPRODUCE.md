@@ -91,3 +91,20 @@ Create a clean review archive from git:
 
 ```bash
 git archive --format=zip --output=ltba-review.zip HEAD
+```
+
+## 6) Use Case Pack v1 (Practical Comparisons)
+
+Run scenario-based LTBA vs explicit vs BDD comparisons:
+
+```bash
+python -m benchmarks.use_case_pack_v1 --reproduce-results --repeats 7
+```
+
+Outputs are written to `results/use_cases_v1/`:
+
+- `use_case_pack_v1_report.json`
+- `use_case_pack_v1_summary.csv`
+- `use_case_pack_v1_winners.csv`
+
+See `docs/USE_CASE_PACK_V1.md` for scenario definitions and metric semantics.

@@ -31,3 +31,11 @@ Current v4 runner enhancements:
 Main v4 result:
 
 For nontrivial guarded workloads, LTBA wins fair total runtime against explicit materialization and full BDD+payload construction.
+
+## Use Case Pack v1
+
+Scenario-focused comparison pack for practical usage narratives.
+
+- compares `ltba`, `explicit` (piecewise-style), and optional `bdd`
+- reports time to execute, rewrite-one latency, and branch-count proxies
+- emits winner tables per scenario for fast review

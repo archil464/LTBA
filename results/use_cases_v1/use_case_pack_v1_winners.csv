@@ -1,0 +1,4 @@
+scenario_id,winner_time_to_execute,winner_rewrite_one_latency,winner_branch_count
+uc1_guarded_division_medium,ltba,ltba,ltba
+uc2_radicals_sign_split,ltba,ltba,ltba
+uc3_mixed_small_fastpath,explicit,explicit,ltba
