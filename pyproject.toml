@@ -12,6 +12,7 @@ license = { text = "MIT" }
 [project.optional-dependencies]
 dev = [
 	"pytest>=8",
+	"hypothesis>=6",
 ]
 benchmark = [
 	"dd>=0.6",
