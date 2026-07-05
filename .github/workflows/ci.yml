@@ -14,10 +14,10 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -30,4 +30,37 @@ jobs:
         run: python -m pytest
 
       - name: Run benchmark smoke check
-        run: python -m benchmarks.benchmark_v4 --smoke
+        run: |
+          python -m benchmarks.benchmark_v4 --smoke | tee benchmark_smoke.json
+
+      - name: Verify benchmark smoke output
+        run: |
+          python - << 'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          p = Path("benchmark_smoke.json")
+            raw = p.read_bytes()
+            payload = None
+            for enc in ("utf-8-sig", "utf-16", "utf-16-le"):
+              try:
+                payload = json.loads(raw.decode(enc))
+                break
+              except Exception:
+                pass
+            if payload is None:
+              raise SystemExit("Could not decode benchmark_smoke.json as JSON")
+          rows = payload.get("rows")
+          if not isinstance(rows, int) or rows <= 0:
+              raise SystemExit(f"Invalid smoke output: {payload}")
+          print(f"Smoke benchmark rows={rows}")
+
+          summary = Path(os.environ["GITHUB_STEP_SUMMARY"])
+          summary.write_text(
+              "## Benchmark Smoke Verification\n\n"
+              f"- rows: {rows}\n"
+              f"- file: `{p}`\n",
+              encoding="utf-8",
+          )
+          PY
