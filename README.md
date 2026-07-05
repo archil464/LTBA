@@ -67,11 +67,16 @@ Run Use Case Pack v1 comparisons (LTBA vs explicit vs BDD)
 python -m benchmarks.use_case_pack_v1 --reproduce-results --repeats 7
 ```
 
+Published findings snapshot:
+
+- `docs/USE_CASE_PACK_V1_FINDINGS.md`
+
 Repository layout
 
 - `ltba/` — tracked source package (core model, components, conversion helpers)
 - `benchmarks/` — reproducible benchmark runners (v4)
 - `docs/USE_CASE_PACK_V1.md` — scenario comparison pack and metrics definitions
+- `docs/USE_CASE_PACK_V1_FINDINGS.md` — current published comparison outcomes
 - `docs/` — human-readable semantics and notes
 - `tests/` — pytest test-suite and smoke checks
 - `results/` — benchmark outputs (generated via runner)

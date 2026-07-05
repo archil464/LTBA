@@ -1,0 +1,55 @@
+name: Use Case Pack Release Refresh
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-use-case-pack:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install package and dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .[dev]
+
+      - name: Regenerate use-case artifacts
+        run: python -m benchmarks.use_case_pack_v1 --reproduce-results --repeats 7
+
+      - name: Refresh findings document
+        run: python scripts/generate_use_case_findings.py
+
+      - name: Validate test suite
+        run: python -m pytest -q
+
+      - name: Commit refreshed artifacts to default branch
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet -- docs/USE_CASE_PACK_V1_FINDINGS.md results/use_cases_v1; then
+            echo "No artifact changes detected."
+            exit 0
+          fi
+
+          git add docs/USE_CASE_PACK_V1_FINDINGS.md results/use_cases_v1
+          git commit -m "chore: refresh use case pack findings for ${GITHUB_REF_NAME}"
+          git push origin HEAD:${DEFAULT_BRANCH}

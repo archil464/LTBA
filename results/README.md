@@ -28,3 +28,17 @@ Primary files:
 - `ltba_general_benchmark_v4_break_even.csv`
 - `ltba_general_benchmark_v4_timing_rows.csv`
 - `ltba_general_benchmark_v4_report.json`
+
+## use_cases_v1
+
+Scenario-oriented LTBA vs explicit vs BDD comparison outputs.
+
+Primary files:
+
+- `use_case_pack_v1_summary.csv`
+- `use_case_pack_v1_winners.csv`
+- `use_case_pack_v1_report.json`
+
+Interpretation summary is published at:
+
+- `docs/USE_CASE_PACK_V1_FINDINGS.md`

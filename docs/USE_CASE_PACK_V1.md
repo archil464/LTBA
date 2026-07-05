@@ -41,6 +41,7 @@ Full results run:
 
 ```bash
 python -m benchmarks.use_case_pack_v1 --reproduce-results --repeats 7
+python scripts/generate_use_case_findings.py
 ```
 
 Target selected scenarios only:
@@ -59,3 +60,7 @@ Written to `results/use_cases_v1/` when `--reproduce-results` is provided:
 
 `use_case_pack_v1_summary.csv` is row-oriented (scenario x backend).
 `use_case_pack_v1_winners.csv` is scenario-oriented and helps quick comparison.
+
+Published findings from the latest run:
+
+- `docs/USE_CASE_PACK_V1_FINDINGS.md`

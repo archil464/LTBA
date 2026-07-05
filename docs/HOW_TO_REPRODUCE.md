@@ -99,6 +99,7 @@ Run scenario-based LTBA vs explicit vs BDD comparisons:
 
 ```bash
 python -m benchmarks.use_case_pack_v1 --reproduce-results --repeats 7
+python scripts/generate_use_case_findings.py
 ```
 
 Outputs are written to `results/use_cases_v1/`:

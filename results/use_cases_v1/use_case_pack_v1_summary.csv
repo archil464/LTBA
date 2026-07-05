@@ -1,10 +1,10 @@
 scenario_id,scenario_title,backend,trials,time_to_execute_s,time_to_execute_ms,rewrite_one_latency_s,rewrite_one_latency_ms,branch_count,branch_metric
-uc1_guarded_division_medium,Guarded Division Medium,ltba,3,2.889998722821474e-05,0.02889998722821474,4.200031980872154e-06,0.004200031980872154,12,local_branch_count
-uc1_guarded_division_medium,Guarded Division Medium,explicit,3,5.830003647133708e-05,0.05830003647133708,1.1200027074664831e-05,0.011200027074664831,64,explicit_case_count
+uc1_guarded_division_medium,Guarded Division Medium,ltba,3,3.1500065233558416e-05,0.031500065233558416,3.999972250312567e-06,0.003999972250312567,12,local_branch_count
+uc1_guarded_division_medium,Guarded Division Medium,explicit,3,6.86999992467463e-05,0.0686999992467463,1.1999974958598614e-05,0.011999974958598614,64,explicit_case_count
 uc1_guarded_division_medium,Guarded Division Medium,bdd,3,,,,,,bdd_path_count
-uc2_radicals_sign_split,Radicals Sign Split,ltba,3,3.069994272664189e-05,0.030699942726641893,3.100023604929447e-06,0.003100023604929447,16,local_branch_count
-uc2_radicals_sign_split,Radicals Sign Split,explicit,3,0.0002586999908089638,0.2586999908089638,5.339999916031957e-05,0.05339999916031957,256,explicit_case_count
+uc2_radicals_sign_split,Radicals Sign Split,ltba,3,2.9999995604157448e-05,0.029999995604157448,2.900022082030773e-06,0.002900022082030773,16,local_branch_count
+uc2_radicals_sign_split,Radicals Sign Split,explicit,3,0.00028360000578686595,0.28360000578686595,5.339999916031957e-05,0.05339999916031957,256,explicit_case_count
 uc2_radicals_sign_split,Radicals Sign Split,bdd,3,,,,,,bdd_path_count
-uc3_mixed_small_fastpath,Mixed Small Fastpath,ltba,3,3.700028173625469e-06,0.003700028173625469,7.00005330145359e-07,0.000700005330145359,0,local_branch_count
-uc3_mixed_small_fastpath,Mixed Small Fastpath,explicit,3,9.00006853044033e-07,0.000900006853044033,5.00003807246685e-07,0.000500003807246685,1,explicit_case_count
+uc3_mixed_small_fastpath,Mixed Small Fastpath,ltba,3,3.600027412176132e-06,0.003600027412176132,6.00004568696022e-07,0.000600004568696022,0,local_branch_count
+uc3_mixed_small_fastpath,Mixed Small Fastpath,explicit,3,9.00006853044033e-07,0.000900006853044033,4.00003045797348e-07,0.000400003045797348,1,explicit_case_count
 uc3_mixed_small_fastpath,Mixed Small Fastpath,bdd,3,,,,,,bdd_path_count
