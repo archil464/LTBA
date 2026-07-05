@@ -7,7 +7,7 @@ requires-python = ">=3.10"
 authors = [
 	{ name = "LTBA contributors" }
 ]
-license = { text = "MIT" }
+license = "MIT"
 
 [project.optional-dependencies]
 dev = [
@@ -21,6 +21,10 @@ benchmark = [
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["ltba*", "benchmarks*"]
+exclude = ["tests*", "archive*", "results*", "review_packet*", "docs*", "scripts*"]
 
 [tool.pytest.ini_options]
 addopts = ["-q"]
