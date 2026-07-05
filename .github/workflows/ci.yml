@@ -41,15 +41,15 @@ jobs:
           from pathlib import Path
 
           p = Path("benchmark_smoke.json")
-            raw = p.read_bytes()
-            payload = None
-            for enc in ("utf-8-sig", "utf-16", "utf-16-le"):
+          raw = p.read_bytes()
+          payload = None
+          for enc in ("utf-8-sig", "utf-16", "utf-16-le"):
               try:
-                payload = json.loads(raw.decode(enc))
-                break
+                  payload = json.loads(raw.decode(enc))
+                  break
               except Exception:
-                pass
-            if payload is None:
+                  pass
+          if payload is None:
               raise SystemExit("Could not decode benchmark_smoke.json as JSON")
           rows = payload.get("rows")
           if not isinstance(rows, int) or rows <= 0:
