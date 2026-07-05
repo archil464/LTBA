@@ -50,6 +50,12 @@ python -m benchmarks.benchmark_v4 --smoke
 
 Expected smoke output is a JSON object with the row count.
 
+Optional deeper smoke run with repeats and explicit sizes:
+
+```bash
+python -m benchmarks.benchmark_v4 --smoke --repeats 5 --sizes 1,2,4
+```
+
 ## 3) Regenerate v4 Results
 
 Run the full reproducible benchmark pass:
@@ -58,10 +64,20 @@ Run the full reproducible benchmark pass:
 python -m benchmarks.benchmark_v4 --reproduce-results
 ```
 
+Higher-rigor run (recommended for claims) with repeated trials:
+
+```bash
+python -m benchmarks.benchmark_v4 --reproduce-results --repeats 7 --include-trials
+```
+
 Generated files are written to `results/v4/`:
 
 - `ltba_general_benchmark_v4_report.json`
 - `ltba_general_benchmark_v4_summary.csv`
+
+The JSON report includes run metadata (`generated_at_utc`, Python/platform
+details), aggregate rows, and optional per-trial rows when
+`--include-trials` is supplied.
 
 ## 4) Notes for Reviewers
 

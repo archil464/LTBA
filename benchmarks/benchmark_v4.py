@@ -2,12 +2,18 @@
 
 Provides a fast `--smoke` mode and a reproducible `--reproduce-results` mode
 that writes CSV and JSON outputs to `results/v4/`.
+
+This version also supports repeated trials with aggregate statistics to make
+comparisons less sensitive to per-run noise.
 """
 from __future__ import annotations
 
 import argparse
 import csv
+import datetime as _dt
 import json
+import platform
+import statistics
 import time
 from pathlib import Path
 from typing import List, Dict
@@ -20,6 +26,38 @@ def timed(fn):
     t0 = time.perf_counter()
     result = fn()
     return result, time.perf_counter() - t0
+
+
+AGGREGATE_KEYS = [
+    "ltba_build_time",
+    "explicit_build_time",
+    "bdd_build_time",
+    "ltba_rewrite_one_time",
+    "explicit_rewrite_one_time",
+    "bdd_rewrite_one_time",
+    "ltba_rewrite_all_time",
+    "explicit_rewrite_all_time",
+    "bdd_rewrite_all_time",
+    "fair_amortized_time_ltba",
+    "fair_amortized_time_explicit",
+    "fair_amortized_time_bdd",
+]
+
+
+def _is_number(value: object) -> bool:
+    return isinstance(value, (int, float))
+
+
+def _parse_sizes(smoke: bool, raw_sizes: str) -> List[int]:
+    if raw_sizes:
+        out = []
+        for tok in raw_sizes.split(","):
+            tok = tok.strip()
+            if not tok:
+                continue
+            out.append(int(tok))
+        return out
+    return [1, 2, 4] if smoke else [1, 2, 4, 8]
 
 
 def run_once(component_name: str, n: int) -> Dict[str, object]:
@@ -58,10 +96,8 @@ def run_once(component_name: str, n: int) -> Dict[str, object]:
             # rewrite one: touch cases containing first group's first branch
             def explicit_rewrite_one():
                 touched = 0
-                new = []
                 if not cases:
                     return 0
-                target_tag = None
                 # pick first group's first branch tag if present
                 first_group = expr.branch_groups[0] if expr.branch_groups else None
                 if first_group and first_group.branches:
@@ -155,19 +191,82 @@ def run_once(component_name: str, n: int) -> Dict[str, object]:
     return row
 
 
+def aggregate_trials(component_name: str, n: int, trial_rows: List[Dict[str, object]]) -> Dict[str, object]:
+    row: Dict[str, object] = {
+        "family": component_name,
+        "n": n,
+        "trials": len(trial_rows),
+    }
+
+    # Keep canonical keys populated with median values for backward-compatible CSVs.
+    for key in AGGREGATE_KEYS:
+        vals = [r[key] for r in trial_rows if key in r and _is_number(r[key])]
+        if not vals:
+            row[key] = None
+            continue
+        med = float(statistics.median(vals))
+        row[key] = med
+        row[f"{key}_mean"] = float(sum(vals) / len(vals))
+        row[f"{key}_min"] = float(min(vals))
+        row[f"{key}_max"] = float(max(vals))
+
+    # Carry representative non-aggregated fields.
+    first = trial_rows[0] if trial_rows else {}
+    for key in ("ltba_repr_size", "explicit_actual_branch_count", "bdd_path_count", "explicit_error"):
+        row[key] = first.get(key)
+
+    # Majority vote winner across repeated trials; ties resolve to deterministic lexical order.
+    votes: Dict[str, int] = {}
+    for r in trial_rows:
+        winner = r.get("winner_fair_amortized")
+        if isinstance(winner, str):
+            votes[winner] = votes.get(winner, 0) + 1
+    if votes:
+        row["winner_fair_amortized"] = sorted(votes.items(), key=lambda kv: (-kv[1], kv[0]))[0][0]
+        row["winner_vote_count"] = max(votes.values())
+    else:
+        row["winner_fair_amortized"] = None
+        row["winner_vote_count"] = 0
+
+    return row
+
+
 def run(args: argparse.Namespace) -> Dict[str, object]:
-    names = registry.names() if args.components == "all" else [x.strip() for x in args.components.split(",") if x.strip()]
-    sizes = [1, 2, 4] if args.smoke else [1, 2, 4, 8]
+    components = getattr(args, "components", "all")
+    names = registry.names() if components == "all" else [x.strip() for x in components.split(",") if x.strip()]
+    smoke = bool(getattr(args, "smoke", False))
+    sizes = _parse_sizes(smoke=smoke, raw_sizes=getattr(args, "sizes", ""))
+    repeats = max(1, int(getattr(args, "repeats", 1)))
+    include_trials = bool(getattr(args, "include_trials", False))
+
     rows: List[Dict[str, object]] = []
+    trial_rows: List[Dict[str, object]] = []
     for name in names:
         for n in sizes:
-            rows.append(run_once(name, n))
+            local_trials = [run_once(name, n) for _ in range(repeats)]
+            rows.append(aggregate_trials(name, n, local_trials))
+            if include_trials:
+                for idx, tr in enumerate(local_trials):
+                    with_trial = dict(tr)
+                    with_trial["trial_index"] = idx
+                    trial_rows.append(with_trial)
 
     report = {
         "benchmark": "LTBA general benchmark v4",
+        "schema_version": "v4.1",
+        "generated_at_utc": _dt.datetime.now(_dt.timezone.utc).isoformat(),
+        "environment": {
+            "python": platform.python_version(),
+            "platform": platform.platform(),
+            "machine": platform.machine(),
+        },
+        "repeats": repeats,
+        "sizes": sizes,
         "rows": rows,
         "claim": "LTBA preserves local branch provenance and avoids explicit global branch materialization.",
     }
+    if include_trials:
+        report["trial_rows"] = trial_rows
     return report
 
 
@@ -176,6 +275,9 @@ def main() -> None:
     p.add_argument("--smoke", action="store_true", help="run quick smoke checks")
     p.add_argument("--reproduce-results", action="store_true", help="regenerate results/v4/")
     p.add_argument("--components", default="all", help="comma-separated or 'all'")
+    p.add_argument("--sizes", default="", help="comma-separated n sizes (overrides smoke/default sizes)")
+    p.add_argument("--repeats", type=int, default=1, help="number of repeated trials per family/size")
+    p.add_argument("--include-trials", action="store_true", help="include per-trial rows in JSON report")
     args = p.parse_args()
 
     report = run(args)
@@ -191,6 +293,7 @@ def main() -> None:
         fieldnames = [
             "family",
             "n",
+            "trials",
             "ltba_build_time",
             "explicit_build_time",
             "bdd_build_time",
@@ -204,6 +307,22 @@ def main() -> None:
             "fair_amortized_time_explicit",
             "fair_amortized_time_bdd",
             "winner_fair_amortized",
+            "winner_vote_count",
+            "ltba_build_time_mean",
+            "ltba_build_time_min",
+            "ltba_build_time_max",
+            "explicit_build_time_mean",
+            "explicit_build_time_min",
+            "explicit_build_time_max",
+            "fair_amortized_time_ltba_mean",
+            "fair_amortized_time_ltba_min",
+            "fair_amortized_time_ltba_max",
+            "fair_amortized_time_explicit_mean",
+            "fair_amortized_time_explicit_min",
+            "fair_amortized_time_explicit_max",
+            "fair_amortized_time_bdd_mean",
+            "fair_amortized_time_bdd_min",
+            "fair_amortized_time_bdd_max",
         ]
 
         with csv_path.open("w", newline="") as f:
