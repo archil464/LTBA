@@ -1,0 +1,821 @@
+{
+  "scope": "Exact univariate real formulas with LTBA no-op division. Same equality domain, supplied witness verification and per-site report. Witness discovery is not timed or automated. Both use the same exact source replay for active branches. LTBA additionally constructs its symbolic branch payloads. Five cold runs, cache clearing outside timing.",
+  "sympy": "1.14.0",
+  "verified_pairs": 55,
+  "rows": [
+    {
+      "case": "self cancellation",
+      "original": "x/x",
+      "replacement": "1",
+      "audit": {
+        "valid_on": "Union(Interval.open(-oo, 0), Interval.open(0, oo))",
+        "counterexample": {
+          "x": 0,
+          "original": "0",
+          "replacement": "1"
+        },
+        "division_sites": [
+          [
+            1,
+            1,
+            1,
+            4
+          ]
+        ],
+        "active_branches": [
+          {
+            "span": [
+              1,
+              1,
+              1,
+              4
+            ],
+            "divisor": "x",
+            "branch": "zero-no-op"
+          }
+        ]
+      },
+      "samples_ms": {
+        "ltba": [
+          9.983916,
+          10.169556,
+          9.301935,
+          9.272762,
+          8.567856
+        ],
+        "sympy_piecewise": [
+          6.095731,
+          9.502389,
+          6.199829,
+          5.351426,
+          5.312818
+        ]
+      },
+      "median_ms": {
+        "ltba": 9.301935,
+        "sympy_piecewise": 6.095731
+      }
+    },
+    {
+      "case": "removable singularity",
+      "original": "(x*x-1)/(x-1)",
+      "replacement": "x+1",
+      "audit": {
+        "valid_on": "Union(Interval.open(-oo, 1), Interval.open(1, oo))",
+        "counterexample": {
+          "x": 1,
+          "original": "0",
+          "replacement": "2"
+        },
+        "division_sites": [
+          [
+            1,
+            1,
+            1,
+            14
+          ]
+        ],
+        "active_branches": [
+          {
+            "span": [
+              1,
+              1,
+              1,
+              14
+            ],
+            "divisor": "x - 1",
+            "branch": "zero-no-op"
+          }
+        ]
+      },
+      "samples_ms": {
+        "ltba": [
+          18.571803,
+          19.605104,
+          19.037446,
+          18.838185,
+          20.338402
+        ],
+        "sympy_piecewise": [
+          26.086518,
+          22.896608,
+          25.144965,
+          30.595572,
+          40.388399
+        ]
+      },
+      "median_ms": {
+        "ltba": 19.037446,
+        "sympy_piecewise": 26.086518
+      }
+    },
+    {
+      "case": "multiply away divisor",
+      "original": "(7/x)*x",
+      "replacement": "7",
+      "audit": {
+        "valid_on": "Union(Interval.open(-oo, 0), Interval.open(0, oo))",
+        "counterexample": {
+          "x": 0,
+          "original": "0",
+          "replacement": "7"
+        },
+        "division_sites": [
+          [
+            1,
+            2,
+            1,
+            5
+          ]
+        ],
+        "active_branches": [
+          {
+            "span": [
+              1,
+              2,
+              1,
+              5
+            ],
+            "divisor": "x",
+            "branch": "zero-no-op"
+          }
+        ]
+      },
+      "samples_ms": {
+        "ltba": [
+          10.601398,
+          9.971528,
+          10.466935,
+          11.274456,
+          10.480626
+        ],
+        "sympy_piecewise": [
+          6.608936,
+          5.702536,
+          6.797372,
+          8.308856,
+          7.086638
+        ]
+      },
+      "median_ms": {
+        "ltba": 10.480626,
+        "sympy_piecewise": 6.797372
+      }
+    },
+    {
+      "case": "nested division",
+      "original": "(6/x)/2",
+      "replacement": "6/(2*x)",
+      "audit": {
+        "valid_on": "Union(Interval.open(-oo, 0), Interval.open(0, oo))",
+        "counterexample": {
+          "x": 0,
+          "original": "3",
+          "replacement": "6"
+        },
+        "division_sites": [
+          [
+            1,
+            1,
+            1,
+            8
+          ],
+          [
+            1,
+            2,
+            1,
+            5
+          ],
+          [
+            1,
+            11,
+            1,
+            18
+          ]
+        ],
+        "active_branches": [
+          {
+            "span": [
+              1,
+              1,
+              1,
+              8
+            ],
+            "divisor": "2",
+            "branch": "regular"
+          },
+          {
+            "span": [
+              1,
+              2,
+              1,
+              5
+            ],
+            "divisor": "x",
+            "branch": "zero-no-op"
+          },
+          {
+            "span": [
+              1,
+              11,
+              1,
+              18
+            ],
+            "divisor": "2 * x",
+            "branch": "zero-no-op"
+          }
+        ]
+      },
+      "samples_ms": {
+        "ltba": [
+          17.06737,
+          17.479692,
+          16.732053,
+          17.344078,
+          17.404009
+        ],
+        "sympy_piecewise": [
+          6.283715,
+          7.070073,
+          6.847497,
+          7.208442,
+          6.636418
+        ]
+      },
+      "median_ms": {
+        "ltba": 17.344078,
+        "sympy_piecewise": 6.847497
+      }
+    },
+    {
+      "case": "common denominator",
+      "original": "1/x+1/2",
+      "replacement": "(x+2)/(2*x)",
+      "audit": {
+        "valid_on": "Union(Interval.open(-oo, 0), Interval.open(0, oo))",
+        "counterexample": {
+          "x": 0,
+          "original": "3/2",
+          "replacement": "2"
+        },
+        "division_sites": [
+          [
+            1,
+            1,
+            1,
+            4
+          ],
+          [
+            1,
+            5,
+            1,
+            8
+          ],
+          [
+            1,
+            11,
+            1,
+            22
+          ]
+        ],
+        "active_branches": [
+          {
+            "span": [
+              1,
+              1,
+              1,
+              4
+            ],
+            "divisor": "x",
+            "branch": "zero-no-op"
+          },
+          {
+            "span": [
+              1,
+              5,
+              1,
+              8
+            ],
+            "divisor": "2",
+            "branch": "regular"
+          },
+          {
+            "span": [
+              1,
+              11,
+              1,
+              22
+            ],
+            "divisor": "2 * x",
+            "branch": "zero-no-op"
+          }
+        ]
+      },
+      "samples_ms": {
+        "ltba": [
+          20.421197,
+          20.511834,
+          18.448476,
+          18.827539,
+          18.964036
+        ],
+        "sympy_piecewise": [
+          7.73651,
+          8.681509,
+          7.359381,
+          7.026848,
+          7.620194
+        ]
+      },
+      "median_ms": {
+        "ltba": 18.964036,
+        "sympy_piecewise": 7.620194
+      }
+    },
+    {
+      "case": "reciprocal of reciprocal",
+      "original": "1/(1/x)",
+      "replacement": "x",
+      "audit": {
+        "valid_on": "Union(Interval.open(-oo, 0), Interval.open(0, oo))",
+        "counterexample": {
+          "x": 0,
+          "original": "1",
+          "replacement": "0"
+        },
+        "division_sites": [
+          [
+            1,
+            1,
+            1,
+            8
+          ],
+          [
+            1,
+            4,
+            1,
+            7
+          ]
+        ],
+        "active_branches": [
+          {
+            "span": [
+              1,
+              1,
+              1,
+              8
+            ],
+            "divisor": "1 / x",
+            "branch": "positive-one"
+          },
+          {
+            "span": [
+              1,
+              4,
+              1,
+              7
+            ],
+            "divisor": "x",
+            "branch": "zero-no-op"
+          }
+        ]
+      },
+      "samples_ms": {
+        "ltba": [
+          11.956137,
+          11.585165,
+          11.618877,
+          10.996206,
+          12.245513
+        ],
+        "sympy_piecewise": [
+          7.23364,
+          6.533263,
+          7.196754,
+          6.689028,
+          7.140901
+        ]
+      },
+      "median_ms": {
+        "ltba": 11.618877,
+        "sympy_piecewise": 7.140901
+      }
+    },
+    {
+      "case": "safe distributivity",
+      "original": "(x+1)*(x-1)",
+      "replacement": "x*x-1",
+      "audit": {
+        "valid_on": "Reals",
+        "counterexample": null,
+        "division_sites": [],
+        "active_branches": []
+      },
+      "samples_ms": {
+        "ltba": [
+          4.18254,
+          3.100195,
+          3.157821,
+          3.017369,
+          2.940633
+        ],
+        "sympy_piecewise": [
+          0.891968,
+          0.827401,
+          0.751866,
+          0.697764,
+          0.623573
+        ]
+      },
+      "median_ms": {
+        "ltba": 3.100195,
+        "sympy_piecewise": 0.751866
+      }
+    },
+    {
+      "case": "safe same divisor",
+      "original": "1/x+2/x",
+      "replacement": "3/x",
+      "audit": {
+        "valid_on": "Reals",
+        "counterexample": null,
+        "division_sites": [
+          [
+            1,
+            1,
+            1,
+            4
+          ],
+          [
+            1,
+            5,
+            1,
+            8
+          ],
+          [
+            1,
+            11,
+            1,
+            14
+          ]
+        ],
+        "active_branches": []
+      },
+      "samples_ms": {
+        "ltba": [
+          15.901929,
+          16.023072,
+          16.855439,
+          19.641239,
+          14.437275
+        ],
+        "sympy_piecewise": [
+          1.358683,
+          1.333505,
+          1.577984,
+          1.262878,
+          1.377942
+        ]
+      },
+      "median_ms": {
+        "ltba": 16.023072,
+        "sympy_piecewise": 1.358683
+      }
+    },
+    {
+      "case": "2 interacting guards",
+      "original": "(x-0)/(x-0)+(x-1)/(x-1)",
+      "replacement": "2",
+      "audit": {
+        "valid_on": "Union(Interval.open(-oo, 0), Interval.open(0, 1), Interval.open(1, oo))",
+        "counterexample": {
+          "x": 0,
+          "original": "1",
+          "replacement": "2"
+        },
+        "division_sites": [
+          [
+            1,
+            1,
+            1,
+            12
+          ],
+          [
+            1,
+            13,
+            1,
+            24
+          ]
+        ],
+        "active_branches": [
+          {
+            "span": [
+              1,
+              1,
+              1,
+              12
+            ],
+            "divisor": "x - 0",
+            "branch": "zero-no-op"
+          },
+          {
+            "span": [
+              1,
+              13,
+              1,
+              24
+            ],
+            "divisor": "x - 1",
+            "branch": "regular"
+          }
+        ]
+      },
+      "samples_ms": {
+        "ltba": [
+          32.20279,
+          31.83891,
+          32.539729,
+          30.091539,
+          30.374547
+        ],
+        "sympy_piecewise": [
+          33.675836,
+          34.990802,
+          32.431446,
+          31.93128,
+          30.602623
+        ]
+      },
+      "median_ms": {
+        "ltba": 31.83891,
+        "sympy_piecewise": 32.431446
+      }
+    },
+    {
+      "case": "4 interacting guards",
+      "original": "(x-0)/(x-0)+(x-1)/(x-1)+(x-2)/(x-2)+(x-3)/(x-3)",
+      "replacement": "4",
+      "audit": {
+        "valid_on": "Union(Interval.open(-oo, 0), Interval.open(0, 1), Interval.open(1, 2), Interval.open(2, 3), Interval.open(3, oo))",
+        "counterexample": {
+          "x": 0,
+          "original": "3",
+          "replacement": "4"
+        },
+        "division_sites": [
+          [
+            1,
+            1,
+            1,
+            12
+          ],
+          [
+            1,
+            13,
+            1,
+            24
+          ],
+          [
+            1,
+            25,
+            1,
+            36
+          ],
+          [
+            1,
+            37,
+            1,
+            48
+          ]
+        ],
+        "active_branches": [
+          {
+            "span": [
+              1,
+              1,
+              1,
+              12
+            ],
+            "divisor": "x - 0",
+            "branch": "zero-no-op"
+          },
+          {
+            "span": [
+              1,
+              13,
+              1,
+              24
+            ],
+            "divisor": "x - 1",
+            "branch": "regular"
+          },
+          {
+            "span": [
+              1,
+              25,
+              1,
+              36
+            ],
+            "divisor": "x - 2",
+            "branch": "regular"
+          },
+          {
+            "span": [
+              1,
+              37,
+              1,
+              48
+            ],
+            "divisor": "x - 3",
+            "branch": "regular"
+          }
+        ]
+      },
+      "samples_ms": {
+        "ltba": [
+          88.06513,
+          99.537677,
+          107.387888,
+          95.266793,
+          94.25207
+        ],
+        "sympy_piecewise": [
+          271.118494,
+          282.026727,
+          272.503567,
+          290.352478,
+          273.663059
+        ]
+      },
+      "median_ms": {
+        "ltba": 95.266793,
+        "sympy_piecewise": 273.663059
+      }
+    },
+    {
+      "case": "8 interacting guards",
+      "original": "(x-0)/(x-0)+(x-1)/(x-1)+(x-2)/(x-2)+(x-3)/(x-3)+(x-4)/(x-4)+(x-5)/(x-5)+(x-6)/(x-6)+(x-7)/(x-7)",
+      "replacement": "8",
+      "audit": {
+        "valid_on": "Union(Interval.open(-oo, 0), Interval.open(0, 1), Interval.open(1, 2), Interval.open(2, 3), Interval.open(3, 4), Interval.open(4, 5), Interval.open(5, 6), Interval.open(6, 7), Interval.open(7, oo))",
+        "counterexample": {
+          "x": 0,
+          "original": "7",
+          "replacement": "8"
+        },
+        "division_sites": [
+          [
+            1,
+            1,
+            1,
+            12
+          ],
+          [
+            1,
+            13,
+            1,
+            24
+          ],
+          [
+            1,
+            25,
+            1,
+            36
+          ],
+          [
+            1,
+            37,
+            1,
+            48
+          ],
+          [
+            1,
+            49,
+            1,
+            60
+          ],
+          [
+            1,
+            61,
+            1,
+            72
+          ],
+          [
+            1,
+            73,
+            1,
+            84
+          ],
+          [
+            1,
+            85,
+            1,
+            96
+          ]
+        ],
+        "active_branches": [
+          {
+            "span": [
+              1,
+              1,
+              1,
+              12
+            ],
+            "divisor": "x - 0",
+            "branch": "zero-no-op"
+          },
+          {
+            "span": [
+              1,
+              13,
+              1,
+              24
+            ],
+            "divisor": "x - 1",
+            "branch": "regular"
+          },
+          {
+            "span": [
+              1,
+              25,
+              1,
+              36
+            ],
+            "divisor": "x - 2",
+            "branch": "regular"
+          },
+          {
+            "span": [
+              1,
+              37,
+              1,
+              48
+            ],
+            "divisor": "x - 3",
+            "branch": "regular"
+          },
+          {
+            "span": [
+              1,
+              49,
+              1,
+              60
+            ],
+            "divisor": "x - 4",
+            "branch": "regular"
+          },
+          {
+            "span": [
+              1,
+              61,
+              1,
+              72
+            ],
+            "divisor": "x - 5",
+            "branch": "regular"
+          },
+          {
+            "span": [
+              1,
+              73,
+              1,
+              84
+            ],
+            "divisor": "x - 6",
+            "branch": "regular"
+          },
+          {
+            "span": [
+              1,
+              85,
+              1,
+              96
+            ],
+            "divisor": "x - 7",
+            "branch": "regular"
+          }
+        ]
+      },
+      "samples_ms": {
+        "ltba": [
+          301.588874,
+          273.108949,
+          278.292783,
+          269.849875,
+          264.991839
+        ],
+        "sympy_piecewise": [
+          7656.029112,
+          7780.673028,
+          7590.032805,
+          7915.019936,
+          7740.46302
+        ]
+      },
+      "median_ms": {
+        "ltba": 273.108949,
+        "sympy_piecewise": 7740.46302
+      }
+    }
+  ]
+}

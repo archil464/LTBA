@@ -14,7 +14,9 @@ Invariants (informal):
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Callable, Dict, Iterable, List, Tuple
+from typing import Callable, Dict, Iterable, List, Sequence, Tuple
+
+from .persistent import BranchTree
 
 
 @dataclass(frozen=True)
@@ -62,18 +64,36 @@ class LTBAExpr:
     """A minimal LTBA expression.
 
     The prototype stores `base` (human-readable algebraic text) and a tuple
-    of `LocalBranchGroup` records. Materialization computes the Cartesian
-    product across groups.
+    of `LocalBranchGroup` records. Optional tree storage supports persistent
+    indexed updates. Materialization computes the Cartesian product across groups.
     """
     base: str
-    branch_groups: Tuple[LocalBranchGroup, ...] = field(default_factory=tuple)
+    branch_groups: Sequence[LocalBranchGroup] = field(default_factory=tuple)
     provenance: List[str] = field(default_factory=list)
 
     def add_branch_group(self, group_id: str, branches: List[LocalBranch], description: str = "") -> "LTBAExpr":
         """Return an LTBAExpr with an added LocalBranchGroup (mutating copy)."""
-        new_groups = list(self.branch_groups)
-        new_groups.append(LocalBranchGroup(group_id=group_id, branches=tuple(branches), description=description))
-        return LTBAExpr(self.base, tuple(new_groups), list(self.provenance))
+        group = LocalBranchGroup(group_id=group_id, branches=tuple(branches), description=description)
+        if isinstance(self.branch_groups, BranchTree):
+            new_groups = self.branch_groups.append(group)
+        else:
+            new_groups = (*self.branch_groups, group)
+        return LTBAExpr(self.base, new_groups, list(self.provenance))
+
+    def with_storage(self, storage: str) -> "LTBAExpr":
+        """Return an independent version with flat or persistent tree storage.
+
+        Default construction continues to use tuples. Tree storage preserves
+        sequence indexing, slicing, iteration, and value equality. Building a
+        tree is O(n), so convert once before a sequence of indexed updates.
+        """
+        if storage == "flat":
+            groups = tuple(self.branch_groups)
+        elif storage == "tree":
+            groups = BranchTree.from_groups(self.branch_groups)
+        else:
+            raise ValueError("storage must be 'flat' or 'tree'")
+        return LTBAExpr(self.base, groups, list(self.provenance))
 
     def add_branch(self, guard: str, value: str, tag: str = "") -> "LTBAExpr":
         """Compatibility helper: add a single-branch group (not typical).
@@ -112,15 +132,21 @@ class LTBAExpr:
         """
         if group_index < 0 or group_index >= len(self.branch_groups):
             raise IndexError("branch group index out of range")
-        new_groups = list(self.branch_groups)
-        group = new_groups[group_index]
+        group = self.branch_groups[group_index]
         if not group.branches:
-            return LTBAExpr(self.base, tuple(new_groups), list(self.provenance))
+            groups = self.branch_groups if isinstance(self.branch_groups, BranchTree) else tuple(self.branch_groups)
+            return LTBAExpr(self.base, groups, list(self.provenance))
         first = group.branches[0]
         new_first = LocalBranch(first.guard, new_value, first.tag)
         new_branches = (new_first,) + tuple(group.branches[1:])
-        new_groups[group_index] = LocalBranchGroup(group_id=group.group_id, branches=new_branches, description=group.description)
-        new = LTBAExpr(self.base, tuple(new_groups), list(self.provenance))
+        new_group = LocalBranchGroup(group_id=group.group_id, branches=new_branches, description=group.description)
+        if isinstance(self.branch_groups, BranchTree):
+            new_groups = self.branch_groups.set(group_index, new_group)
+        else:
+            groups = list(self.branch_groups)
+            groups[group_index] = new_group
+            new_groups = tuple(groups)
+        new = LTBAExpr(self.base, new_groups, list(self.provenance))
         new.provenance.append(f"local_rewrite_group:{group_index}:{reason}")
         return new
 

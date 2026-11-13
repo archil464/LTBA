@@ -13,6 +13,10 @@ license = "MIT"
 dev = [
 	"pytest>=8",
 	"hypothesis>=6",
+	"sympy>=1.14,<2",
+]
+cas = [
+	"sympy>=1.14,<2",
 ]
 benchmark = [
 	"dd>=0.6",

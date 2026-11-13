@@ -1,0 +1,293 @@
+{
+  "scope": "Seven successive unseen numeric edits per scenario, 1000 independent cells or dependents. All arithmetic, syntax and SymPy caches cleared before each timed operation. Includes changed-cell JSON serialization. Initial construction excluded. Comparator shares the arithmetic kernel. Not a released-product comparison.",
+  "validated_calls": 140,
+  "sympy": "1.14.0",
+  "rows": [
+    {
+      "scenario": "isolated",
+      "backend": "auto",
+      "median_ms": 0.146166,
+      "samples_ms": [
+        0.140297,
+        0.119366,
+        0.146166,
+        0.374563,
+        0.405179,
+        0.114109,
+        0.259574
+      ]
+    },
+    {
+      "scenario": "isolated",
+      "backend": "incremental",
+      "median_ms": 0.349977,
+      "samples_ms": [
+        0.349977,
+        0.082222,
+        0.086798,
+        0.097354,
+        0.587238,
+        0.358389,
+        0.766253
+      ]
+    },
+    {
+      "scenario": "isolated",
+      "backend": "rebuild",
+      "median_ms": 25.606443,
+      "samples_ms": [
+        21.012972,
+        21.488235,
+        23.678523,
+        25.606443,
+        31.203015,
+        31.979864,
+        36.610718
+      ]
+    },
+    {
+      "scenario": "isolated",
+      "backend": "conventional",
+      "median_ms": 0.179125,
+      "samples_ms": [
+        0.179125,
+        0.429785,
+        0.23684,
+        0.160658,
+        0.16952,
+        0.137854,
+        0.228658
+      ]
+    },
+    {
+      "scenario": "isolated",
+      "backend": "full_rebuild",
+      "median_ms": 31.526834,
+      "samples_ms": [
+        31.526834,
+        29.360021,
+        54.378214,
+        29.398147,
+        32.351833,
+        55.734972,
+        29.993507
+      ]
+    },
+    {
+      "scenario": "local_chain",
+      "backend": "auto",
+      "median_ms": 2.403563,
+      "samples_ms": [
+        1.579695,
+        1.564182,
+        3.236123,
+        2.833859,
+        2.388891,
+        2.656167,
+        2.403563
+      ]
+    },
+    {
+      "scenario": "local_chain",
+      "backend": "incremental",
+      "median_ms": 1.80646,
+      "samples_ms": [
+        1.80646,
+        1.503072,
+        2.097391,
+        1.67756,
+        1.953958,
+        3.021566,
+        1.598263
+      ]
+    },
+    {
+      "scenario": "local_chain",
+      "backend": "rebuild",
+      "median_ms": 27.466932,
+      "samples_ms": [
+        22.461814,
+        24.777407,
+        25.55144,
+        31.84932,
+        29.802775,
+        27.466932,
+        28.450467
+      ]
+    },
+    {
+      "scenario": "local_chain",
+      "backend": "conventional",
+      "median_ms": 2.006917,
+      "samples_ms": [
+        2.68555,
+        2.491553,
+        2.006917,
+        1.834382,
+        2.046095,
+        1.712581,
+        1.618011
+      ]
+    },
+    {
+      "scenario": "local_chain",
+      "backend": "full_rebuild",
+      "median_ms": 30.439006,
+      "samples_ms": [
+        28.173597,
+        30.439006,
+        54.696744,
+        32.345424,
+        30.485104,
+        28.948963,
+        27.253807
+      ]
+    },
+    {
+      "scenario": "all_dependents",
+      "backend": "auto",
+      "median_ms": 114.889754,
+      "samples_ms": [
+        95.606278,
+        136.553462,
+        103.154506,
+        149.065173,
+        107.655871,
+        114.889754,
+        157.106926
+      ]
+    },
+    {
+      "scenario": "all_dependents",
+      "backend": "incremental",
+      "median_ms": 112.785624,
+      "samples_ms": [
+        106.274638,
+        100.670114,
+        99.447415,
+        113.552487,
+        114.388393,
+        112.785624,
+        167.455604
+      ]
+    },
+    {
+      "scenario": "all_dependents",
+      "backend": "rebuild",
+      "median_ms": 114.467569,
+      "samples_ms": [
+        119.678382,
+        99.489178,
+        102.355274,
+        114.467569,
+        118.915084,
+        109.343856,
+        132.543428
+      ]
+    },
+    {
+      "scenario": "all_dependents",
+      "backend": "conventional",
+      "median_ms": 103.52808,
+      "samples_ms": [
+        95.09295,
+        93.838935,
+        126.052474,
+        103.338989,
+        127.598419,
+        103.52808,
+        149.933434
+      ]
+    },
+    {
+      "scenario": "all_dependents",
+      "backend": "full_rebuild",
+      "median_ms": 98.664158,
+      "samples_ms": [
+        95.274727,
+        90.5817,
+        120.839309,
+        98.664158,
+        92.645584,
+        128.871471,
+        149.086947
+      ]
+    },
+    {
+      "scenario": "zero_transition",
+      "backend": "auto",
+      "median_ms": 1.985946,
+      "samples_ms": [
+        1.908711,
+        1.926938,
+        1.580796,
+        2.11106,
+        1.985946,
+        3.032653,
+        2.798206
+      ]
+    },
+    {
+      "scenario": "zero_transition",
+      "backend": "incremental",
+      "median_ms": 2.491678,
+      "samples_ms": [
+        3.335901,
+        2.491678,
+        1.727264,
+        2.346248,
+        1.723888,
+        3.188472,
+        3.019543
+      ]
+    },
+    {
+      "scenario": "zero_transition",
+      "backend": "rebuild",
+      "median_ms": 28.942792,
+      "samples_ms": [
+        28.942792,
+        23.827351,
+        25.781208,
+        27.349056,
+        40.906906,
+        43.914913,
+        44.830596
+      ]
+    },
+    {
+      "scenario": "zero_transition",
+      "backend": "conventional",
+      "median_ms": 2.295403,
+      "samples_ms": [
+        2.684503,
+        1.896814,
+        2.502569,
+        1.605022,
+        2.035379,
+        2.433817,
+        2.295403
+      ]
+    },
+    {
+      "scenario": "zero_transition",
+      "backend": "full_rebuild",
+      "median_ms": 43.192915,
+      "samples_ms": [
+        32.389531,
+        79.986522,
+        33.307544,
+        32.763139,
+        50.80025,
+        45.074827,
+        43.192915
+      ]
+    }
+  ],
+  "source_sha256": {
+    "ltba/workbook.py": "e25b2a228809f3292e1e8f667a7a2f9a12192a587b1afaa8417316f19316db02",
+    "ltba/snapshot.py": "b9df997487bbee069357a3f60c586fa0bcd87e23fb10dc55e41e25938f44884f",
+    "ltba/cas.py": "bce37b931edd0d74dc8821d3a27306be11680e1692861ab8a23a300c5949cad3",
+    "benchmarks/workbook_novel.py": "8f274be25ace198c5ee6d985af0261f648cb97ea6b77fbf4977c30bd8f83db0f"
+  }
+}

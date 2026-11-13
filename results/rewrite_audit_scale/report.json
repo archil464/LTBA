@@ -1,0 +1,364 @@
+{
+  "workload": "Sum of (x-i)/(x-i), i=0..n-1, rewritten as n under no-op division.",
+  "expected": "All reals except 0 through n-1. Root-events returns the excluded points directly.",
+  "scope": "Calculation time includes input parsing and symbolic construction. Wall timeout covers child startup and verification too. Peak RSS includes imports. LTBA compiles source records. Other paths return the validity domain without source records. No trace serialization. Root-events is specialized to proportional affine terms.",
+  "timeout_s": 12,
+  "memory_mib": 768,
+  "repeats": 2,
+  "sympy": "1.14.0",
+  "rows": {
+    "8": {
+      "fold_first": {
+        "status": "verified",
+        "median_s": 8.429746320499817,
+        "peak_rss_kib": 54828,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 8.2797449159998,
+            "peak_rss_kib": 54816
+          },
+          {
+            "status": "verified",
+            "seconds": 8.579747724999834,
+            "peak_rss_kib": 54828
+          }
+        ]
+      },
+      "ltba": {
+        "status": "verified",
+        "median_s": 0.3903939140000148,
+        "peak_rss_kib": 52644,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.3901872269998421,
+            "peak_rss_kib": 52644
+          },
+          {
+            "status": "verified",
+            "seconds": 0.39060060100018745,
+            "peak_rss_kib": 52512
+          }
+        ]
+      },
+      "root_events": {
+        "status": "verified",
+        "median_s": 0.00023941150084283436,
+        "peak_rss_kib": 47400,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.00024084300093818456,
+            "peak_rss_kib": 47400
+          },
+          {
+            "status": "verified",
+            "seconds": 0.00023798000074748415,
+            "peak_rss_kib": 47400
+          }
+        ]
+      }
+    },
+    "12": {
+      "fold_first": {
+        "status": "timeout",
+        "timeout_s": 12,
+        "samples": []
+      },
+      "ltba": {
+        "status": "verified",
+        "median_s": 0.7620214730004591,
+        "peak_rss_kib": 53544,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.7432355730006748,
+            "peak_rss_kib": 53544
+          },
+          {
+            "status": "verified",
+            "seconds": 0.7808073730002434,
+            "peak_rss_kib": 53540
+          }
+        ]
+      },
+      "root_events": {
+        "status": "verified",
+        "median_s": 0.013008657000682433,
+        "peak_rss_kib": 47400,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.013300128000992117,
+            "peak_rss_kib": 47400
+          },
+          {
+            "status": "verified",
+            "seconds": 0.012717186000372749,
+            "peak_rss_kib": 47400
+          }
+        ]
+      }
+    },
+    "16": {
+      "ltba": {
+        "status": "verified",
+        "median_s": 1.315695337500074,
+        "peak_rss_kib": 53908,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 1.342858093000359,
+            "peak_rss_kib": 53908
+          },
+          {
+            "status": "verified",
+            "seconds": 1.2885325819997888,
+            "peak_rss_kib": 53804
+          }
+        ]
+      },
+      "root_events": {
+        "status": "verified",
+        "median_s": 0.01679246899948339,
+        "peak_rss_kib": 47400,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.01885874599975068,
+            "peak_rss_kib": 47400
+          },
+          {
+            "status": "verified",
+            "seconds": 0.014726191999216098,
+            "peak_rss_kib": 47400
+          }
+        ]
+      }
+    },
+    "32": {
+      "ltba": {
+        "status": "verified",
+        "median_s": 6.769522675499957,
+        "peak_rss_kib": 54560,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 6.870489651999378,
+            "peak_rss_kib": 54560
+          },
+          {
+            "status": "verified",
+            "seconds": 6.668555699000535,
+            "peak_rss_kib": 54556
+          }
+        ]
+      },
+      "root_events": {
+        "status": "verified",
+        "median_s": 0.01400818199999776,
+        "peak_rss_kib": 47404,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.01380183499895793,
+            "peak_rss_kib": 47400
+          },
+          {
+            "status": "verified",
+            "seconds": 0.01421452900103759,
+            "peak_rss_kib": 47404
+          }
+        ]
+      }
+    },
+    "40": {
+      "ltba": {
+        "status": "timeout",
+        "timeout_s": 12,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 11.062934277999375,
+            "peak_rss_kib": 54812
+          }
+        ]
+      }
+    },
+    "48": {
+      "ltba": {
+        "status": "timeout",
+        "timeout_s": 12,
+        "samples": []
+      }
+    },
+    "64": {
+      "ltba": {
+        "status": "timeout",
+        "timeout_s": 12,
+        "samples": []
+      },
+      "root_events": {
+        "status": "verified",
+        "median_s": 0.012582898500113515,
+        "peak_rss_kib": 47400,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.01240643699929933,
+            "peak_rss_kib": 47400
+          },
+          {
+            "status": "verified",
+            "seconds": 0.0127593600009277,
+            "peak_rss_kib": 47400
+          }
+        ]
+      }
+    },
+    "128": {
+      "root_events": {
+        "status": "verified",
+        "median_s": 0.016365729499739246,
+        "peak_rss_kib": 47648,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.018776431999867782,
+            "peak_rss_kib": 47648
+          },
+          {
+            "status": "verified",
+            "seconds": 0.013955026999610709,
+            "peak_rss_kib": 47648
+          }
+        ]
+      }
+    },
+    "256": {
+      "root_events": {
+        "status": "verified",
+        "median_s": 0.019529750499714282,
+        "peak_rss_kib": 48424,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.01690693700038537,
+            "peak_rss_kib": 48416
+          },
+          {
+            "status": "verified",
+            "seconds": 0.022152563999043196,
+            "peak_rss_kib": 48424
+          }
+        ]
+      }
+    },
+    "512": {
+      "ltba": {
+        "status": "timeout",
+        "timeout_s": 12,
+        "samples": []
+      },
+      "root_events": {
+        "status": "verified",
+        "median_s": 0.023571132000142825,
+        "peak_rss_kib": 50260,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.02069575200039253,
+            "peak_rss_kib": 50260
+          },
+          {
+            "status": "verified",
+            "seconds": 0.02644651199989312,
+            "peak_rss_kib": 50204
+          }
+        ]
+      }
+    },
+    "1024": {
+      "root_events": {
+        "status": "verified",
+        "median_s": 0.04560697400029312,
+        "peak_rss_kib": 53800,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.048406683999928646,
+            "peak_rss_kib": 53800
+          },
+          {
+            "status": "verified",
+            "seconds": 0.0428072640006576,
+            "peak_rss_kib": 53800
+          }
+        ]
+      }
+    },
+    "4096": {
+      "ltba": {
+        "status": "timeout",
+        "timeout_s": 12,
+        "samples": []
+      },
+      "root_events": {
+        "status": "verified",
+        "median_s": 0.15686639399882552,
+        "peak_rss_kib": 74612,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.15064352799890912,
+            "peak_rss_kib": 74596
+          },
+          {
+            "status": "verified",
+            "seconds": 0.1630892599987419,
+            "peak_rss_kib": 74612
+          }
+        ]
+      }
+    },
+    "16384": {
+      "root_events": {
+        "status": "verified",
+        "median_s": 0.5728711830006432,
+        "peak_rss_kib": 158268,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.690646036000544,
+            "peak_rss_kib": 158268
+          },
+          {
+            "status": "verified",
+            "seconds": 0.45509633000074246,
+            "peak_rss_kib": 158240
+          }
+        ]
+      }
+    },
+    "65536": {
+      "root_events": {
+        "status": "verified",
+        "median_s": 1.9808846615005677,
+        "peak_rss_kib": 491572,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 1.934459231000801,
+            "peak_rss_kib": 491564
+          },
+          {
+            "status": "verified",
+            "seconds": 2.0273100920003344,
+            "peak_rss_kib": 491572
+          }
+        ]
+      }
+    }
+  }
+}

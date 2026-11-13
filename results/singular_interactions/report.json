@@ -1,0 +1,223 @@
+{
+  "policy": "Division by zero returns the evaluated numerator unchanged. Multiplication by zero remains destructive.",
+  "scope": "Independent conventional Piecewise compiler and exact rational oracle.\n\nConstruction timings are diagnostic: LTBA includes source provenance whereas\nconventional Piecewise constructs only values. Neither compiler expands a global\ncase table. Every numeric comparison uses an independent Fraction evaluator.\n",
+  "verified_assignments": 408,
+  "rows": [
+    {
+      "family": "coupled_product",
+      "variables": 2,
+      "cases": 11,
+      "median_ms": {
+        "ltba_with_provenance": 2.673954,
+        "conventional_value_only": 2.074448
+      },
+      "samples_ms": {
+        "ltba_with_provenance": [
+          2.673954,
+          2.232911,
+          2.803475
+        ],
+        "conventional_value_only": [
+          28.938198,
+          2.074448,
+          2.068208
+        ]
+      },
+      "ltba_groups": 2,
+      "ltba_value_nodes": 13,
+      "conventional_value_nodes": 35
+    },
+    {
+      "family": "coupled_product",
+      "variables": 4,
+      "cases": 83,
+      "median_ms": {
+        "ltba_with_provenance": 4.647171,
+        "conventional_value_only": 3.578922
+      },
+      "samples_ms": {
+        "ltba_with_provenance": [
+          4.921708,
+          4.647171,
+          4.561624
+        ],
+        "conventional_value_only": [
+          3.867368,
+          3.578922,
+          3.366628
+        ]
+      },
+      "ltba_groups": 4,
+      "ltba_value_nodes": 53,
+      "conventional_value_nodes": 69
+    },
+    {
+      "family": "coupled_product",
+      "variables": 8,
+      "cases": 42,
+      "median_ms": {
+        "ltba_with_provenance": 9.219942,
+        "conventional_value_only": 7.440421
+      },
+      "samples_ms": {
+        "ltba_with_provenance": [
+          9.219942,
+          9.425417,
+          8.509973
+        ],
+        "conventional_value_only": [
+          7.558906,
+          7.440421,
+          6.293545
+        ]
+      },
+      "ltba_groups": 8,
+      "ltba_value_nodes": 105,
+      "conventional_value_nodes": 137
+    },
+    {
+      "family": "interacting_sum",
+      "variables": 2,
+      "cases": 11,
+      "median_ms": {
+        "ltba_with_provenance": 5.134211,
+        "conventional_value_only": 1.879229
+      },
+      "samples_ms": {
+        "ltba_with_provenance": [
+          5.279275,
+          4.223865,
+          5.134211
+        ],
+        "conventional_value_only": [
+          1.879229,
+          1.711801,
+          2.826639
+        ]
+      },
+      "ltba_groups": 2,
+      "ltba_value_nodes": 44,
+      "conventional_value_nodes": 43
+    },
+    {
+      "family": "interacting_sum",
+      "variables": 4,
+      "cases": 83,
+      "median_ms": {
+        "ltba_with_provenance": 8.658351,
+        "conventional_value_only": 3.642235
+      },
+      "samples_ms": {
+        "ltba_with_provenance": [
+          8.890865,
+          8.658351,
+          8.303397
+        ],
+        "conventional_value_only": [
+          4.198558,
+          3.642235,
+          3.569047
+        ]
+      },
+      "ltba_groups": 4,
+      "ltba_value_nodes": 88,
+      "conventional_value_nodes": 85
+    },
+    {
+      "family": "interacting_sum",
+      "variables": 8,
+      "cases": 42,
+      "median_ms": {
+        "ltba_with_provenance": 20.605334,
+        "conventional_value_only": 8.858797
+      },
+      "samples_ms": {
+        "ltba_with_provenance": [
+          20.951507,
+          20.605334,
+          19.683502
+        ],
+        "conventional_value_only": [
+          8.246743,
+          10.36189,
+          8.858797
+        ]
+      },
+      "ltba_groups": 8,
+      "ltba_value_nodes": 176,
+      "conventional_value_nodes": 169
+    },
+    {
+      "family": "nested_division",
+      "variables": 2,
+      "cases": 11,
+      "median_ms": {
+        "ltba_with_provenance": 3.262424,
+        "conventional_value_only": 1.546016
+      },
+      "samples_ms": {
+        "ltba_with_provenance": [
+          5.301848,
+          3.217027,
+          3.262424
+        ],
+        "conventional_value_only": [
+          1.97566,
+          1.489352,
+          1.546016
+        ]
+      },
+      "ltba_groups": 1,
+      "ltba_value_nodes": 22,
+      "conventional_value_nodes": 21
+    },
+    {
+      "family": "nested_division",
+      "variables": 4,
+      "cases": 83,
+      "median_ms": {
+        "ltba_with_provenance": 7.022673,
+        "conventional_value_only": 3.181554
+      },
+      "samples_ms": {
+        "ltba_with_provenance": [
+          7.15601,
+          7.022673,
+          7.02086
+        ],
+        "conventional_value_only": [
+          3.257065,
+          3.009319,
+          3.181554
+        ]
+      },
+      "ltba_groups": 3,
+      "ltba_value_nodes": 145,
+      "conventional_value_nodes": 141
+    },
+    {
+      "family": "nested_division",
+      "variables": 8,
+      "cases": 42,
+      "median_ms": {
+        "ltba_with_provenance": 40.551125,
+        "conventional_value_only": 6.449176
+      },
+      "samples_ms": {
+        "ltba_with_provenance": [
+          41.165364,
+          39.353155,
+          40.551125
+        ],
+        "conventional_value_only": [
+          6.749649,
+          6.449176,
+          6.29647
+        ]
+      },
+      "ltba_groups": 7,
+      "ltba_value_nodes": 2605,
+      "conventional_value_nodes": 2541
+    }
+  ]
+}

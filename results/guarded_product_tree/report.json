@@ -1,0 +1,289 @@
+{
+  "exhaustive_edit_cases": 92775,
+  "timed_edits": 37800,
+  "scope": "Exact integer inputs and Fraction outputs. Edits return final value and raw adjacent-difference delta. Seven batches of 300 successive edits per backend and workload. Construction timed separately. No symbolic rewriting or full provenance serialization.",
+  "rows": [
+    {
+      "inputs": 64,
+      "family": "mostly_units",
+      "initial_product_bits": 1,
+      "final_product_bits": 9,
+      "zero_transitions": 316,
+      "max_tree_multiplications": 11,
+      "median_update_us": {
+        "full_scan": 8.083886666666666,
+        "running_product": 2.0823466666666666,
+        "product_tree": 2.4778633333333335
+      },
+      "update_samples_us": {
+        "full_scan": [
+          9.78974,
+          7.967813333333333,
+          8.37962,
+          7.045553333333333,
+          7.45479,
+          8.083886666666666,
+          9.633676666666666
+        ],
+        "running_product": [
+          2.0077366666666667,
+          2.829483333333333,
+          2.21668,
+          1.99986,
+          1.9569266666666667,
+          2.0823466666666666,
+          2.60395
+        ],
+        "product_tree": [
+          2.6566633333333334,
+          2.4289266666666665,
+          2.60632,
+          2.4778633333333335,
+          2.34527,
+          2.46014,
+          2.860663333333333
+        ]
+      },
+      "median_build_us": {
+        "full_scan": 1.131,
+        "running_product": 7.872,
+        "product_tree": 13.139
+      }
+    },
+    {
+      "inputs": 64,
+      "family": "mixed",
+      "initial_product_bits": 29,
+      "final_product_bits": 25,
+      "zero_transitions": 283,
+      "max_tree_multiplications": 11,
+      "median_update_us": {
+        "full_scan": 7.72963,
+        "running_product": 2.3303133333333332,
+        "product_tree": 2.7079033333333333
+      },
+      "update_samples_us": {
+        "full_scan": [
+          9.409343333333334,
+          7.72963,
+          8.03271,
+          7.58832,
+          7.490073333333333,
+          7.60945,
+          8.76192
+        ],
+        "running_product": [
+          2.73491,
+          2.4066266666666665,
+          1.9832333333333334,
+          2.3303133333333332,
+          1.9289866666666666,
+          2.08752,
+          2.38439
+        ],
+        "product_tree": [
+          3.29931,
+          2.54366,
+          2.4634766666666668,
+          2.809553333333333,
+          2.5111433333333335,
+          2.7079033333333333,
+          3.162943333333333
+        ]
+      },
+      "median_build_us": {
+        "full_scan": 1.051,
+        "running_product": 7.902,
+        "product_tree": 15.492
+      }
+    },
+    {
+      "inputs": 1024,
+      "family": "mostly_units",
+      "initial_product_bits": 1,
+      "final_product_bits": 45,
+      "zero_transitions": 294,
+      "max_tree_multiplications": 15,
+      "median_update_us": {
+        "full_scan": 101.29557333333334,
+        "running_product": 2.51365,
+        "product_tree": 3.58697
+      },
+      "update_samples_us": {
+        "full_scan": [
+          101.29557333333334,
+          102.39683333333333,
+          103.79349666666667,
+          101.26546,
+          112.39404666666667,
+          96.4924,
+          98.47840666666667
+        ],
+        "running_product": [
+          3.1236533333333334,
+          2.87782,
+          2.51365,
+          2.7048,
+          2.272326666666667,
+          2.171543333333333,
+          2.182793333333333
+        ],
+        "product_tree": [
+          3.745206666666667,
+          2.8202333333333334,
+          3.590473333333333,
+          3.58697,
+          3.4358133333333334,
+          3.07498,
+          3.7580566666666666
+        ]
+      },
+      "median_build_us": {
+        "full_scan": 3.345,
+        "running_product": 92.767,
+        "product_tree": 181.969
+      }
+    },
+    {
+      "inputs": 1024,
+      "family": "mixed",
+      "initial_product_bits": 680,
+      "final_product_bits": 634,
+      "zero_transitions": 280,
+      "max_tree_multiplications": 16,
+      "median_update_us": {
+        "full_scan": 143.83448333333334,
+        "running_product": 2.7855833333333333,
+        "product_tree": 5.646083333333333
+      },
+      "update_samples_us": {
+        "full_scan": [
+          138.49023333333332,
+          183.11581333333334,
+          135.65480333333332,
+          146.43167333333332,
+          154.23851666666667,
+          132.45414333333332,
+          143.83448333333334
+        ],
+        "running_product": [
+          2.97887,
+          3.335933333333333,
+          2.92596,
+          2.7855833333333333,
+          2.653356666666667,
+          2.7282,
+          2.636363333333333
+        ],
+        "product_tree": [
+          7.2358633333333335,
+          5.646083333333333,
+          4.353703333333334,
+          5.0504,
+          6.48806,
+          4.5097,
+          6.39108
+        ]
+      },
+      "median_build_us": {
+        "full_scan": 3.646,
+        "running_product": 146.817,
+        "product_tree": 198.423
+      }
+    },
+    {
+      "inputs": 8192,
+      "family": "mostly_units",
+      "initial_product_bits": 1,
+      "final_product_bits": 54,
+      "zero_transitions": 306,
+      "max_tree_multiplications": 18,
+      "median_update_us": {
+        "full_scan": 807.6312233333333,
+        "running_product": 2.4137,
+        "product_tree": 4.187056666666667
+      },
+      "update_samples_us": {
+        "full_scan": [
+          788.16868,
+          807.6312233333333,
+          768.40055,
+          803.6527066666666,
+          825.6496633333334,
+          834.5806933333333,
+          857.9422333333333
+        ],
+        "running_product": [
+          3.3720866666666667,
+          2.4137,
+          2.9870466666666666,
+          2.24285,
+          2.38586,
+          3.8087633333333333,
+          2.19695
+        ],
+        "product_tree": [
+          3.9851266666666665,
+          4.56949,
+          5.162633333333333,
+          3.30859,
+          4.187056666666667,
+          3.8677166666666665,
+          4.211226666666667
+        ]
+      },
+      "median_build_us": {
+        "full_scan": 19.559,
+        "running_product": 853.532,
+        "product_tree": 1535.821
+      }
+    },
+    {
+      "inputs": 8192,
+      "family": "mixed",
+      "initial_product_bits": 5299,
+      "final_product_bits": 5277,
+      "zero_transitions": 283,
+      "max_tree_multiplications": 18,
+      "median_update_us": {
+        "full_scan": 1732.015,
+        "running_product": 5.051736666666667,
+        "product_tree": 12.621426666666666
+      },
+      "update_samples_us": {
+        "full_scan": [
+          1778.3899966666668,
+          1817.3795466666666,
+          1732.015,
+          1756.3857133333333,
+          1654.7088633333333,
+          1668.29789,
+          1653.7714266666667
+        ],
+        "running_product": [
+          5.210873333333334,
+          5.907,
+          4.9753533333333335,
+          5.0407866666666665,
+          5.051736666666667,
+          4.689866666666667,
+          5.8797266666666665
+        ],
+        "product_tree": [
+          13.025126666666667,
+          16.139026666666666,
+          13.36663,
+          12.621426666666666,
+          12.0397,
+          11.576083333333333,
+          11.238916666666666
+        ]
+      },
+      "median_build_us": {
+        "full_scan": 57.445,
+        "running_product": 1843.786,
+        "product_tree": 1940.999
+      }
+    }
+  ]
+}

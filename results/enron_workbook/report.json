@@ -1,0 +1,1490 @@
+{
+  "source": "https://spreadsheet-research.github.io/Metric-based-Fault-Prediction-for-Spreadsheets/datasets/used_for_evaluation/EENRON.zip",
+  "sha256": "e881ea045d6eb9aee3fe1774c0245ed3c53d42831a1350fc7e40111d3695aa9b",
+  "xlsx_files": 27,
+  "formula_sheets": 97,
+  "coverage": {
+    "formula_cells": 16799,
+    "unsupported_syntax": 6260,
+    "supported": 7117,
+    "unresolved_dependency": 3422
+  },
+  "rows": [
+    {
+      "file": "12.xlsx",
+      "sheet": 2,
+      "inputs": 2674,
+      "formulas": 1528,
+      "median_ms": {
+        "ltba": 0.303313,
+        "dag": 0.25340799999999997,
+        "dag_default": 0.468097
+      },
+      "samples_ms": {
+        "ltba": [
+          0.176366,
+          0.322898,
+          0.207503,
+          0.419714,
+          0.797876,
+          0.438082,
+          0.225821,
+          0.319002,
+          0.774119,
+          0.375407,
+          0.286172,
+          0.828131,
+          0.287624,
+          0.565063,
+          0.683012,
+          0.262736,
+          2.143448,
+          0.17217,
+          1.644755,
+          0.160012,
+          0.162695,
+          0.17171,
+          0.673357,
+          0.186272,
+          0.364401,
+          0.632896,
+          0.190748,
+          0.23144,
+          0.253904,
+          0.636963,
+          0.406935,
+          0.715911,
+          0.256157,
+          2.200594,
+          0.133812,
+          0.13883,
+          0.195916,
+          0.230128,
+          0.200032,
+          0.73451
+        ],
+        "dag": [
+          0.162335,
+          0.891076,
+          0.200483,
+          0.180193,
+          0.277078,
+          0.174924,
+          0.176987,
+          0.343238,
+          0.357841,
+          0.236908,
+          0.199631,
+          0.247284,
+          0.20521,
+          0.204058,
+          0.599356,
+          0.290859,
+          1.997447,
+          0.140673,
+          0.157849,
+          0.386744,
+          0.176267,
+          0.175436,
+          0.290759,
+          0.190568,
+          0.184739,
+          0.260904,
+          0.366985,
+          0.209797,
+          0.359894,
+          0.60219,
+          0.338221,
+          0.259532,
+          0.488188,
+          1.533146,
+          0.350259,
+          0.48351,
+          0.425994,
+          0.173672,
+          0.239582,
+          0.217038
+        ],
+        "dag_default": [
+          3.198703,
+          0.851736,
+          0.483791,
+          0.348246,
+          0.480797,
+          0.35724,
+          0.81407,
+          0.738776,
+          0.448258,
+          0.384461,
+          0.467596,
+          0.402318,
+          0.678224,
+          0.449078,
+          1.191861,
+          0.559806,
+          1.22479,
+          1.561219,
+          0.400295,
+          0.447435,
+          0.545434,
+          0.604032,
+          0.440976,
+          0.640538,
+          0.431121,
+          0.479114,
+          0.383739,
+          0.66205,
+          0.534237,
+          0.468598,
+          0.445023,
+          0.566135,
+          0.44957,
+          0.365773,
+          0.302827,
+          0.341717,
+          0.351471,
+          0.389308,
+          0.40999,
+          0.530291
+        ]
+      },
+      "delta_sha256": "ad121c9bfff423423c89b5751e3f0e36fa3f41efb3ed3a70c7d5317b4ae0786c",
+      "median_recomputed": 2.0,
+      "max_recomputed": 8,
+      "zero_divisions_seen": 0,
+      "profile": [
+        {
+          "file": "enron_workbook.py",
+          "function": "replay",
+          "cumulative_s": 0.018327227,
+          "self_s": 0.000273449
+        },
+        {
+          "file": "workbook.py",
+          "function": "update_many",
+          "cumulative_s": 0.015803305,
+          "self_s": 0.0011106570000000001
+        },
+        {
+          "file": "workbook.py",
+          "function": "compute_cell",
+          "cumulative_s": 0.006846118,
+          "self_s": 0.000715088
+        },
+        {
+          "file": "snapshot.py",
+          "function": "snapshot",
+          "cumulative_s": 0.003840024,
+          "self_s": 8.742e-05
+        },
+        {
+          "file": "snapshot.py",
+          "function": "__init__",
+          "cumulative_s": 0.003752604,
+          "self_s": 0.0028726430000000002
+        },
+        {
+          "file": "cas.py",
+          "function": "simplify_text",
+          "cumulative_s": 0.0028013900000000004,
+          "self_s": 0.00014074900000000002
+        },
+        {
+          "file": "cas.py",
+          "function": "compile_text",
+          "cumulative_s": 0.0024419980000000003,
+          "self_s": 0.00023051600000000003
+        },
+        {
+          "file": "snapshot.py",
+          "function": "__getitem__",
+          "cumulative_s": 0.002358377,
+          "self_s": 0.002358377
+        },
+        {
+          "file": "cas.py",
+          "function": "_compile_cached",
+          "cumulative_s": 0.002089807,
+          "self_s": 6.1794e-05
+        },
+        {
+          "file": "cache.py",
+          "function": "wrapper",
+          "cumulative_s": 0.001970201,
+          "self_s": 0.000600742
+        },
+        {
+          "file": "basic.py",
+          "function": "xreplace",
+          "cumulative_s": 0.0019019170000000001,
+          "self_s": 2.5144000000000002e-05
+        },
+        {
+          "file": "basic.py",
+          "function": "_xreplace",
+          "cumulative_s": 0.0018767730000000002,
+          "self_s": 0.000315078
+        },
+        {
+          "file": "cas.py",
+          "function": "visit",
+          "cumulative_s": 0.001713819,
+          "self_s": 0.00023777500000000002
+        },
+        {
+          "file": "workbook.py",
+          "function": "delta",
+          "cumulative_s": 0.001551187,
+          "self_s": 9.047700000000001e-05
+        },
+        {
+          "file": "workbook.py",
+          "function": "equivalent",
+          "cumulative_s": 0.001466234,
+          "self_s": 0.00019144800000000001
+        },
+        {
+          "file": "workbook.py",
+          "function": "_cell_dict",
+          "cumulative_s": 0.00146071,
+          "self_s": 0.000101298
+        },
+        {
+          "file": "symbol.py",
+          "function": "__new__",
+          "cumulative_s": 0.001012251,
+          "self_s": 0.000156181
+        },
+        {
+          "file": "workbook.py",
+          "function": "cell_dict",
+          "cumulative_s": 0.000955249,
+          "self_s": 0.000131609
+        },
+        {
+          "file": "cas.py",
+          "function": "division_chain",
+          "cumulative_s": 0.000893649,
+          "self_s": 2.3585000000000002e-05
+        },
+        {
+          "file": "numbers.py",
+          "function": "__eq__",
+          "cumulative_s": 0.0008491750000000001,
+          "self_s": 0.00017316600000000002
+        },
+        {
+          "file": "basic.py",
+          "function": "__eq__",
+          "cumulative_s": 0.000828217,
+          "self_s": 0.00052506
+        },
+        {
+          "file": "printer.py",
+          "function": "__call__",
+          "cumulative_s": 0.000821525,
+          "self_s": 6.539600000000001e-05
+        },
+        {
+          "file": "__init__.py",
+          "function": "__getitem__",
+          "cumulative_s": 0.0008027280000000001,
+          "self_s": 0.00027878800000000003
+        },
+        {
+          "file": "str.py",
+          "function": "sstr",
+          "cumulative_s": 0.000756129,
+          "self_s": 7.661e-05
+        },
+        {
+          "file": "workbook_incremental.py",
+          "function": "serialized",
+          "cumulative_s": 0.000699286,
+          "self_s": 3.1056e-05
+        }
+      ]
+    },
+    {
+      "file": "07.xlsx",
+      "sheet": 0,
+      "inputs": 460,
+      "formulas": 550,
+      "median_ms": {
+        "ltba": 0.14523950000000002,
+        "dag": 0.144729,
+        "dag_default": 0.1169265
+      },
+      "samples_ms": {
+        "ltba": [
+          0.126251,
+          0.07281,
+          0.082836,
+          0.112209,
+          0.106951,
+          0.091538,
+          0.138509,
+          0.144658,
+          1.054863,
+          0.12586,
+          0.128384,
+          0.166071,
+          0.176367,
+          0.276228,
+          0.130457,
+          0.27816,
+          0.533596,
+          0.080782,
+          0.084538,
+          0.338762,
+          0.096726,
+          0.099901,
+          0.154533,
+          0.145821,
+          0.110927,
+          0.467857,
+          0.126321,
+          0.193973,
+          0.159912,
+          0.153192,
+          0.512954,
+          0.15208,
+          0.240193,
+          0.923135,
+          0.228214,
+          0.129215,
+          0.162646,
+          0.116656,
+          0.155885,
+          0.11936
+        ],
+        "dag": [
+          0.124939,
+          0.120823,
+          0.096315,
+          0.382969,
+          0.116806,
+          0.156306,
+          0.124758,
+          0.197498,
+          0.175896,
+          0.156957,
+          0.113752,
+          0.188384,
+          0.154603,
+          0.126401,
+          0.144629,
+          0.180833,
+          0.493446,
+          0.074192,
+          0.115725,
+          0.107061,
+          0.091608,
+          0.153802,
+          0.136246,
+          0.128794,
+          0.093381,
+          0.190157,
+          0.107663,
+          0.164879,
+          0.177388,
+          0.205791,
+          0.263378,
+          0.144829,
+          0.239331,
+          0.523841,
+          0.090537,
+          0.094193,
+          0.080722,
+          0.152871,
+          0.141774,
+          0.156667
+        ],
+        "dag_default": [
+          0.211008,
+          0.075353,
+          0.159531,
+          0.086531,
+          0.080682,
+          0.081844,
+          0.240083,
+          0.117858,
+          0.1389,
+          0.115174,
+          0.18546,
+          0.103256,
+          0.116576,
+          0.123938,
+          0.115094,
+          0.243368,
+          0.465904,
+          0.102024,
+          0.117277,
+          0.104358,
+          0.106782,
+          0.129025,
+          0.107683,
+          0.102124,
+          0.093471,
+          0.128905,
+          0.09891,
+          0.16524,
+          0.136446,
+          0.138169,
+          0.135495,
+          0.094623,
+          0.213553,
+          0.14533,
+          0.104278,
+          0.094213,
+          0.080171,
+          0.113251,
+          0.243207,
+          0.13215
+        ]
+      },
+      "delta_sha256": "d7aaecf89ae874b7e3151022f30d626b07185f4f870d75f3ada759eb933fa412",
+      "median_recomputed": 2.0,
+      "max_recomputed": 3,
+      "zero_divisions_seen": 0,
+      "profile": [
+        {
+          "file": "enron_workbook.py",
+          "function": "replay",
+          "cumulative_s": 0.010761447,
+          "self_s": 0.000162094
+        },
+        {
+          "file": "workbook.py",
+          "function": "update_many",
+          "cumulative_s": 0.008450526,
+          "self_s": 0.001186481
+        },
+        {
+          "file": "workbook.py",
+          "function": "compute_cell",
+          "cumulative_s": 0.00241741,
+          "self_s": 0.000524617
+        },
+        {
+          "file": "snapshot.py",
+          "function": "__getitem__",
+          "cumulative_s": 0.002295932,
+          "self_s": 0.002295932
+        },
+        {
+          "file": "snapshot.py",
+          "function": "snapshot",
+          "cumulative_s": 0.001939993,
+          "self_s": 8.228100000000001e-05
+        },
+        {
+          "file": "snapshot.py",
+          "function": "__init__",
+          "cumulative_s": 0.001857712,
+          "self_s": 0.0009083860000000001
+        },
+        {
+          "file": "workbook.py",
+          "function": "delta",
+          "cumulative_s": 0.001587038,
+          "self_s": 6.3594e-05
+        },
+        {
+          "file": "workbook.py",
+          "function": "_cell_dict",
+          "cumulative_s": 0.001523444,
+          "self_s": 9.921000000000001e-05
+        },
+        {
+          "file": "workbook.py",
+          "function": "equivalent",
+          "cumulative_s": 0.001070358,
+          "self_s": 0.000183171
+        },
+        {
+          "file": "workbook.py",
+          "function": "cell_dict",
+          "cumulative_s": 0.0009281150000000001,
+          "self_s": 0.000124647
+        },
+        {
+          "file": "~",
+          "function": "<built-in method builtins.sum>",
+          "cumulative_s": 0.0007400600000000001,
+          "self_s": 7.681200000000001e-05
+        },
+        {
+          "file": "<frozen _collections_abc>",
+          "function": "__contains__",
+          "cumulative_s": 0.000704924,
+          "self_s": 5.701100000000001e-05
+        },
+        {
+          "file": "printer.py",
+          "function": "__call__",
+          "cumulative_s": 0.000699315,
+          "self_s": 4.8226e-05
+        },
+        {
+          "file": "snapshot.py",
+          "function": "<genexpr>",
+          "cumulative_s": 0.0006632480000000001,
+          "self_s": 7.4613e-05
+        },
+        {
+          "file": "str.py",
+          "function": "sstr",
+          "cumulative_s": 0.0006510890000000001,
+          "self_s": 6.2642e-05
+        },
+        {
+          "file": "cas.py",
+          "function": "simplify_text",
+          "cumulative_s": 0.0006023080000000001,
+          "self_s": 0.000123711
+        },
+        {
+          "file": "workbook_incremental.py",
+          "function": "serialized",
+          "cumulative_s": 0.000561789,
+          "self_s": 4.448e-05
+        },
+        {
+          "file": "__init__.py",
+          "function": "dumps",
+          "cumulative_s": 0.0005173090000000001,
+          "self_s": 6.2835e-05
+        },
+        {
+          "file": "__init__.py",
+          "function": "__getitem__",
+          "cumulative_s": 0.000490133,
+          "self_s": 0.00019915900000000002
+        },
+        {
+          "file": "basic.py",
+          "function": "xreplace",
+          "cumulative_s": 0.000456189,
+          "self_s": 1.0834e-05
+        },
+        {
+          "file": "basic.py",
+          "function": "_xreplace",
+          "cumulative_s": 0.00044535500000000003,
+          "self_s": 0.000234424
+        },
+        {
+          "file": "encoder.py",
+          "function": "encode",
+          "cumulative_s": 0.00044141300000000004,
+          "self_s": 5.4122e-05
+        },
+        {
+          "file": "printer.py",
+          "function": "doprint",
+          "cumulative_s": 0.000371809,
+          "self_s": 4.7940000000000005e-05
+        },
+        {
+          "file": "encoder.py",
+          "function": "iterencode",
+          "cumulative_s": 0.00036661,
+          "self_s": 0.00036661
+        },
+        {
+          "file": "cas.py",
+          "function": "compile_text",
+          "cumulative_s": 0.00036644300000000004,
+          "self_s": 0.00026910000000000004
+        }
+      ]
+    },
+    {
+      "file": "20.xlsx",
+      "sheet": 0,
+      "inputs": 184,
+      "formulas": 379,
+      "median_ms": {
+        "ltba": 0.2968535,
+        "dag": 0.259257,
+        "dag_default": 0.1982995
+      },
+      "samples_ms": {
+        "ltba": [
+          0.200352,
+          0.304139,
+          0.263318,
+          3.405485,
+          0.770965,
+          0.24527,
+          0.263949,
+          0.219472,
+          0.213773,
+          0.242156,
+          0.289568,
+          0.419985,
+          0.245481,
+          0.373164,
+          0.362718,
+          0.348817,
+          0.4967,
+          0.149526,
+          0.312773,
+          0.342808,
+          0.241464,
+          0.147883,
+          0.593497,
+          0.254264,
+          0.584533,
+          0.337149,
+          0.216507,
+          0.224439,
+          0.239112,
+          0.558684,
+          0.441216,
+          0.444792,
+          0.373965,
+          0.953751,
+          0.729793,
+          0.180193,
+          0.186772,
+          0.151238,
+          0.202816,
+          0.487536
+        ],
+        "dag": [
+          0.116005,
+          0.636211,
+          1.155475,
+          0.177098,
+          1.197239,
+          0.620027,
+          0.16525,
+          0.248976,
+          0.450741,
+          0.186081,
+          0.276628,
+          0.264039,
+          0.276628,
+          0.340554,
+          0.243097,
+          0.309858,
+          0.453985,
+          0.137077,
+          0.174623,
+          0.200763,
+          0.17222,
+          0.15215,
+          0.201865,
+          0.332542,
+          0.220894,
+          0.200914,
+          0.361686,
+          0.27861,
+          0.205941,
+          0.282987,
+          0.23159,
+          0.21867,
+          0.286412,
+          0.626106,
+          0.259292,
+          0.645915,
+          0.382789,
+          0.150267,
+          0.19159,
+          0.259222
+        ],
+        "dag_default": [
+          0.432313,
+          0.223688,
+          0.456129,
+          0.129005,
+          0.418672,
+          0.193462,
+          0.261264,
+          0.358061,
+          0.135825,
+          0.115224,
+          0.404111,
+          0.127243,
+          0.651504,
+          0.180854,
+          0.327334,
+          0.41052,
+          0.226002,
+          0.350309,
+          0.167262,
+          0.157608,
+          0.299452,
+          0.195425,
+          0.332743,
+          0.625385,
+          0.153992,
+          0.147182,
+          0.13922,
+          0.342678,
+          0.514387,
+          0.154724,
+          0.155265,
+          0.17213,
+          0.643021,
+          0.175054,
+          0.169686,
+          0.153322,
+          0.153582,
+          0.201174,
+          0.437271,
+          0.177709
+        ]
+      },
+      "delta_sha256": "f3a603c338e1888610747bcfa47c6697711236731b779e79b6c3619f1ba94b7f",
+      "median_recomputed": 5.0,
+      "max_recomputed": 20,
+      "zero_divisions_seen": 0,
+      "profile": [
+        {
+          "file": "enron_workbook.py",
+          "function": "replay",
+          "cumulative_s": 0.018709034000000003,
+          "self_s": 0.00020030900000000002
+        },
+        {
+          "file": "workbook.py",
+          "function": "update_many",
+          "cumulative_s": 0.015055866000000001,
+          "self_s": 0.001491059
+        },
+        {
+          "file": "workbook.py",
+          "function": "compute_cell",
+          "cumulative_s": 0.0062004,
+          "self_s": 0.001209255
+        },
+        {
+          "file": "snapshot.py",
+          "function": "__getitem__",
+          "cumulative_s": 0.0037195080000000003,
+          "self_s": 0.0037195080000000003
+        },
+        {
+          "file": "workbook.py",
+          "function": "delta",
+          "cumulative_s": 0.0027414650000000002,
+          "self_s": 0.00010647400000000001
+        },
+        {
+          "file": "workbook.py",
+          "function": "_cell_dict",
+          "cumulative_s": 0.002634991,
+          "self_s": 0.000161829
+        },
+        {
+          "file": "workbook.py",
+          "function": "equivalent",
+          "cumulative_s": 0.0024197700000000003,
+          "self_s": 0.000294462
+        },
+        {
+          "file": "basic.py",
+          "function": "xreplace",
+          "cumulative_s": 0.001963657,
+          "self_s": 4.3377e-05
+        },
+        {
+          "file": "basic.py",
+          "function": "_xreplace",
+          "cumulative_s": 0.0019202800000000001,
+          "self_s": 0.000988946
+        },
+        {
+          "file": "snapshot.py",
+          "function": "snapshot",
+          "cumulative_s": 0.001675733,
+          "self_s": 8.730100000000001e-05
+        },
+        {
+          "file": "snapshot.py",
+          "function": "__init__",
+          "cumulative_s": 0.001588432,
+          "self_s": 0.0006464660000000001
+        },
+        {
+          "file": "workbook.py",
+          "function": "cell_dict",
+          "cumulative_s": 0.0015299640000000002,
+          "self_s": 0.00022355700000000001
+        },
+        {
+          "file": "__init__.py",
+          "function": "__getitem__",
+          "cumulative_s": 0.001327449,
+          "self_s": 0.000418475
+        },
+        {
+          "file": "cache.py",
+          "function": "wrapper",
+          "cumulative_s": 0.001142058,
+          "self_s": 0.0006223450000000001
+        },
+        {
+          "file": "printer.py",
+          "function": "__call__",
+          "cumulative_s": 0.001102635,
+          "self_s": 7.7377e-05
+        },
+        {
+          "file": "str.py",
+          "function": "sstr",
+          "cumulative_s": 0.001025258,
+          "self_s": 0.00010238300000000001
+        },
+        {
+          "file": "numbers.py",
+          "function": "__eq__",
+          "cumulative_s": 0.00089209,
+          "self_s": 0.00017151000000000002
+        },
+        {
+          "file": "symbol.py",
+          "function": "__new__",
+          "cumulative_s": 0.0008636140000000001,
+          "self_s": 0.000235884
+        },
+        {
+          "file": "cas.py",
+          "function": "simplify_text",
+          "cumulative_s": 0.0008542900000000001,
+          "self_s": 0.00023060200000000003
+        },
+        {
+          "file": "~",
+          "function": "<built-in method builtins.sum>",
+          "cumulative_s": 0.000734499,
+          "self_s": 8.6135e-05
+        },
+        {
+          "file": "function.py",
+          "function": "expand",
+          "cumulative_s": 0.0007257230000000001,
+          "self_s": 0.00029416
+        },
+        {
+          "file": "workbook_incremental.py",
+          "function": "serialized",
+          "cumulative_s": 0.0007113940000000001,
+          "self_s": 2.8712000000000002e-05
+        },
+        {
+          "file": "sympify.py",
+          "function": "sympify",
+          "cumulative_s": 0.000699797,
+          "self_s": 0.00038725
+        },
+        {
+          "file": "sympify.py",
+          "function": "_sympify",
+          "cumulative_s": 0.000687812,
+          "self_s": 0.00010712
+        },
+        {
+          "file": "__init__.py",
+          "function": "dumps",
+          "cumulative_s": 0.000682682,
+          "self_s": 6.631100000000001e-05
+        }
+      ]
+    },
+    {
+      "file": "09.xlsx",
+      "sheet": 5,
+      "inputs": 314,
+      "formulas": 372,
+      "median_ms": {
+        "ltba": 0.13977099999999998,
+        "dag": 0.126306,
+        "dag_default": 0.108068
+      },
+      "samples_ms": {
+        "ltba": [
+          0.087242,
+          0.067873,
+          0.068313,
+          0.150237,
+          0.385222,
+          0.149526,
+          0.089455,
+          0.123536,
+          0.261746,
+          0.235946,
+          0.149556,
+          0.268155,
+          0.109936,
+          0.214003,
+          0.309087,
+          0.224179,
+          0.435498,
+          0.085169,
+          2.381247,
+          0.134393,
+          0.085609,
+          0.165019,
+          0.093321,
+          0.13884,
+          0.243588,
+          0.140702,
+          0.160111,
+          0.109065,
+          0.11227,
+          0.119761,
+          0.214784,
+          0.150688,
+          0.160923,
+          0.360945,
+          0.064868,
+          0.109426,
+          0.097377,
+          0.084107,
+          0.107031,
+          0.121333
+        ],
+        "dag": [
+          0.09261,
+          0.143046,
+          0.063145,
+          0.099921,
+          0.104788,
+          0.10544,
+          0.087813,
+          0.103006,
+          0.182716,
+          0.15237,
+          0.225,
+          0.163377,
+          0.135604,
+          0.116466,
+          0.208365,
+          0.136706,
+          0.676913,
+          0.286413,
+          0.102996,
+          0.075144,
+          0.087442,
+          0.151278,
+          0.139341,
+          0.166471,
+          0.149817,
+          0.185611,
+          0.098699,
+          0.124228,
+          0.115174,
+          0.128384,
+          0.181695,
+          0.182766,
+          0.345311,
+          0.306903,
+          0.096335,
+          0.063145,
+          0.080201,
+          0.074843,
+          0.07961,
+          0.082074
+        ],
+        "dag_default": [
+          0.740929,
+          0.06626,
+          0.074192,
+          0.116466,
+          0.096035,
+          0.084818,
+          0.071218,
+          0.103006,
+          0.110778,
+          0.124748,
+          0.135455,
+          0.100933,
+          0.129586,
+          0.106651,
+          0.239321,
+          0.122986,
+          0.226773,
+          0.199512,
+          0.114623,
+          0.076626,
+          0.124698,
+          0.179211,
+          0.116606,
+          0.173722,
+          0.108123,
+          0.09325,
+          0.0727,
+          0.116706,
+          0.143367,
+          0.078329,
+          0.108013,
+          0.103797,
+          0.109436,
+          0.071739,
+          0.063326,
+          0.067372,
+          0.084338,
+          0.096826,
+          0.123737,
+          0.09288
+        ]
+      },
+      "delta_sha256": "52d91db6cf3198169f235dead4441cf97dfd26c9190a70500e5ddd2b6ad0f46b",
+      "median_recomputed": 2.0,
+      "max_recomputed": 3,
+      "zero_divisions_seen": 0,
+      "profile": [
+        {
+          "file": "enron_workbook.py",
+          "function": "replay",
+          "cumulative_s": 0.009498569,
+          "self_s": 0.000164668
+        },
+        {
+          "file": "workbook.py",
+          "function": "update_many",
+          "cumulative_s": 0.007378946000000001,
+          "self_s": 0.001032925
+        },
+        {
+          "file": "snapshot.py",
+          "function": "__getitem__",
+          "cumulative_s": 0.0019553260000000003,
+          "self_s": 0.0019553260000000003
+        },
+        {
+          "file": "snapshot.py",
+          "function": "snapshot",
+          "cumulative_s": 0.0016758130000000002,
+          "self_s": 8.428400000000001e-05
+        },
+        {
+          "file": "snapshot.py",
+          "function": "__init__",
+          "cumulative_s": 0.0015915290000000002,
+          "self_s": 0.000708456
+        },
+        {
+          "file": "workbook.py",
+          "function": "compute_cell",
+          "cumulative_s": 0.001522408,
+          "self_s": 0.000529897
+        },
+        {
+          "file": "workbook.py",
+          "function": "delta",
+          "cumulative_s": 0.001493687,
+          "self_s": 9.6335e-05
+        },
+        {
+          "file": "workbook.py",
+          "function": "_cell_dict",
+          "cumulative_s": 0.0013973520000000001,
+          "self_s": 9.0171e-05
+        },
+        {
+          "file": "workbook.py",
+          "function": "equivalent",
+          "cumulative_s": 0.0010364810000000001,
+          "self_s": 0.000208518
+        },
+        {
+          "file": "workbook.py",
+          "function": "cell_dict",
+          "cumulative_s": 0.0008970060000000001,
+          "self_s": 0.00011842600000000001
+        },
+        {
+          "file": "printer.py",
+          "function": "__call__",
+          "cumulative_s": 0.0006824400000000001,
+          "self_s": 6.6393e-05
+        },
+        {
+          "file": "~",
+          "function": "<built-in method builtins.sum>",
+          "cumulative_s": 0.00068165,
+          "self_s": 7.3849e-05
+        },
+        {
+          "file": "<frozen _collections_abc>",
+          "function": "__contains__",
+          "cumulative_s": 0.000662914,
+          "self_s": 6.856100000000001e-05
+        },
+        {
+          "file": "str.py",
+          "function": "sstr",
+          "cumulative_s": 0.000616047,
+          "self_s": 5.9972e-05
+        },
+        {
+          "file": "snapshot.py",
+          "function": "<genexpr>",
+          "cumulative_s": 0.000607801,
+          "self_s": 7.272700000000001e-05
+        },
+        {
+          "file": "workbook_incremental.py",
+          "function": "serialized",
+          "cumulative_s": 0.00046126800000000003,
+          "self_s": 2.6387000000000003e-05
+        },
+        {
+          "file": "cas.py",
+          "function": "simplify_text",
+          "cumulative_s": 0.00043977800000000004,
+          "self_s": 0.000112603
+        },
+        {
+          "file": "__init__.py",
+          "function": "dumps",
+          "cumulative_s": 0.000434881,
+          "self_s": 6.2715e-05
+        },
+        {
+          "file": "__init__.py",
+          "function": "__getitem__",
+          "cumulative_s": 0.00038752000000000003,
+          "self_s": 0.00022989900000000002
+        },
+        {
+          "file": "encoder.py",
+          "function": "encode",
+          "cumulative_s": 0.00035918,
+          "self_s": 5.5096e-05
+        },
+        {
+          "file": "function.py",
+          "function": "expand",
+          "cumulative_s": 0.000307394,
+          "self_s": 0.000142208
+        },
+        {
+          "file": "printer.py",
+          "function": "doprint",
+          "cumulative_s": 0.000299358,
+          "self_s": 4.7136000000000004e-05
+        },
+        {
+          "file": "expr.py",
+          "function": "is_polynomial",
+          "cumulative_s": 0.000288765,
+          "self_s": 5.5676e-05
+        },
+        {
+          "file": "encoder.py",
+          "function": "iterencode",
+          "cumulative_s": 0.000283741,
+          "self_s": 0.000283741
+        },
+        {
+          "file": "cas.py",
+          "function": "compile_text",
+          "cumulative_s": 0.00027302,
+          "self_s": 0.000182916
+        }
+      ]
+    },
+    {
+      "file": "05.xlsx",
+      "sheet": 0,
+      "inputs": 8,
+      "formulas": 181,
+      "median_ms": {
+        "ltba": 1.0436619999999999,
+        "dag": 1.092936,
+        "dag_default": 0.5570865
+      },
+      "samples_ms": {
+        "ltba": [
+          0.610252,
+          0.632596,
+          0.567187,
+          0.984778,
+          0.087892,
+          0.86083,
+          0.760568,
+          0.103627,
+          0.865618,
+          1.036346,
+          0.110778,
+          1.328086,
+          1.050978,
+          1.085399,
+          2.755523,
+          0.111979,
+          1.427747,
+          1.293814,
+          1.234905,
+          0.144829,
+          0.094954,
+          1.022725,
+          2.756334,
+          1.184199,
+          1.119872,
+          2.044829,
+          2.096037,
+          2.060773,
+          1.205401,
+          1.779769,
+          2.674089,
+          1.721531,
+          0.129426,
+          1.066511,
+          0.512224,
+          1.553447,
+          0.12523,
+          0.798666,
+          1.702012,
+          0.765436
+        ],
+        "dag": [
+          0.543191,
+          0.535098,
+          0.551172,
+          1.14493,
+          0.366484,
+          0.97361,
+          0.78061,
+          0.100051,
+          0.835452,
+          1.122706,
+          0.111048,
+          1.634279,
+          1.254355,
+          1.03911,
+          3.170039,
+          0.127994,
+          1.326934,
+          1.413005,
+          1.486015,
+          0.075373,
+          0.084408,
+          0.937126,
+          1.697394,
+          1.071569,
+          0.986601,
+          2.168877,
+          1.850937,
+          1.952449,
+          1.218721,
+          1.393094,
+          2.571625,
+          1.366355,
+          0.157809,
+          1.114874,
+          0.643472,
+          1.424302,
+          0.467266,
+          0.753999,
+          2.020783,
+          1.114303
+        ],
+        "dag_default": [
+          0.526545,
+          0.460736,
+          0.420876,
+          0.702662,
+          0.073942,
+          0.54293,
+          0.454616,
+          0.189216,
+          0.493255,
+          0.541708,
+          0.302497,
+          0.577422,
+          0.507887,
+          0.566406,
+          1.228115,
+          0.162085,
+          0.809814,
+          1.216548,
+          0.950656,
+          0.063886,
+          0.140201,
+          0.594628,
+          0.969725,
+          0.906039,
+          0.570132,
+          0.954612,
+          1.008924,
+          0.919369,
+          0.547767,
+          0.65469,
+          0.927462,
+          0.599265,
+          0.200453,
+          0.431582,
+          0.379793,
+          1.188776,
+          0.07262,
+          0.518013,
+          1.242436,
+          0.638865
+        ]
+      },
+      "delta_sha256": "0bf3598b80d9b7107b1b6328840d7038e25cc38dc2030e1007f48fb49186b67a",
+      "median_recomputed": 31.5,
+      "max_recomputed": 62,
+      "zero_divisions_seen": 0,
+      "profile": [
+        {
+          "file": "enron_workbook.py",
+          "function": "replay",
+          "cumulative_s": 0.093065673,
+          "self_s": 0.000549402
+        },
+        {
+          "file": "workbook.py",
+          "function": "update_many",
+          "cumulative_s": 0.06858818400000001,
+          "self_s": 0.006977063
+        },
+        {
+          "file": "workbook.py",
+          "function": "compute_cell",
+          "cumulative_s": 0.026414794000000002,
+          "self_s": 0.007164922000000001
+        },
+        {
+          "file": "snapshot.py",
+          "function": "__getitem__",
+          "cumulative_s": 0.022858802,
+          "self_s": 0.022858802
+        },
+        {
+          "file": "workbook.py",
+          "function": "delta",
+          "cumulative_s": 0.021126536,
+          "self_s": 0.000383584
+        },
+        {
+          "file": "workbook.py",
+          "function": "_cell_dict",
+          "cumulative_s": 0.020742952000000002,
+          "self_s": 0.0011196370000000001
+        },
+        {
+          "file": "workbook.py",
+          "function": "equivalent",
+          "cumulative_s": 0.014025427,
+          "self_s": 0.001988367
+        },
+        {
+          "file": "workbook.py",
+          "function": "cell_dict",
+          "cumulative_s": 0.010426012,
+          "self_s": 0.001600332
+        },
+        {
+          "file": "printer.py",
+          "function": "__call__",
+          "cumulative_s": 0.007529979000000001,
+          "self_s": 0.000507197
+        },
+        {
+          "file": "str.py",
+          "function": "sstr",
+          "cumulative_s": 0.007022782000000001,
+          "self_s": 0.000694513
+        },
+        {
+          "file": "__init__.py",
+          "function": "__getitem__",
+          "cumulative_s": 0.006402808,
+          "self_s": 0.002195579
+        },
+        {
+          "file": "cas.py",
+          "function": "simplify_text",
+          "cumulative_s": 0.0052917500000000004,
+          "self_s": 0.00144943
+        },
+        {
+          "file": "symbol.py",
+          "function": "__new__",
+          "cumulative_s": 0.004640786,
+          "self_s": 0.00144373
+        },
+        {
+          "file": "basic.py",
+          "function": "xreplace",
+          "cumulative_s": 0.004283591000000001,
+          "self_s": 0.00023303800000000003
+        },
+        {
+          "file": "expr.py",
+          "function": "is_polynomial",
+          "cumulative_s": 0.004156268,
+          "self_s": 0.000747348
+        },
+        {
+          "file": "basic.py",
+          "function": "_xreplace",
+          "cumulative_s": 0.004050553,
+          "self_s": 0.002051509
+        },
+        {
+          "file": "cache.py",
+          "function": "wrapper",
+          "cumulative_s": 0.0039985770000000006,
+          "self_s": 0.002805404
+        },
+        {
+          "file": "function.py",
+          "function": "expand",
+          "cumulative_s": 0.0039342280000000006,
+          "self_s": 0.0016489990000000002
+        },
+        {
+          "file": "printer.py",
+          "function": "doprint",
+          "cumulative_s": 0.003921513000000001,
+          "self_s": 0.0005257640000000001
+        },
+        {
+          "file": "basic.py",
+          "function": "free_symbols",
+          "cumulative_s": 0.00340892,
+          "self_s": 0.002612243
+        },
+        {
+          "file": "printer.py",
+          "function": "_print",
+          "cumulative_s": 0.0033957490000000004,
+          "self_s": 0.001846067
+        },
+        {
+          "file": "cas.py",
+          "function": "compile_text",
+          "cumulative_s": 0.003150477,
+          "self_s": 0.0018986080000000002
+        },
+        {
+          "file": "numbers.py",
+          "function": "__eq__",
+          "cumulative_s": 0.0030242980000000004,
+          "self_s": 0.0005424550000000001
+        },
+        {
+          "file": "snapshot.py",
+          "function": "snapshot",
+          "cumulative_s": 0.0029129890000000004,
+          "self_s": 0.000100345
+        },
+        {
+          "file": "snapshot.py",
+          "function": "__init__",
+          "cumulative_s": 0.002812644,
+          "self_s": 0.00048475400000000006
+        }
+      ]
+    }
+  ],
+  "scope": "Same-sheet numeric cells and + - * / only, dependency closed. Five largest eligible sheets from distinct files. Forty seeded successive +/-1 edits each. Same exact LTBA division semantics and changed-cell JSON in all three configurations. The default DAG copies dictionaries and has no identity-transition index. Independent Fraction oracle checks all values. Generated edits and adapter are ours; no Excel timing."
+}

@@ -1,0 +1,233 @@
+{
+  "workload": "Sum of (x-i)/(x-i), i=0..n-1, rewritten as n under no-op division.",
+  "expected": "All reals except 0 through n-1. Root-events returns the excluded points directly.",
+  "scope": "Calculation time includes input parsing and symbolic construction. Wall timeout covers child startup and verification too. Peak RSS includes imports. LTBA compiles source records. Other paths return the validity domain without source records. The root_with_trace path computes the same domain and the same three selected site traces as ltba_source, while LTBA keeps all sites available for later lookup. No trace serialization. Root-events is specialized to proportional affine terms.",
+  "timeout_s": 12,
+  "memory_mib": 768,
+  "repeats": 2,
+  "sympy": "1.14.0",
+  "rows": {
+    "32": {
+      "ltba_source": {
+        "status": "verified",
+        "median_s": 0.0033397559991499293,
+        "peak_rss_kib": 47404,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.0032376919989474118,
+            "compile_s": 0.0008806309997453354,
+            "peak_rss_kib": 47404
+          },
+          {
+            "status": "verified",
+            "seconds": 0.0034418199993524468,
+            "compile_s": 0.0006878690001030918,
+            "peak_rss_kib": 47400
+          }
+        ]
+      },
+      "root_with_trace": {
+        "status": "verified",
+        "median_s": 0.0031599394997101626,
+        "peak_rss_kib": 47400,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.0031852430001890752,
+            "compile_s": null,
+            "peak_rss_kib": 47400
+          },
+          {
+            "status": "verified",
+            "seconds": 0.00313463599923125,
+            "compile_s": null,
+            "peak_rss_kib": 47396
+          }
+        ]
+      }
+    },
+    "2048": {
+      "ltba_source": {
+        "status": "verified",
+        "median_s": 0.09314065450053022,
+        "peak_rss_kib": 61104,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.09445820000109961,
+            "compile_s": 0.06986851200053934,
+            "peak_rss_kib": 61104
+          },
+          {
+            "status": "verified",
+            "seconds": 0.09182310899996082,
+            "compile_s": 0.06518715899983363,
+            "peak_rss_kib": 61096
+          }
+        ]
+      },
+      "root_with_trace": {
+        "status": "verified",
+        "median_s": 0.06205188950025331,
+        "peak_rss_kib": 61096,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.05941691400039417,
+            "compile_s": null,
+            "peak_rss_kib": 61096
+          },
+          {
+            "status": "verified",
+            "seconds": 0.06468686500011245,
+            "compile_s": null,
+            "peak_rss_kib": 61088
+          }
+        ]
+      }
+    },
+    "4096": {
+      "ltba_source": {
+        "status": "verified",
+        "median_s": 0.2205895839997538,
+        "peak_rss_kib": 74656,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.2142110530003265,
+            "compile_s": 0.15638045699961367,
+            "peak_rss_kib": 74636
+          },
+          {
+            "status": "verified",
+            "seconds": 0.22696811499918113,
+            "compile_s": 0.17145428900039406,
+            "peak_rss_kib": 74656
+          }
+        ]
+      },
+      "root_with_trace": {
+        "status": "verified",
+        "median_s": 0.13600333949943888,
+        "peak_rss_kib": 74656,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.1278930959997524,
+            "compile_s": null,
+            "peak_rss_kib": 74648
+          },
+          {
+            "status": "verified",
+            "seconds": 0.14411358299912536,
+            "compile_s": null,
+            "peak_rss_kib": 74656
+          }
+        ]
+      }
+    },
+    "16384": {
+      "ltba_source": {
+        "status": "verified",
+        "median_s": 1.095098840000901,
+        "peak_rss_kib": 158352,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 1.1954764560014155,
+            "compile_s": 0.9423571240004094,
+            "peak_rss_kib": 158352
+          },
+          {
+            "status": "verified",
+            "seconds": 0.9947212240003864,
+            "compile_s": 0.7488481670006877,
+            "peak_rss_kib": 158280
+          }
+        ]
+      },
+      "root_with_trace": {
+        "status": "verified",
+        "median_s": 0.8070678479998605,
+        "peak_rss_kib": 158356,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.7321335519991408,
+            "compile_s": null,
+            "peak_rss_kib": 158356
+          },
+          {
+            "status": "verified",
+            "seconds": 0.8820021440005803,
+            "compile_s": null,
+            "peak_rss_kib": 158308
+          }
+        ]
+      }
+    },
+    "65536": {
+      "ltba_source": {
+        "status": "verified",
+        "median_s": 4.553298292000363,
+        "peak_rss_kib": 491512,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 4.543921524000325,
+            "compile_s": 3.425988046999919,
+            "peak_rss_kib": 491436
+          },
+          {
+            "status": "verified",
+            "seconds": 4.562675060000402,
+            "compile_s": 3.355431223000778,
+            "peak_rss_kib": 491512
+          }
+        ]
+      },
+      "root_with_trace": {
+        "status": "verified",
+        "median_s": 4.777941610000198,
+        "peak_rss_kib": 491560,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 4.89917563400013,
+            "compile_s": null,
+            "peak_rss_kib": 491560
+          },
+          {
+            "status": "verified",
+            "seconds": 4.656707586000266,
+            "compile_s": null,
+            "peak_rss_kib": 491516
+          }
+        ]
+      }
+    },
+    "131072": {
+      "ltba_source": {
+        "status": "memory_limit",
+        "exit_code": 1,
+        "error": [
+          "  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ast.py\", line 52, in parse",
+          "    return compile(source, filename, mode, flags,",
+          "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+          "MemoryError"
+        ]
+      },
+      "root_with_trace": {
+        "status": "memory_limit",
+        "exit_code": 1,
+        "error": [
+          "  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ast.py\", line 52, in parse",
+          "    return compile(source, filename, mode, flags,",
+          "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+          "MemoryError"
+        ]
+      }
+    }
+  }
+}

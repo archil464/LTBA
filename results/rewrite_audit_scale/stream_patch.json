@@ -1,0 +1,156 @@
+{
+  "workload": "Sum of (x-i)/(x-i), i=0..n-1, rewritten as n under no-op division.",
+  "expected": "All reals except 0 through n-1. Root-events returns the excluded points directly.",
+  "scope": "Calculation time includes input parsing and symbolic construction. Wall timeout covers child startup and verification too. Peak RSS includes imports. LTBA compiles source records. Other paths return the validity domain without source records. The root_with_trace path computes the same domain and the same three selected site traces as ltba_source, while LTBA keeps all sites available for later lookup. No trace serialization. Root-events is specialized to proportional affine terms. Streaming engines generate one line at a time inside the timed interval; the compact variant skips SymPy set export.",
+  "timeout_s": 12,
+  "memory_mib": 768,
+  "repeats": 2,
+  "sympy": "1.14.0",
+  "rows": {
+    "65536": {
+      "ltba_source": {
+        "status": "verified",
+        "median_s": 4.770361033500194,
+        "peak_rss_kib": 487004,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 5.124452133999512,
+            "compile_s": 4.101637739999205,
+            "peak_rss_kib": 487004
+          },
+          {
+            "status": "verified",
+            "seconds": 4.416269933000876,
+            "compile_s": 3.4169507719998364,
+            "peak_rss_kib": 486884
+          }
+        ]
+      },
+      "ltba_stream": {
+        "status": "verified",
+        "median_s": 0.7772783739992519,
+        "peak_rss_kib": 80536,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 0.8658856929996546,
+            "compile_s": 0.8511100519990578,
+            "peak_rss_kib": 80516
+          },
+          {
+            "status": "verified",
+            "seconds": 0.6886710549988493,
+            "compile_s": 0.6851916979994712,
+            "peak_rss_kib": 80536
+          }
+        ]
+      },
+      "ltba_stream_sympy": {
+        "status": "verified",
+        "median_s": 1.8804915620003158,
+        "peak_rss_kib": 124100,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 1.8678909440004645,
+            "compile_s": 0.7243363929992483,
+            "peak_rss_kib": 124100
+          },
+          {
+            "status": "verified",
+            "seconds": 1.893092180000167,
+            "compile_s": 0.7092348620008124,
+            "peak_rss_kib": 123612
+          }
+        ]
+      }
+    },
+    "131072": {
+      "ltba_source": {
+        "status": "memory_limit",
+        "exit_code": 1,
+        "error": [
+          "  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ast.py\", line 52, in parse",
+          "    return compile(source, filename, mode, flags,",
+          "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+          "MemoryError"
+        ]
+      },
+      "ltba_stream": {
+        "status": "verified",
+        "median_s": 1.5552816714998698,
+        "peak_rss_kib": 116016,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 1.549667713999952,
+            "compile_s": 1.5416801359988312,
+            "peak_rss_kib": 116008
+          },
+          {
+            "status": "verified",
+            "seconds": 1.5608956289997877,
+            "compile_s": 1.5525407759996597,
+            "peak_rss_kib": 116016
+          }
+        ]
+      },
+      "ltba_stream_sympy": {
+        "status": "verified",
+        "median_s": 3.9918406520000644,
+        "peak_rss_kib": 201244,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 3.9959925310013205,
+            "compile_s": 1.5066107630009355,
+            "peak_rss_kib": 201244
+          },
+          {
+            "status": "verified",
+            "seconds": 3.9876887729988084,
+            "compile_s": 1.481626029999461,
+            "peak_rss_kib": 201004
+          }
+        ]
+      }
+    },
+    "262144": {
+      "ltba_source": {
+        "status": "memory_limit",
+        "exit_code": 1,
+        "error": [
+          "  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ast.py\", line 52, in parse",
+          "    return compile(source, filename, mode, flags,",
+          "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+          "MemoryError"
+        ]
+      },
+      "ltba_stream": {
+        "status": "verified",
+        "median_s": 3.190574211999774,
+        "peak_rss_kib": 186848,
+        "samples": [
+          {
+            "status": "verified",
+            "seconds": 3.2952388289995724,
+            "compile_s": 3.27677762500025,
+            "peak_rss_kib": 186840
+          },
+          {
+            "status": "verified",
+            "seconds": 3.0859095949999755,
+            "compile_s": 3.0442671549990337,
+            "peak_rss_kib": 186848
+          }
+        ]
+      },
+      "ltba_stream_sympy": {
+        "status": "timeout",
+        "timeout_s": 12,
+        "samples": []
+      }
+    }
+  }
+}

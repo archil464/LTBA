@@ -14,29 +14,31 @@ def ordinary_algebra_family(n: int) -> LTBAExpr:
 
 
 def guarded_division_family(n: int) -> LTBAExpr:
-    e = LTBAExpr(" * ".join([f"(x{i}/x{i})" for i in range(1, n + 1)]), provenance=["LTBA-1:guarded_division"])
+    base = " * ".join([f"(x{i}/x{i})" for i in range(1, n + 1)])
+    groups = []
     for i in range(1, n + 1):
-        e = e.add_branch_group(
+        groups.append(LocalBranchGroup(
             group_id=f"division_guard:{i}",
-            branches=[
+            branches=(
                 LocalBranch(Guard(f"x{i} != 0"), "1", tag=f"cancel:x{i}/x{i}"),
                 LocalBranch(Guard(f"x{i} == 0"), "0", tag=f"singular:x{i}/x{i}"),
-            ],
-        )
-    return e
+            ),
+        ))
+    return LTBAExpr(base, tuple(groups), ["LTBA-1:guarded_division"])
 
 
 def radicals_abs_family(n: int) -> LTBAExpr:
-    e = LTBAExpr(" + ".join([f"sqrt(x{i}^2)" for i in range(1, n + 1)]), provenance=["LTBA-2:radicals_abs"])
+    base = " + ".join([f"sqrt(x{i}^2)" for i in range(1, n + 1)])
+    groups = []
     for i in range(1, n + 1):
-        e = e.add_branch_group(
+        groups.append(LocalBranchGroup(
             group_id=f"radical_sign:{i}",
-            branches=[
+            branches=(
                 LocalBranch(Guard(f"x{i} >= 0"), f"x{i}", tag=f"sqrt_square_pos:x{i}"),
                 LocalBranch(Guard(f"x{i} < 0"), f"-x{i}", tag=f"sqrt_square_neg:x{i}"),
-            ],
-        )
-    return e
+            ),
+        ))
+    return LTBAExpr(base, tuple(groups), ["LTBA-2:radicals_abs"])
 
 
 def install_default_components() -> None:

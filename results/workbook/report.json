@@ -1,0 +1,36 @@
+{
+  "formulas": 101,
+  "recomputed": [
+    "f0",
+    "output"
+  ],
+  "samples_ms": {
+    "incremental": [
+      14.027183000507648,
+      12.061788000210072,
+      14.422027000364324,
+      14.030868999725499,
+      12.918473000354425,
+      15.42481999968004,
+      19.90957299949514,
+      16.040280000197527,
+      19.75483299975167
+    ],
+    "rebuild": [
+      176.96726800022589,
+      194.90423399929568,
+      194.49501800045255,
+      258.88711500010686,
+      247.91324899979372,
+      193.05814400013332,
+      197.44564099983108,
+      225.67112099932274,
+      214.3682619998799
+    ]
+  },
+  "medians_ms": {
+    "incremental": 14.422027000364324,
+    "rebuild": 197.44564099983108
+  },
+  "scope": "Warm-process edit plus complete serialization. Shared guarded SymPy kernel. Full rebuild baseline. Cached incremental conventional systems remain unmeasured."
+}

@@ -1,0 +1,159 @@
+{
+  "upstream": "https://github.com/sympy/sympy_benchmarks",
+  "commit": "3a6f8897c0837c628a0cdb8a20663638b5de53ed",
+  "fixture": "benchmarks/core/expand.py",
+  "fixture_sha256": "814da1cf60fb3a6f21e2ec2cc39bc7a95b0dc89028e5dc4633288b416d963afd",
+  "python": "3.12.14",
+  "sympy": "1.14.0",
+  "scope": "Adapted upstream polynomial expansion inputs using real symbols on both sides. Cold parse-to-result timings, 11 runs per engine, output equality checked outside timing. No provenance-bearing input. These are not raw ASV timings.",
+  "rows": [
+    {
+      "upstream_case": "time_expand_nothing_todo",
+      "input": "3 * x ** 2 * y * z ** 7 + 7 * x * y * z ** 2 + 4 * x + x * y ** 4",
+      "terms": 4,
+      "median_us": {
+        "sympy": 1410.611,
+        "ltba": 1389.42
+      },
+      "samples_us": {
+        "sympy": [
+          1791.196,
+          2180.574,
+          1638.486,
+          1410.611,
+          1225.632,
+          1274.476,
+          1659.708,
+          1273.705,
+          1322.949,
+          1701.47,
+          1299.965
+        ],
+        "ltba": [
+          1422.78,
+          1459.485,
+          1565.516,
+          1261.486,
+          1276.238,
+          1517.833,
+          1389.42,
+          1074.845,
+          4177.953,
+          1186.483,
+          1236.879
+        ]
+      }
+    },
+    {
+      "upstream_case": "bench_expand_32",
+      "input": "(x + y + z + 1) ** 32",
+      "terms": 6545,
+      "median_us": {
+        "sympy": 944979.158,
+        "ltba": 924782.73
+      },
+      "samples_us": {
+        "sympy": [
+          1026435.205,
+          949084.435,
+          957873.4,
+          894551.25,
+          932300.322,
+          817980.409,
+          916413.526,
+          969455.839,
+          979635.678,
+          944979.158,
+          911231.152
+        ],
+        "ltba": [
+          1009886.168,
+          953842.38,
+          905480.345,
+          889748.779,
+          852692.015,
+          873659.118,
+          1074030.938,
+          1052624.704,
+          999992.723,
+          924782.73,
+          858819.661
+        ]
+      }
+    },
+    {
+      "upstream_case": "time_expand_arit/1",
+      "input": "(x + y) * z",
+      "terms": 2,
+      "median_us": {
+        "sympy": 418.292,
+        "ltba": 269.176
+      },
+      "samples_us": {
+        "sympy": [
+          483.37,
+          432.674,
+          453.675,
+          418.292,
+          407.596,
+          412.133,
+          415.749,
+          405.213,
+          407.135,
+          443.49,
+          418.353
+        ],
+        "ltba": [
+          340.554,
+          320.955,
+          272.141,
+          269.176,
+          273.874,
+          249.858,
+          255.316,
+          299.322,
+          246.522,
+          251.62,
+          247.915
+        ]
+      }
+    },
+    {
+      "upstream_case": "time_expand_arit/2",
+      "input": "(x + z) * (x + y) * (y + z)",
+      "terms": 7,
+      "median_us": {
+        "sympy": 1243.298,
+        "ltba": 983.466
+      },
+      "samples_us": {
+        "sympy": [
+          1178.31,
+          1294.756,
+          1091.42,
+          1198.04,
+          1311.091,
+          1166.713,
+          1434.687,
+          1243.298,
+          1348.728,
+          1090.578,
+          1423.25
+        ],
+        "ltba": [
+          942.544,
+          1046.371,
+          908.803,
+          963.345,
+          927.431,
+          1038.85,
+          1200.434,
+          1019.951,
+          973.361,
+          1041.163,
+          983.466
+        ]
+      }
+    }
+  ]
+}
