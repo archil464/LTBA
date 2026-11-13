@@ -259,3 +259,44 @@ def test_stream_audit_matches_source_and_preserves_fractional_roots():
     assert streamed.sites[1].trace_at(1) == ('positive-one', 1)
     assert [site.span[0] for site in streamed.sites] == [1, 2]
     assert compile_point_audit_terms(iter(['x/x', '(6/x)/2']), 'x') is None
+
+
+def test_polynomial_root_audit_keeps_multiplication_by_zero():
+    import sympy as sp
+    from ltba import solve_equal_text
+    from ltba.polynomial_audit import compile_polynomial_audit
+
+    source = '(7*(x*x-1))/(2*(x*x-1))-3'
+    audit = compile_polynomial_audit(source, 'x')
+    assert audit.corrections == {-1: -sp.Rational(7, 2), 1: -sp.Rational(7, 2)}
+    assert solve_equal_text(source, 'x', -3) == sp.FiniteSet(-1, 1)
+    assert audit.sites[0].trace_at(1) == ('zero-no-op', 0)
+    assert audit.sites[0].trace_at(0) == ('regular', sp.Rational(7, 2))
+
+
+def test_polynomial_root_audit_checks_irrational_and_repeated_roots():
+    import sympy as sp
+    from ltba.polynomial_audit import compile_polynomial_audit
+
+    audit = compile_polynomial_audit('((x*x-2)**2)/((x*x-2)**2)', 'x')
+    assert len(audit.corrections) == 2
+    for root in audit.corrections:
+        assert audit.sites[0].trace_at(root) == ('zero-no-op', 0)
+        assert audit.solve_equal(1).contains(root) is sp.false
+
+
+def test_polynomial_path_requires_exact_division_and_preserves_powers():
+    from ltba import solve_equal_text
+    from ltba.polynomial_audit import compile_polynomial_audit
+
+    for source in ('(6/x)/2', '6/(2*x)', 'x/0', 'x**0', 'x**(-1)'):
+        assert compile_polynomial_audit(source, 'x') is None
+        assert solve_equal_text(source, 'x', 3) == simplify_text(source).solve_equal('x', 3)
+
+
+def test_polynomial_root_audit_rechecks_ordinary_roots_at_exception():
+    import sympy as sp
+    from ltba import solve_equal_text
+
+    assert solve_equal_text('(x*x-1)/(x-1)', 'x', 2) == sp.S.EmptySet
+    assert solve_equal_text('(x*x-1)/(x-1)', 'x', 0) == sp.FiniteSet(-1, 1)

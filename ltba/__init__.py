@@ -16,6 +16,10 @@ __all__ = [
     "install_default_components",
     "simplify_text",
     "solve_equal_text",
+    "cancel_ordinary",
+    "audit_ordinary_rewrite",
+    "refine_integer_piecewise",
+    "piecewise_side_limit",
 ]
 
 
@@ -28,6 +32,30 @@ def solve_equal_text(source, symbol, target=0, *, bindings=None):
     """Solve an equality directly from source using the optional CAS."""
     from .cas import solve_equal_text as solve
     return solve(source, symbol, target, bindings=bindings)
+
+
+def cancel_ordinary(source, symbol):
+    """Cancel a rational expression while carrying its original real domain."""
+    from .ordinary_audit import cancel_ordinary as cancel
+    return cancel(source, symbol)
+
+
+def audit_ordinary_rewrite(original, replacement, symbol):
+    """Check value equality and changes to the domain under ordinary division."""
+    from .ordinary_audit import audit_ordinary_rewrite as audit
+    return audit(original, replacement, symbol)
+
+
+def refine_integer_piecewise(expression, symbol, assumption=True):
+    """Refine a Piecewise under an explicit integer-domain assumption."""
+    from .piecewise_analysis import refine_integer_piecewise as refine
+    return refine(expression, symbol, assumption)
+
+
+def piecewise_side_limit(expression, symbol, point, *, direction):
+    """Compute a one-sided limit from the adjacent Piecewise branch."""
+    from .piecewise_analysis import piecewise_side_limit as side_limit
+    return side_limit(expression, symbol, point, direction=direction)
 
 
 # Install a standard set of demo components on import for convenience in examples/tests

@@ -404,7 +404,7 @@ def simplify_text(source, *, storage="flat", bindings=None, transform=None, coll
 
 
 def solve_equal_text(source, symbol, target=0, *, bindings=None):
-    """Solve source directly, avoiding symbolic compilation for affine point audits."""
+    """Solve source directly, avoiding symbolic compilation for supported root audits."""
     from .point_audit import compile_point_audit
 
     target = sp.sympify(target, strict=True)
@@ -412,4 +412,9 @@ def solve_equal_text(source, symbol, target=0, *, bindings=None):
         audit = compile_point_audit(source.replace('^', '**'), symbol)
         if audit is not None:
             return audit.solve_equal(target)
+        from .polynomial_audit import compile_polynomial_audit
+
+        polynomial = compile_polynomial_audit(source, symbol)
+        if polynomial is not None:
+            return polynomial.solve_equal(target)
     return simplify_text(source, bindings=bindings).solve_equal(symbol, target)

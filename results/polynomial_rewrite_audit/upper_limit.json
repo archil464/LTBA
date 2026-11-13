@@ -1,0 +1,51 @@
+{
+  "wall_cap_s": 10,
+  "runs_per_point": 1,
+  "rows": [
+    {
+      "family": "nonconstant_quotient",
+      "divisions": 512,
+      "status": "verified",
+      "seconds": 0.659122640001442,
+      "sites": 512
+    },
+    {
+      "family": "nonconstant_quotient",
+      "divisions": 1024,
+      "status": "verified",
+      "seconds": 1.6378711720008141,
+      "sites": 1024
+    },
+    {
+      "family": "nonconstant_quotient",
+      "divisions": 2048,
+      "status": "verified",
+      "seconds": 5.104637730999457,
+      "sites": 2048
+    },
+    {
+      "family": "nonconstant_quotient",
+      "divisions": 4096,
+      "status": "timeout"
+    },
+    {
+      "family": "two_roots",
+      "divisions": 512,
+      "status": "verified",
+      "seconds": 1.1898771970008966,
+      "sites": 512
+    },
+    {
+      "family": "two_roots",
+      "divisions": 1024,
+      "status": "verified",
+      "seconds": 3.8831944260000455,
+      "sites": 1024
+    },
+    {
+      "family": "two_roots",
+      "divisions": 2048,
+      "status": "timeout"
+    }
+  ]
+}

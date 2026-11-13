@@ -346,3 +346,22 @@ tree at a time. The audit still stores root corrections and one trace record
 per source division. Use `audit.equality(target)` for the compact exact result:
 `default` indicates whether ordinary points satisfy the equality, and `points`
 lists the exceptions to that answer. Call `to_sympy()` to export a SymPy set.
+
+For ordinary division, `cancel_ordinary(source, "x")` returns a canceled
+expression together with its original real domain and source guards. For
+example, the expression `(x**2-3*x+2)/(x-1)` from SymPy issue #5344 reduces to
+`x-2` on the reals except 1. The result's `evaluate(1)` rejects that point.
+`audit_ordinary_rewrite(original, replacement, "x")` also reports where a
+replacement adds or removes domain points and where the two values agree.
+The ordinary audit currently supports univariate rational expressions with
+integer literals and nonzero literal integer powers.
+
+Two helpers accept SymPy `Piecewise` expressions. For the integer refinement
+case in SymPy #27627, `refine_integer_piecewise(p, x, x < 1000)` proves the
+default polynomial agrees on every active integer branch under the assumption
+before returning it. For the one-sided limit case in SymPy #26313, use
+`piecewise_side_limit(p, x, 2, direction="+")`. It chooses the branch on the
+requested side of a finite real point, then computes its ordinary limit.
+These helpers support univariate guards. The limit helper requires guards
+that resolve to intervals or points and reports if the requested side has
+no adjacent domain.

@@ -1,0 +1,287 @@
+{
+  "scope": "Synthetic polynomial quotient sums over the reals under LTBA division. Baseline proves exact polynomial quotients and prunes by real denominator roots. LTBA exports a SymPy domain; baseline keeps excluded points. Both replay all source records at an identical supplied witness. The ltba_root path also verifies its own retained site traces. Timings include validation and replay; wall cap includes startup. No trace serialization is timed.",
+  "timeout_s": 10,
+  "sympy": "1.14.0",
+  "rows": [
+    {
+      "family": "nonconstant_quotient",
+      "guards": 4,
+      "outcomes": {
+        "partition": {
+          "status": "verified",
+          "sites": 4,
+          "witness": 1,
+          "residual": "-2",
+          "median_s": 0.021523678000448854,
+          "samples_s": [
+            0.021322762999261613,
+            0.021724593001636094
+          ]
+        },
+        "ltba_root": {
+          "status": "verified",
+          "sites": 4,
+          "witness": 1,
+          "residual": "-2",
+          "median_s": 0.022012602999893716,
+          "samples_s": [
+            0.019621216000814456,
+            0.024403989998972975
+          ]
+        }
+      }
+    },
+    {
+      "family": "nonconstant_quotient",
+      "guards": 16,
+      "outcomes": {
+        "ltba_root": {
+          "status": "verified",
+          "sites": 16,
+          "witness": 1,
+          "residual": "-2",
+          "median_s": 0.03389537149996613,
+          "samples_s": [
+            0.03482341800008726,
+            0.032967324999845005
+          ]
+        },
+        "partition": {
+          "status": "verified",
+          "sites": 16,
+          "witness": 1,
+          "residual": "-2",
+          "median_s": 0.025050661999557633,
+          "samples_s": [
+            0.025555879999956232,
+            0.024545443999159033
+          ]
+        }
+      }
+    },
+    {
+      "family": "nonconstant_quotient",
+      "guards": 32,
+      "outcomes": {
+        "ltba_root": {
+          "status": "verified",
+          "sites": 32,
+          "witness": 1,
+          "residual": "-2",
+          "median_s": 0.040182906999689294,
+          "samples_s": [
+            0.03983339399928809,
+            0.0405324200000905
+          ]
+        },
+        "partition": {
+          "status": "verified",
+          "sites": 32,
+          "witness": 1,
+          "residual": "-2",
+          "median_s": 0.031012066000585037,
+          "samples_s": [
+            0.030380657000932842,
+            0.03164347500023723
+          ]
+        }
+      }
+    },
+    {
+      "family": "nonconstant_quotient",
+      "guards": 64,
+      "outcomes": {
+        "partition": {
+          "status": "verified",
+          "sites": 64,
+          "witness": 1,
+          "residual": "-2",
+          "median_s": 0.06245615199986787,
+          "samples_s": [
+            0.05428168800062849,
+            0.07063061599910725
+          ]
+        },
+        "ltba_root": {
+          "status": "verified",
+          "sites": 64,
+          "witness": 1,
+          "residual": "-2",
+          "median_s": 0.09052853049979603,
+          "samples_s": [
+            0.06911231800040696,
+            0.11194474299918511
+          ]
+        }
+      }
+    },
+    {
+      "family": "nonconstant_quotient",
+      "guards": 256,
+      "outcomes": {
+        "partition": {
+          "status": "verified",
+          "sites": 256,
+          "witness": 1,
+          "residual": "-2",
+          "median_s": 0.22084168750097888,
+          "samples_s": [
+            0.2137341470006504,
+            0.22794922800130735
+          ]
+        },
+        "ltba_root": {
+          "status": "verified",
+          "sites": 256,
+          "witness": 1,
+          "residual": "-2",
+          "median_s": 0.28390976100035914,
+          "samples_s": [
+            0.26250209600038943,
+            0.30531742600032885
+          ]
+        }
+      }
+    },
+    {
+      "family": "two_roots",
+      "guards": 4,
+      "outcomes": {
+        "partition": {
+          "status": "verified",
+          "sites": 4,
+          "witness": -4,
+          "residual": "-1",
+          "median_s": 0.026022698500128172,
+          "samples_s": [
+            0.030349329999808106,
+            0.021696067000448238
+          ]
+        },
+        "ltba_root": {
+          "status": "verified",
+          "sites": 4,
+          "witness": -4,
+          "residual": "-1",
+          "median_s": 0.022557773500011535,
+          "samples_s": [
+            0.021856399000171223,
+            0.023259147999851848
+          ]
+        }
+      }
+    },
+    {
+      "family": "two_roots",
+      "guards": 16,
+      "outcomes": {
+        "ltba_root": {
+          "status": "verified",
+          "sites": 16,
+          "witness": -16,
+          "residual": "-1",
+          "median_s": 0.04373946750001778,
+          "samples_s": [
+            0.04105892799998401,
+            0.046420007000051555
+          ]
+        },
+        "partition": {
+          "status": "verified",
+          "sites": 16,
+          "witness": -16,
+          "residual": "-1",
+          "median_s": 0.03160857599959854,
+          "samples_s": [
+            0.03210877699893899,
+            0.031108375000258093
+          ]
+        }
+      }
+    },
+    {
+      "family": "two_roots",
+      "guards": 32,
+      "outcomes": {
+        "ltba_root": {
+          "status": "verified",
+          "sites": 32,
+          "witness": -32,
+          "residual": "-1",
+          "median_s": 0.06258528750004189,
+          "samples_s": [
+            0.05449728900021,
+            0.07067328599987377
+          ]
+        },
+        "partition": {
+          "status": "verified",
+          "sites": 32,
+          "witness": -32,
+          "residual": "-1",
+          "median_s": 0.04955267399964214,
+          "samples_s": [
+            0.04801892199975555,
+            0.05108642599952873
+          ]
+        }
+      }
+    },
+    {
+      "family": "two_roots",
+      "guards": 64,
+      "outcomes": {
+        "ltba_root": {
+          "status": "verified",
+          "sites": 64,
+          "witness": -64,
+          "residual": "-1",
+          "median_s": 0.09461835999991308,
+          "samples_s": [
+            0.09249174800061155,
+            0.09674497199921461
+          ]
+        },
+        "partition": {
+          "status": "verified",
+          "sites": 64,
+          "witness": -64,
+          "residual": "-1",
+          "median_s": 0.08613139400040382,
+          "samples_s": [
+            0.08393972799967742,
+            0.08832306000113022
+          ]
+        }
+      }
+    },
+    {
+      "family": "two_roots",
+      "guards": 256,
+      "outcomes": {
+        "partition": {
+          "status": "verified",
+          "sites": 256,
+          "witness": -256,
+          "residual": "-1",
+          "median_s": 0.43765366399929917,
+          "samples_s": [
+            0.42658302999916486,
+            0.4487242979994335
+          ]
+        },
+        "ltba_root": {
+          "status": "verified",
+          "sites": 256,
+          "witness": -256,
+          "residual": "-1",
+          "median_s": 0.4724164130002464,
+          "samples_s": [
+            0.4823201290000725,
+            0.4625126970004203
+          ]
+        }
+      }
+    }
+  ]
+}

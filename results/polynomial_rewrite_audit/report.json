@@ -1,0 +1,252 @@
+{
+  "scope": "Synthetic polynomial quotient sums over the reals under LTBA division. Baseline proves exact polynomial quotients and prunes by real denominator roots. LTBA exports a SymPy domain; baseline keeps excluded points. Both replay all source records at an identical supplied witness. Timings include validation and replay; wall cap includes startup. No trace serialization is timed.",
+  "timeout_s": 10,
+  "sympy": "1.14.0",
+  "rows": [
+    {
+      "family": "nonconstant_quotient",
+      "guards": 4,
+      "outcomes": {
+        "partition": {
+          "status": "verified",
+          "sites": 4,
+          "witness": 1,
+          "residual": "-2",
+          "median_s": 0.021654813500390446,
+          "samples_s": [
+            0.021622325000862475,
+            0.021687301999918418
+          ]
+        },
+        "ltba": {
+          "status": "verified",
+          "sites": 4,
+          "witness": 1,
+          "residual": "-2",
+          "median_s": 0.19645878549999907,
+          "samples_s": [
+            0.19878534300005413,
+            0.194132227999944
+          ]
+        }
+      }
+    },
+    {
+      "family": "nonconstant_quotient",
+      "guards": 16,
+      "outcomes": {
+        "ltba": {
+          "status": "verified",
+          "sites": 16,
+          "witness": 1,
+          "residual": "-2",
+          "median_s": 1.4628342830001202,
+          "samples_s": [
+            1.4818468519988528,
+            1.4438217140013876
+          ]
+        },
+        "partition": {
+          "status": "verified",
+          "sites": 16,
+          "witness": 1,
+          "residual": "-2",
+          "median_s": 0.030341314500219596,
+          "samples_s": [
+            0.0334205250001105,
+            0.02726210400032869
+          ]
+        }
+      }
+    },
+    {
+      "family": "nonconstant_quotient",
+      "guards": 32,
+      "outcomes": {
+        "ltba": {
+          "status": "verified",
+          "sites": 32,
+          "witness": 1,
+          "residual": "-2",
+          "median_s": 6.546720262000235,
+          "samples_s": [
+            6.490515182000308,
+            6.602925342000162
+          ]
+        },
+        "partition": {
+          "status": "verified",
+          "sites": 32,
+          "witness": 1,
+          "residual": "-2",
+          "median_s": 0.03769479449965729,
+          "samples_s": [
+            0.032726722998631885,
+            0.0426628660006827
+          ]
+        }
+      }
+    },
+    {
+      "family": "nonconstant_quotient",
+      "guards": 64,
+      "outcomes": {
+        "partition": {
+          "status": "verified",
+          "sites": 64,
+          "witness": 1,
+          "residual": "-2",
+          "median_s": 0.050909886000226834,
+          "samples_s": [
+            0.04713755800003128,
+            0.05468221400042239
+          ]
+        },
+        "ltba": {
+          "status": "timeout",
+          "samples_s": []
+        }
+      }
+    },
+    {
+      "family": "nonconstant_quotient",
+      "guards": 256,
+      "outcomes": {
+        "partition": {
+          "status": "verified",
+          "sites": 256,
+          "witness": 1,
+          "residual": "-2",
+          "median_s": 0.19831836149933224,
+          "samples_s": [
+            0.19368982599917217,
+            0.2029468969994923
+          ]
+        },
+        "ltba": {
+          "status": "timeout",
+          "samples_s": []
+        }
+      }
+    },
+    {
+      "family": "two_roots",
+      "guards": 4,
+      "outcomes": {
+        "partition": {
+          "status": "verified",
+          "sites": 4,
+          "witness": -4,
+          "residual": "-1",
+          "median_s": 0.022294241499366763,
+          "samples_s": [
+            0.023265701998752775,
+            0.02132278099998075
+          ]
+        },
+        "ltba": {
+          "status": "verified",
+          "sites": 4,
+          "witness": -4,
+          "residual": "-1",
+          "median_s": 0.3879851245001191,
+          "samples_s": [
+            0.41184982100094203,
+            0.3641204279992962
+          ]
+        }
+      }
+    },
+    {
+      "family": "two_roots",
+      "guards": 16,
+      "outcomes": {
+        "ltba": {
+          "status": "verified",
+          "sites": 16,
+          "witness": -16,
+          "residual": "-1",
+          "median_s": 5.62908317900019,
+          "samples_s": [
+            5.9388204050010245,
+            5.319345952999356
+          ]
+        },
+        "partition": {
+          "status": "verified",
+          "sites": 16,
+          "witness": -16,
+          "residual": "-1",
+          "median_s": 0.03854869950009743,
+          "samples_s": [
+            0.03929917200002819,
+            0.03779822700016666
+          ]
+        }
+      }
+    },
+    {
+      "family": "two_roots",
+      "guards": 32,
+      "outcomes": {
+        "ltba": {
+          "status": "timeout",
+          "samples_s": []
+        },
+        "partition": {
+          "status": "verified",
+          "sites": 32,
+          "witness": -32,
+          "residual": "-1",
+          "median_s": 0.04866781350028759,
+          "samples_s": [
+            0.04975321200072358,
+            0.04758241499985161
+          ]
+        }
+      }
+    },
+    {
+      "family": "two_roots",
+      "guards": 64,
+      "outcomes": {
+        "ltba": {
+          "status": "timeout",
+          "samples_s": []
+        },
+        "partition": {
+          "status": "verified",
+          "sites": 64,
+          "witness": -64,
+          "residual": "-1",
+          "median_s": 0.10000833499998407,
+          "samples_s": [
+            0.10959992400057672,
+            0.09041674599939142
+          ]
+        }
+      }
+    },
+    {
+      "family": "two_roots",
+      "guards": 256,
+      "outcomes": {
+        "partition": {
+          "status": "verified",
+          "sites": 256,
+          "witness": -256,
+          "residual": "-1",
+          "median_s": 0.45604903450021084,
+          "samples_s": [
+            0.4695309250000719,
+            0.4425671440003498
+          ]
+        },
+        "ltba": {
+          "status": "timeout",
+          "samples_s": []
+        }
+      }
+    }
+  ]
+}
